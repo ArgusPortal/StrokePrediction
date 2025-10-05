@@ -8,3 +8,5 @@ joblib
 xgboost
 lightgbm
 jupyter
+fastapi
+uvicorn
