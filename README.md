@@ -36,8 +36,6 @@ StrokePrediction/
 │   ├── Stroke_Prediction_v2_Enhanced.ipynb    # 🔥 Main enhanced pipeline
 │   ├── Stroke_Prediction_Tech_Challenge.ipynb # Original tech challenge
 │   └── data-storytelling-auc-focus-on-strokes.ipynb # EDA inspiration
-├── src/                      # Source code modules (future)
-├── tests/                    # Unit tests (future)
 ├── requirements.txt          # Dependencies
 └── README.md                # This file
 ```
