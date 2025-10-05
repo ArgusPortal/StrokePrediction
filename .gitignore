@@ -6,3 +6,5 @@ models/
 __pycache__/
 .ipynb_checkpoints
 data/
+PROJECT_NARRATIVE.md
+README_DASHBOARD.md
