@@ -255,7 +255,7 @@ def plot_calibration_curve(model, X_val, y_val, model_name='Model'):
     bss, brier_model, brier_baseline = brier_skill_score(y_val, y_proba)
     
     categories = ['Baseline\n(Prevalence)', 'Model']
-    brier_values = [brier_baseline, brier_model]
+    brier_values = [float(brier_baseline), float(brier_model)]
     colors_bars = ['#e74c3c', '#2ecc71' if brier_model < brier_baseline else '#e74c3c']
     
     bars = ax3.bar(categories, brier_values, color=colors_bars, alpha=0.8, edgecolor='black', linewidth=2)

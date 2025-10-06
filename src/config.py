@@ -36,6 +36,32 @@ for path in [RAW_PATH, INTERIM_PATH, PROC_PATH, MODELS_PATH, RESULTS_PATH, LOGS_
 MODEL_VERSION = "3.0.0"
 MODEL_NAME = "stroke_prediction_v3"
 
+# ========== ADVANCED MODEL SUPPORT ==========
+ADVANCED_LIBS = True
+
+MODEL_REGISTRY = {
+    'logistic_l2': {
+        'type': 'linear',
+        'description': 'Logistic Regression with L2 regularization and class balancing'
+    },
+    'gradient_boosting': {
+        'type': 'ensemble',
+        'description': 'Gradient Boosting with tuned depth and subsampling'
+    },
+    'random_forest': {
+        'type': 'ensemble',
+        'description': 'Random Forest with class balancing'
+    },
+    'xgboost': {
+        'type': 'boosting',
+        'description': 'XGBoost classifier with balanced settings'
+    },
+    'lightgbm': {
+        'type': 'boosting',
+        'description': 'LightGBM classifier with balanced weights'
+    }
+}
+
 # ========== FEATURE ENGINEERING SETTINGS ==========
 BMI_BINS = [0, 18.5, 25, 30, 35, 100]
 BMI_LABELS = ['underweight', 'normal', 'overweight', 'obese1', 'obese2']
@@ -45,6 +71,16 @@ AGE_LABELS = ['young', 'adult', 'middle', 'senior', 'elderly']
 
 GLUCOSE_BINS = [0, 100, 126, 200, 500]
 GLUCOSE_LABELS = ['normal', 'prediabetic', 'diabetic', 'severe']
+
+# Aggregate feature settings for downstream modules
+FEATURE_CONFIG = {
+    'age_bins': AGE_BINS,
+    'age_labels': AGE_LABELS,
+    'bmi_bins': BMI_BINS,
+    'bmi_labels': BMI_LABELS,
+    'glucose_bins': GLUCOSE_BINS,
+    'glucose_labels': GLUCOSE_LABELS
+}
 
 # ========== MODELING PARAMETERS ==========
 TEST_SIZE = 0.20
@@ -67,6 +103,33 @@ CONCEPT_DRIFT_PCT_THRESHOLD = 10.0  # 10% degradation
 TARGET_ECE = 0.05  # Expected Calibration Error
 TARGET_BSS = 0.10  # Brier Skill Score
 
+# ========== VISUALIZATION CONFIGURATION ==========
+VIZ_CONFIG = {
+    'style': 'seaborn-v0_8-darkgrid',
+    'color_palette': ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#e67e22'],
+    'figure_dpi': 300,
+    'font_size': 10,
+    'title_size': 14,
+    'label_size': 12
+}
+
+# ========== OPTIMIZED MODEL PARAMETERS (v3.1) ==========
+XGBOOST_OPTIMIZED = {
+    'n_estimators': 500,  # Atualizado baseado em resultados
+    'max_depth': 6,
+    'learning_rate': 0.03,
+    'subsample': 0.85,
+    'colsample_bytree': 0.85,
+    'scale_pos_weight': 25,
+    'min_child_weight': 3,
+    'gamma': 0.1,
+    'reg_alpha': 0.1,
+    'reg_lambda': 1.0
+}
+
+SAMPLING_STRATEGY = 'smote_tomek'  # Melhor estratégia
+OPTIMAL_THRESHOLD_METHOD = 'multi_objective'  # vs 'fixed'
+
 # ========== LOGGING ==========
 LOG_LEVEL = "INFO"
 LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -87,6 +150,8 @@ __all__ = [
     'SEED',
     'MODEL_VERSION',
     'MODEL_NAME',
+    'ADVANCED_LIBS',
+    'MODEL_REGISTRY',
     
     # Feature engineering
     'BMI_BINS',
@@ -95,6 +160,7 @@ __all__ = [
     'AGE_LABELS',
     'GLUCOSE_BINS',
     'GLUCOSE_LABELS',
+    'FEATURE_CONFIG',
     
     # Modeling
     'TEST_SIZE',
@@ -114,6 +180,14 @@ __all__ = [
     # Calibration
     'TARGET_ECE',
     'TARGET_BSS',
+    
+    # Visualization
+    'VIZ_CONFIG',
+    
+    # Optimized parameters
+    'XGBOOST_OPTIMIZED',
+    'SAMPLING_STRATEGY',
+    'OPTIMAL_THRESHOLD_METHOD',
     
     # Logging
     'LOG_LEVEL',

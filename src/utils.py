@@ -9,7 +9,7 @@ import joblib
 import hashlib
 from datetime import datetime, UTC
 from pathlib import Path
-from .config import MODELS_PATH, VERSION
+from .config import MODELS_PATH, MODEL_VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ def save_model_with_metadata(model, model_name, metadata, output_dir=None):
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Save model
-    model_filename = f"{model_name}_v{VERSION}.joblib"
+    model_filename = f"{model_name}_v{MODEL_VERSION}.joblib"
     model_path = output_dir / model_filename
     
     joblib.dump(model, model_path, compress=3)
@@ -47,7 +47,7 @@ def save_model_with_metadata(model, model_name, metadata, output_dir=None):
     full_metadata = {
         'model_info': {
             'name': model_name,
-            'version': VERSION,
+            'version': MODEL_VERSION,
             'filename': model_filename,
             'file_size_mb': round(file_size_mb, 2),
             'creation_date': datetime.now(UTC).isoformat()
@@ -57,7 +57,7 @@ def save_model_with_metadata(model, model_name, metadata, output_dir=None):
     }
     
     # Save metadata
-    metadata_filename = f"{model_name}_metadata_v{VERSION}.json"
+    metadata_filename = f"{model_name}_metadata_v{MODEL_VERSION}.json"
     metadata_path = output_dir / metadata_filename
     
     with open(metadata_path, 'w') as f:
