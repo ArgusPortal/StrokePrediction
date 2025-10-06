@@ -10,7 +10,7 @@ from sklearn.metrics import (
     roc_auc_score, average_precision_score,
     confusion_matrix, classification_report,
     precision_recall_curve, roc_curve,
-    brier_score_loss
+    brier_score_loss, fbeta_score, balanced_accuracy_score
 )
 from sklearn.calibration import calibration_curve
 
@@ -116,3 +116,90 @@ def find_optimal_threshold(y_true, y_proba, target_recall=0.70):
     else:
         logger.warning(f"Cannot achieve target recall {target_recall}")
         return None
+
+
+def optimize_thresholds_multiobjective(
+    y_true,
+    y_proba,
+    betas=(1.0, 2.0),
+    min_precision=None,
+    min_recall=None
+):
+    """
+    Generate a threshold sweep and pick candidates via multiple F-beta objectives.
+    
+    Args:
+        y_true (array-like): Ground-truth labels.
+        y_proba (array-like): Predicted probabilities.
+        betas (tuple[float]): F-beta scores to optimise (1.0 => F1, 2.0 => recall-focused).
+        min_precision (float | None): Optional precision floor for candidate filtering.
+        min_recall (float | None): Optional recall floor for candidate filtering.
+    
+    Returns:
+        dict: {
+            'grid': pd.DataFrame,
+            'best_by_beta': dict[beta, dict],
+            'constraints': {'min_precision': value, 'min_recall': value}
+        }
+    """
+    
+    y_true = np.asarray(y_true)
+    y_proba = np.asarray(y_proba)
+    
+    precision, recall, thresholds = precision_recall_curve(y_true, y_proba)
+    # Skip the first point (threshold -> inf) to align lengths
+    thresholds = thresholds
+    precision = precision[1:]
+    recall = recall[1:]
+    
+    candidates = []
+    for idx, threshold in enumerate(thresholds):
+        prec = precision[idx]
+        rec = recall[idx]
+        
+        if min_precision is not None and prec < min_precision:
+            continue
+        if min_recall is not None and rec < min_recall:
+            continue
+        
+        y_pred = (y_proba >= threshold).astype(int)
+        
+        metrics = {
+            'threshold': float(threshold),
+            'precision': float(prec),
+            'recall': float(rec),
+            'balanced_accuracy': balanced_accuracy_score(y_true, y_pred),
+            'support_pos': int(y_pred.sum()),
+            'support_total': int(y_pred.shape[0])
+        }
+        
+        for beta in betas:
+            metrics[f'fbeta_{beta:.1f}'] = fbeta_score(
+                y_true, y_pred,
+                beta=beta,
+                zero_division=0
+            )
+        
+        candidates.append(metrics)
+    
+    if not candidates:
+        logger.warning("No thresholds satisfied the provided constraints.")
+        return {
+            'grid': pd.DataFrame(),
+            'best_by_beta': {},
+            'constraints': {'min_precision': min_precision, 'min_recall': min_recall}
+        }
+    
+    grid_df = pd.DataFrame(candidates).sort_values('threshold').reset_index(drop=True)
+    
+    best_by_beta = {}
+    for beta in betas:
+        column = f'fbeta_{beta:.1f}'
+        best_row = grid_df.sort_values(column, ascending=False).iloc[0]
+        best_by_beta[beta] = best_row.to_dict()
+    
+    return {
+        'grid': grid_df,
+        'best_by_beta': best_by_beta,
+        'constraints': {'min_precision': min_precision, 'min_recall': min_recall}
+    }

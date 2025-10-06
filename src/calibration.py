@@ -23,19 +23,30 @@ def expected_calibration_error(y_true, y_proba, n_bins=10):
     
     Target: ECE < 0.05 (excellent calibration)
     """
-    fraction_of_positives, mean_predicted_value = calibration_curve(
-        y_true, y_proba, n_bins=n_bins, strategy='uniform'
-    )
+    y_true = np.asarray(y_true)
+    y_proba = np.asarray(y_proba)
     
-    # Calculate bin counts for weighted ECE
-    bins = np.linspace(0, 1, n_bins + 1)
-    bin_indices = np.digitize(y_proba, bins[1:-1])
-    bin_counts = np.bincount(bin_indices, minlength=n_bins)
+    if len(y_true) == 0:
+        return 0.0
     
-    # Weighted ECE
-    ece = np.sum(bin_counts * np.abs(fraction_of_positives - mean_predicted_value)) / len(y_true)
+    bin_edges = np.linspace(0.0, 1.0, n_bins + 1)
+    # Use interior bin edges to get 0..n_bins-1
+    bin_indices = np.digitize(y_proba, bin_edges[1:-1], right=False)
     
-    return ece
+    ece = 0.0
+    total = len(y_true)
+    
+    for bin_idx in range(n_bins):
+        mask = bin_indices == bin_idx
+        if not np.any(mask):
+            continue
+        
+        frac_pos = y_true[mask].mean()
+        mean_pred = y_proba[mask].mean()
+        weight = mask.sum() / total
+        ece += weight * abs(frac_pos - mean_pred)
+    
+    return float(ece)
 
 
 def brier_skill_score(y_true, y_proba):
@@ -63,6 +74,15 @@ def calibrate_model_comprehensive(model, X_train, y_train, X_val, y_val, cv_fold
     print("\n" + "="*80)
     print("🔬 RECALIBRAÇÃO AVANÇADA - CORRIGINDO ECE CRÍTICO")
     print("="*80)
+    
+    # FIX: Preservar DataFrames quando disponíveis (ex.: pipelines com ColumnTransformer)
+    X_train_array = X_train
+    X_val_array = X_val
+    
+    y_train_array = np.array(y_train)
+    y_val_array = np.array(y_val)
+    
+    # FIX: StratifiedKFold precisa de labels 1D
     cv = StratifiedKFold(n_splits=cv_folds, shuffle=True, random_state=SEED)
     
     calibration_methods: dict[str, Literal['sigmoid', 'isotonic']] = {
@@ -75,9 +95,9 @@ def calibrate_model_comprehensive(model, X_train, y_train, X_val, y_val, cv_fold
     
     # 1. Baseline (uncalibrated)
     print("\n📊 Baseline (Sem Calibração):")
-    y_proba_uncal = model.predict_proba(X_val)[:, 1]
-    ece_uncal = expected_calibration_error(y_val, y_proba_uncal)
-    bss_uncal, brier_uncal, brier_base = brier_skill_score(y_val, y_proba_uncal)
+    y_proba_uncal = model.predict_proba(X_val_array)[:, 1]
+    ece_uncal = expected_calibration_error(y_val_array, y_proba_uncal)
+    bss_uncal, brier_uncal, brier_base = brier_skill_score(y_val_array, y_proba_uncal)
     
     print(f"   ECE: {ece_uncal:.4f} {'❌ CRÍTICO' if ece_uncal > 0.05 else '✅ OK'}")
     print(f"   Brier Score: {brier_uncal:.4f}")
@@ -95,21 +115,21 @@ def calibrate_model_comprehensive(model, X_train, y_train, X_val, y_val, cv_fold
         print(f"\n🔧 Testando: {method_name.upper()}")
         
         try:
-            # Calibrate with cross-validation
+            # FIX: Calibrar com arrays numpy limpos
             calibrated_model = CalibratedClassifierCV(
-                model, 
+                estimator=model,  # ← EXPLICITAMENTE USAR estimator=
                 method=method, 
                 cv=cv,
-                n_jobs=-1
+                n_jobs=1  # ← EVITAR PARALELISMO (pode causar erros)
             )
             
-            calibrated_model.fit(X_train, y_train)
+            calibrated_model.fit(X_train_array, y_train_array)
             
             # Evaluate on validation
-            y_proba_cal = calibrated_model.predict_proba(X_val)[:, 1]
+            y_proba_cal = calibrated_model.predict_proba(X_val_array)[:, 1]
             
-            ece_cal = expected_calibration_error(y_val, y_proba_cal)
-            bss_cal, brier_cal, _ = brier_skill_score(y_val, y_proba_cal)
+            ece_cal = expected_calibration_error(y_val_array, y_proba_cal)
+            bss_cal, brier_cal, _ = brier_skill_score(y_val_array, y_proba_cal)
             
             print(f"   ECE: {ece_cal:.4f} {'✅ EXCELENTE' if ece_cal < 0.05 else '⚠️ ATENÇÃO' if ece_cal < 0.10 else '❌ RUIM'}")
             print(f"   Brier Score: {brier_cal:.4f}")
@@ -132,7 +152,9 @@ def calibrate_model_comprehensive(model, X_train, y_train, X_val, y_val, cv_fold
             }
             
         except Exception as e:
-            print(f"   ❌ Erro: {e}")
+            print(f"   ❌ Erro detalhado: {str(e)}")
+            import traceback
+            traceback.print_exc()  # ← DEBUG: mostrar stack trace completo
     
     # 3. Select best method
     print("\n" + "="*80)
