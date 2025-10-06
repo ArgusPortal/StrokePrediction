@@ -5,14 +5,15 @@ Enhanced model training module with comprehensive outputs
 import numpy as np
 import pandas as pd
 from typing import Protocol, runtime_checkable, Any, Dict, List, Tuple, cast
-from sklearn.model_selection import StratifiedKFold, RepeatedStratifiedKFold, RandomizedSearchCV, cross_validate
+from sklearn.base import clone
+from sklearn.model_selection import StratifiedKFold, RepeatedStratifiedKFold, RandomizedSearchCV, cross_validate, cross_val_predict
 from sklearn.metrics import make_scorer, roc_auc_score, average_precision_score, balanced_accuracy_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from imblearn.pipeline import Pipeline as ImbPipeline
 from imblearn.over_sampling import SMOTE, BorderlineSMOTE
 from .config import SEED, ADVANCED_LIBS
-from .evaluation import optimize_thresholds_multiobjective
+from .evaluation import optimize_thresholds_multiobjective, summarize_threshold_performance
 import time
 
 
@@ -39,7 +40,18 @@ else:
     xgb = None
     lgb = None
 
-def train_model_suite(X_train, y_train, X_val, y_val, preprocessor, cv_folds=5, cv_repeats=2, search_iterations=15):
+def train_model_suite(
+    X_train,
+    y_train,
+    X_val,
+    y_val,
+    preprocessor,
+    cv_folds: int = 5,
+    cv_repeats: int = 2,
+    search_iterations: int = 15,
+    include_alternative_models: bool = False,
+    models_subset: List[str] | None = None,
+):
     """
     Trains multiple models with comprehensive cross-validation and detailed outputs
     
@@ -59,6 +71,15 @@ def train_model_suite(X_train, y_train, X_val, y_val, preprocessor, cv_folds=5, 
     
     results = {}
     cv = RepeatedStratifiedKFold(n_splits=cv_folds, n_repeats=cv_repeats, random_state=SEED)
+    y_train_array = np.asarray(y_train)
+
+    def _slice(data, indices):
+        if hasattr(data, "iloc"):
+            return data.iloc[indices]
+        try:
+            return data[indices]
+        except (TypeError, KeyError):
+            return [data[i] for i in indices]
     
     # Define all metrics to track
     scoring = {
@@ -71,10 +92,10 @@ def train_model_suite(X_train, y_train, X_val, y_val, preprocessor, cv_folds=5, 
     }
     
     # ========== MODEL DEFINITIONS ==========
-    models: Dict[str, ProbabilityEstimator] = {}
+    model_registry: Dict[str, ProbabilityEstimator] = {}
     
-    # Logistic Regression
-    models['logistic_l2'] = cast(ProbabilityEstimator, ImbPipeline([
+    # Logistic Regression (baseline – always available)
+    model_registry['logistic_l2'] = cast(ProbabilityEstimator, ImbPipeline([
         ('prep', preprocessor),
         ('smote', SMOTE(random_state=SEED, k_neighbors=3)),
         ('clf', LogisticRegression(
@@ -88,47 +109,81 @@ def train_model_suite(X_train, y_train, X_val, y_val, preprocessor, cv_folds=5, 
         ))
     ]))
     
-    # Gradient Boosting
-    models['gradient_boosting'] = cast(ProbabilityEstimator, ImbPipeline([
+    # Optional alternatives
+    model_registry['gradient_boosting'] = cast(ProbabilityEstimator, ImbPipeline([
         ('prep', preprocessor),
         ('smote', BorderlineSMOTE(random_state=SEED, k_neighbors=3)),
-        ('clf', GradientBoostingClassifier(n_estimators=300, learning_rate=0.05,
-                                           max_depth=6, subsample=0.8, random_state=SEED))
+        ('clf', GradientBoostingClassifier(
+            n_estimators=300,
+            learning_rate=0.05,
+            max_depth=6,
+            subsample=0.8,
+            random_state=SEED
+        ))
     ]))
     
-    # Random Forest
-    models['random_forest'] = cast(ProbabilityEstimator, ImbPipeline([
+    model_registry['random_forest'] = cast(ProbabilityEstimator, ImbPipeline([
         ('prep', preprocessor),
-        ('clf', RandomForestClassifier(n_estimators=500, max_depth=15, 
-                                       min_samples_split=5, class_weight='balanced_subsample',
-                                       random_state=SEED, n_jobs=-1))
+        ('clf', RandomForestClassifier(
+            n_estimators=500,
+            max_depth=15,
+            min_samples_split=5,
+            class_weight='balanced_subsample',
+            random_state=SEED,
+            n_jobs=-1
+        ))
     ]))
     
-    # Advanced models if available
     if ADVANCED_LIBS:
         if xgb is not None:
             try:
-                models['xgboost'] = cast(ProbabilityEstimator, ImbPipeline([
+                model_registry['xgboost'] = cast(ProbabilityEstimator, ImbPipeline([
                     ('prep', preprocessor),
                     ('smote', BorderlineSMOTE(random_state=SEED, k_neighbors=3)),
-                    ('clf', xgb.XGBClassifier(n_estimators=300, learning_rate=0.05, max_depth=6,
-                                             subsample=0.8, scale_pos_weight=19,
-                                             random_state=SEED, n_jobs=-1, eval_metric='logloss'))
+                    ('clf', xgb.XGBClassifier(
+                        n_estimators=300,
+                        learning_rate=0.05,
+                        max_depth=6,
+                        subsample=0.8,
+                        scale_pos_weight=19,
+                        random_state=SEED,
+                        n_jobs=-1,
+                        eval_metric='logloss'
+                    ))
                 ]))
             except Exception as e:
                 print(f"⚠️ Erro ao configurar XGBoost: {e}")
         
         if lgb is not None:
             try:
-                models['lightgbm'] = cast(ProbabilityEstimator, ImbPipeline([
+                model_registry['lightgbm'] = cast(ProbabilityEstimator, ImbPipeline([
                     ('prep', preprocessor),
                     ('smote', BorderlineSMOTE(random_state=SEED, k_neighbors=3)),
-                    ('clf', lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, max_depth=8,
-                                              num_leaves=31, class_weight='balanced',
-                                              random_state=SEED, n_jobs=-1, verbose=-1))
+                    ('clf', lgb.LGBMClassifier(
+                        n_estimators=300,
+                        learning_rate=0.05,
+                        max_depth=8,
+                        num_leaves=31,
+                        class_weight='balanced',
+                        random_state=SEED,
+                        n_jobs=-1,
+                        verbose=-1
+                    ))
                 ]))
             except Exception as e:
                 print(f"⚠️ Erro ao configurar LightGBM: {e}")
+    
+    if models_subset is not None:
+        selected = [name for name in models_subset if name in model_registry]
+    elif include_alternative_models:
+        selected = list(model_registry.keys())
+    else:
+        selected = ['logistic_l2']
+    
+    models: Dict[str, ProbabilityEstimator] = {name: model_registry[name] for name in selected}
+    
+    if not models:
+        raise ValueError("Nenhum modelo válido foi selecionado para o treinamento.")
     
     print(f"\n📊 Treinando {len(models)} modelos com {cv_folds}-fold CV (repeats={cv_repeats})...\n")
 
@@ -153,7 +208,7 @@ def train_model_suite(X_train, y_train, X_val, y_val, preprocessor, cv_folds=5, 
     }
 
     if ADVANCED_LIBS:
-        if xgb is not None:
+        if xgb is not None and 'xgboost' in models:
             search_spaces['xgboost'] = {
                 'clf__n_estimators': [200, 300, 400],
                 'clf__max_depth': [3, 4, 5, 6],
@@ -162,7 +217,7 @@ def train_model_suite(X_train, y_train, X_val, y_val, preprocessor, cv_folds=5, 
                 'clf__colsample_bytree': [0.6, 0.8, 1.0],
                 'clf__scale_pos_weight': [10, 15, 20, 25]
             }
-        if lgb is not None:
+        if lgb is not None and 'lightgbm' in models:
             search_spaces['lightgbm'] = {
                 'clf__n_estimators': [200, 300, 400],
                 'clf__learning_rate': [0.01, 0.03, 0.05, 0.1],
@@ -173,12 +228,15 @@ def train_model_suite(X_train, y_train, X_val, y_val, preprocessor, cv_folds=5, 
                 'clf__scale_pos_weight': [10, 15, 20, 25]
             }
 
+    search_spaces = {k: v for k, v in search_spaces.items() if k in models}
+
     per_model_iterations = {
         'lightgbm': max(5, min(search_iterations, 8)),
         'xgboost': max(5, min(search_iterations, 10)),
         'random_forest': max(8, min(search_iterations, 12)),
         'gradient_boosting': max(8, min(search_iterations, 12))
     }
+    per_model_iterations = {k: v for k, v in per_model_iterations.items() if k in models}
     
     # ========== TRAIN EACH MODEL ==========
     for name, model in models.items():
@@ -273,12 +331,135 @@ def train_model_suite(X_train, y_train, X_val, y_val, preprocessor, cv_folds=5, 
                 'balanced_acc': balanced_accuracy_score(y_val, y_pred_val)
             }
             
+            # ===== THRESHOLD SEARCH (VALIDAÇÃO) =====
             threshold_summary = optimize_thresholds_multiobjective(
                 y_val,
                 y_proba_val,
                 betas=(1.0, 2.0),
-                min_precision=0.10
+                min_precision=0.12,
+                min_recall=0.40,
+                max_threshold=0.30
             )
+            
+            validation_threshold = None
+            validation_threshold_metrics: Dict[str, Any] | None = None
+            if threshold_summary and threshold_summary['best_by_beta']:
+                if 2.0 in threshold_summary['best_by_beta']:
+                    validation_threshold_metrics = threshold_summary['best_by_beta'][2.0]
+                elif 1.0 in threshold_summary['best_by_beta']:
+                    validation_threshold_metrics = threshold_summary['best_by_beta'][1.0]
+                else:
+                    validation_threshold_metrics = next(iter(threshold_summary['best_by_beta'].values()))
+            
+            if validation_threshold_metrics is not None:
+                validation_threshold = float(validation_threshold_metrics['threshold'])
+                print(
+                    f"\n✅ Limiar sugerido (validação): {validation_threshold:.3f} "
+                    f"(precision={validation_threshold_metrics['precision']:.3f}, "
+                    f"recall={validation_threshold_metrics['recall']:.3f})"
+                )
+            else:
+                validation_threshold = 0.5
+                print("\n⚠️ Nenhum limiar válido encontrado na validação - usando 0.500 por padrão.")
+            
+            # ===== THRESHOLD SEARCH (OUT-OF-FOLD) =====
+            oof_threshold_summary = None
+            oof_threshold = None
+            oof_threshold_metrics: Dict[str, Any] | None = None
+            oof_proba = None
+            try:
+                oof_cv = StratifiedKFold(
+                    n_splits=min(cv_folds, 5),
+                    shuffle=True,
+                    random_state=SEED
+                )
+                oof_proba = np.zeros(len(y_train_array), dtype=float)
+                
+                for fold_idx, (train_idx, val_idx) in enumerate(oof_cv.split(X_train, y_train)):
+                    model_fold = clone(tuned_model)
+                    X_tr = _slice(X_train, train_idx)
+                    y_tr = _slice(y_train, train_idx)
+                    X_val_fold = _slice(X_train, val_idx)
+                    
+                    model_fold.fit(X_tr, y_tr)
+                    oof_proba[val_idx] = model_fold.predict_proba(X_val_fold)[:, 1]
+                
+                oof_threshold_summary = optimize_thresholds_multiobjective(
+                    y_train,
+                    oof_proba,
+                    betas=(1.0, 2.0),
+                    min_precision=0.12,
+                    min_recall=0.40,
+                    max_threshold=0.30
+                )
+                
+                if oof_threshold_summary['best_by_beta']:
+                    if 2.0 in oof_threshold_summary['best_by_beta']:
+                        oof_threshold_metrics = oof_threshold_summary['best_by_beta'][2.0]
+                    elif 1.0 in oof_threshold_summary['best_by_beta']:
+                        oof_threshold_metrics = oof_threshold_summary['best_by_beta'][1.0]
+                    else:
+                        oof_threshold_metrics = next(iter(oof_threshold_summary['best_by_beta'].values()))
+                    
+                    if oof_threshold_metrics is not None:
+                        oof_threshold = float(oof_threshold_metrics['threshold'])
+                        print(
+                            f"🔁 Limiar sugerido (OOF): {oof_threshold:.3f} "
+                            f"(precision={oof_threshold_metrics['precision']:.3f}, "
+                            f"recall={oof_threshold_metrics['recall']:.3f})"
+                        )
+            except Exception as exc:
+                print(f"⚠️ Não foi possível gerar previsões OOF para limiarização: {exc}")
+                oof_proba = None
+            
+            # ===== CONSOLIDAR LIMIAR DE PRODUÇÃO =====
+            candidate_thresholds: List[Tuple[str, float, Dict[str, Any] | None]] = []
+            if validation_threshold is not None:
+                candidate_thresholds.append(('validation_fbeta', validation_threshold, validation_threshold_metrics))
+            if oof_threshold is not None:
+                candidate_thresholds.append(('oof_fbeta', oof_threshold, oof_threshold_metrics))
+            
+            if candidate_thresholds:
+                production_source, production_threshold, ref_metrics = min(candidate_thresholds, key=lambda x: x[1])
+            else:
+                production_source, production_threshold, ref_metrics = ('default', 0.5, None)
+            
+            production_metrics_val = summarize_threshold_performance(
+                y_val, y_proba_val, production_threshold
+            )
+            production_metrics_oof = None
+            if oof_proba is not None:
+                production_metrics_oof = summarize_threshold_performance(
+                    y_train, oof_proba, production_threshold
+                )
+            
+            print(
+                f"\n✅ Limiar de produção definido: {production_threshold:.3f} "
+                f"(fonte: {production_source})"
+            )
+            print(
+                f"   → Validação: precision={production_metrics_val['precision']:.3f} | "
+                f"recall={production_metrics_val['recall']:.3f} | "
+                f"bal_acc={production_metrics_val['balanced_accuracy']:.3f}"
+            )
+            if production_metrics_oof is not None:
+                print(
+                    f"   → OOF: precision={production_metrics_oof['precision']:.3f} | "
+                    f"recall={production_metrics_oof['recall']:.3f} | "
+                    f"bal_acc={production_metrics_oof['balanced_accuracy']:.3f}"
+                )
+            
+            def _serialize_threshold_metrics(metrics_dict: Dict[str, Any] | None):
+                if metrics_dict is None:
+                    return None
+                sanitized = dict(metrics_dict)
+                cm = sanitized.get('confusion_matrix')
+                if cm is not None:
+                    sanitized['confusion_matrix'] = np.asarray(cm).tolist()
+                return sanitized
+            
+            production_metrics_val_serial = _serialize_threshold_metrics(production_metrics_val)
+            production_metrics_oof_serial = _serialize_threshold_metrics(production_metrics_oof)
             
             # Calculate overfitting metrics
             overfitting_gap = {
@@ -297,7 +478,18 @@ def train_model_suite(X_train, y_train, X_val, y_val, preprocessor, cv_folds=5, 
                 'overfitting_gap': overfitting_gap,
                 'training_time_seconds': elapsed,
                 'search': search_summary,
-                'thresholds': threshold_summary
+                'thresholds': {
+                    'validation': threshold_summary,
+                    'oof': oof_threshold_summary
+                },
+                'validation_threshold': validation_threshold,
+                'validation_threshold_metrics': validation_threshold_metrics,
+                'oof_threshold': oof_threshold,
+                'oof_threshold_metrics': oof_threshold_metrics,
+                'production_threshold': production_threshold,
+                'production_threshold_source': production_source,
+                'production_threshold_metrics_val': production_metrics_val_serial,
+                'production_threshold_metrics_oof': production_metrics_oof_serial
             }
             
             # Print validation results
@@ -373,16 +565,13 @@ def train_model_suite(X_train, y_train, X_val, y_val, preprocessor, cv_folds=5, 
             'Training_Time_s': result['training_time_seconds']
         }
 
-        best_by_beta = result.get('thresholds', {}).get('best_by_beta', {})
-        if best_by_beta:
-            # Prefer recall-focused F2 if available, fall back to F1
-            f2_info = best_by_beta.get(2.0)
-            f1_info = best_by_beta.get(1.0)
-            chosen = f2_info or f1_info
-            if chosen:
-                row['Suggested_Threshold'] = chosen['threshold']
-                row['Suggested_Precision'] = chosen['precision']
-                row['Suggested_Recall'] = chosen['recall']
+        if result.get('production_threshold') is not None:
+            row['Production_Threshold'] = result['production_threshold']
+            row['Production_Threshold_Source'] = result.get('production_threshold_source')
+            prod_metrics = result.get('production_threshold_metrics_val') or {}
+            if prod_metrics:
+                row['Production_Precision_Val'] = prod_metrics.get('precision')
+                row['Production_Recall_Val'] = prod_metrics.get('recall')
         
         summary_data.append(row)
     

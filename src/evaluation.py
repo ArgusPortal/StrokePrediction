@@ -123,7 +123,8 @@ def optimize_thresholds_multiobjective(
     y_proba,
     betas=(1.0, 2.0),
     min_precision=None,
-    min_recall=None
+    min_recall=None,
+    max_threshold=None
 ):
     """
     Generate a threshold sweep and pick candidates via multiple F-beta objectives.
@@ -160,6 +161,8 @@ def optimize_thresholds_multiobjective(
         if min_precision is not None and prec < min_precision:
             continue
         if min_recall is not None and rec < min_recall:
+            continue
+        if max_threshold is not None and threshold > max_threshold:
             continue
         
         y_pred = (y_proba >= threshold).astype(int)
@@ -201,5 +204,68 @@ def optimize_thresholds_multiobjective(
     return {
         'grid': grid_df,
         'best_by_beta': best_by_beta,
-        'constraints': {'min_precision': min_precision, 'min_recall': min_recall}
+        'constraints': {
+            'min_precision': min_precision,
+            'min_recall': min_recall,
+            'max_threshold': max_threshold
+        }
     }
+
+
+def summarize_threshold_performance(y_true, y_proba, threshold: float):
+    """
+    Compute key metrics for a specific decision threshold.
+    """
+    y_true = np.asarray(y_true)
+    y_proba = np.asarray(y_proba)
+    y_pred = (y_proba >= threshold).astype(int)
+    
+    cm = confusion_matrix(y_true, y_pred)
+    tn, fp, fn, tp = cm.ravel()
+    
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
+    
+    return {
+        'threshold': float(threshold),
+        'confusion_matrix': cm,
+        'true_negatives': int(tn),
+        'false_positives': int(fp),
+        'false_negatives': int(fn),
+        'true_positives': int(tp),
+        'precision': precision,
+        'recall': recall,
+        'specificity': tn / (tn + fp) if (tn + fp) > 0 else 0.0,
+        'f1_score': f1,
+        'balanced_accuracy': balanced_accuracy_score(y_true, y_pred)
+    }
+
+
+def summarize_threshold_grid(y_true, y_proba, thresholds):
+    """
+    Generate precision/recall summary for a list of thresholds.
+    
+    Returns:
+        pd.DataFrame: metrics ordered by threshold.
+    """
+    y_true = np.asarray(y_true)
+    y_proba = np.asarray(y_proba)
+    records = []
+    
+    for thr in thresholds:
+        metrics = summarize_threshold_performance(y_true, y_proba, thr)
+        records.append({
+            'threshold': metrics['threshold'],
+            'precision': metrics['precision'],
+            'recall': metrics['recall'],
+            'f1_score': metrics['f1_score'],
+            'balanced_accuracy': metrics['balanced_accuracy'],
+            'tp': metrics['true_positives'],
+            'fp': metrics['false_positives'],
+            'fn': metrics['false_negatives'],
+            'tn': metrics['true_negatives']
+        })
+    
+    df = pd.DataFrame(records).sort_values('threshold').reset_index(drop=True)
+    return df

@@ -170,16 +170,17 @@ def plot_calibration_analysis(results, ranking, y_val):
     ax1 = axes[0, 0]
     
     for i, (name, result) in enumerate(list(ranking[:5])):
-        if 'y_proba' in result:
-            y_proba = result['y_proba']
-            
-            fraction_of_positives, mean_predicted_value = calibration_curve(
-                y_val, y_proba, n_bins=10, strategy='uniform'
-            )
-            
-            ax1.plot(mean_predicted_value, fraction_of_positives, 's-',
-                    label=name.replace('_', ' ').title(), 
-                    linewidth=2, markersize=8, alpha=0.8)
+        y_proba = result.get('y_proba_calibrated_val') or result.get('y_proba')
+        if y_proba is None:
+            continue
+
+        fraction_of_positives, mean_predicted_value = calibration_curve(
+            y_val, y_proba, n_bins=10, strategy='uniform'
+        )
+        
+        ax1.plot(mean_predicted_value, fraction_of_positives, 's-',
+                label=name.replace('_', ' ').title(), 
+                linewidth=2, markersize=8, alpha=0.8)
     
     ax1.plot([0, 1], [0, 1], 'k:', label="Perfeitamente Calibrado", linewidth=2)
     ax1.set_xlabel('Probabilidade Predita Media', fontweight='bold')
@@ -195,13 +196,20 @@ def plot_calibration_analysis(results, ranking, y_val):
     calibration_errors = []
     
     for name, result in list(ranking[:6]):
-        if 'y_proba' in result:
-            y_proba = result['y_proba']
+        y_proba = result.get('y_proba_calibrated_val') or result.get('y_proba')
+        if y_proba is None:
+            continue
+
+        cal_report = result.get('calibration_report') or {}
+        post_cal = cal_report.get('post_calibration')
+        if post_cal and 'ece' in post_cal:
+            cal_error = post_cal['ece']
+        else:
             fraction_pos, mean_pred = calibration_curve(y_val, y_proba, n_bins=10)
             cal_error = np.mean(np.abs(fraction_pos - mean_pred))
-            
-            model_names_cal.append(name.replace('_', ' ').title())
-            calibration_errors.append(cal_error)
+        
+        model_names_cal.append(name.replace('_', ' ').title())
+        calibration_errors.append(cal_error)
     
     colors_cal = ['green' if e < 0.05 else 'orange' if e < 0.1 else 'red' 
                   for e in calibration_errors]
@@ -222,10 +230,19 @@ def plot_calibration_analysis(results, ranking, y_val):
     brier_scores = []
     
     for name, result in list(ranking[:6]):
-        if 'y_proba' in result:
-            brier = brier_score_loss(y_val, result['y_proba'])
-            model_names_brier.append(name.replace('_', ' ').title())
-            brier_scores.append(brier)
+        y_proba = result.get('y_proba_calibrated_val') or result.get('y_proba')
+        if y_proba is None:
+            continue
+        
+        cal_report = result.get('calibration_report') or {}
+        post_cal = cal_report.get('post_calibration')
+        if post_cal and 'brier_score' in post_cal:
+            brier = post_cal['brier_score']
+        else:
+            brier = brier_score_loss(y_val, y_proba)
+        
+        model_names_brier.append(name.replace('_', ' ').title())
+        brier_scores.append(brier)
     
     ax3.bar(range(len(model_names_brier)), brier_scores, 
            color=plt.cm.get_cmap('RdYlGn_r')(np.linspace(0.3, 0.7, len(brier_scores))), 
@@ -240,20 +257,21 @@ def plot_calibration_analysis(results, ranking, y_val):
     # ========== 4. RELIABILITY DIAGRAM (MELHOR MODELO) ==========
     ax4 = axes[1, 0]
     
-    if ranking:
-        best_result = ranking[0][1]
-        y_proba_best = best_result['y_proba']
-        
-        fraction_of_positives, mean_predicted_value = calibration_curve(
-            y_val, y_proba_best, n_bins=10
-        )
-        
-        bin_edges = np.linspace(0, 1, 11)
-        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
-        
-        ax4.bar(bin_centers, fraction_of_positives, width=0.08, 
-               alpha=0.7, color='#3498db', edgecolor='black')
-        ax4.plot([0, 1], [0, 1], 'k--', label='Ideal', linewidth=2)
+      if ranking:
+          best_result = ranking[0][1]
+          y_proba_best = best_result.get('y_proba_calibrated_val') or best_result.get('y_proba')
+          
+          if y_proba_best is not None:
+              fraction_of_positives, mean_predicted_value = calibration_curve(
+                  y_val, y_proba_best, n_bins=10
+              )
+          
+              bin_edges = np.linspace(0, 1, 11)
+              bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+              
+              ax4.bar(bin_centers, fraction_of_positives, width=0.08, 
+                     alpha=0.7, color='#3498db', edgecolor='black')
+              ax4.plot([0, 1], [0, 1], 'k--', label='Ideal', linewidth=2)
         
         ax4.set_xlabel('Probabilidade Predita', fontweight='bold')
         ax4.set_ylabel('Fracao Real de Positivos', fontweight='bold')
@@ -338,33 +356,38 @@ def plot_calibration_analysis(results, ranking, y_val):
     calibration_summary = []
     
     for name, result in list(ranking[:6]):
-        if 'y_proba' in result:
-            y_proba = result['y_proba']
-            
-            # Calcular métricas de calibração
+        y_proba = result.get('y_proba_calibrated_val') or result.get('y_proba')
+        if y_proba is None:
+            continue
+        
+        cal_report = result.get('calibration_report') or {}
+        post_cal = cal_report.get('post_calibration', {})
+        
+        if post_cal:
+            cal_error = float(post_cal.get('ece', np.nan))
+            brier = float(post_cal.get('brier_score', np.nan))
+            brier_skill = float(post_cal.get('bss', np.nan))
+        else:
             fraction_pos, mean_pred = calibration_curve(y_val, y_proba, n_bins=10)
             cal_error = np.mean(np.abs(fraction_pos - mean_pred))
             brier = brier_score_loss(y_val, y_proba)
-            
-            # Brier Skill Score (vs baseline)
             baseline_brier = brier_score_loss(y_val, np.full_like(y_proba, y_val.mean()))
             brier_skill = 1 - (brier / baseline_brier)
-            
-            # Status
-            if cal_error < 0.05:
-                status = '✅ Excelente'
-            elif cal_error < 0.10:
-                status = '⚠️ Aceitável'
-            else:
-                status = '❌ Ruim'
-            
-            calibration_summary.append({
-                'Modelo': name.replace('_', ' ').title(),
-                'Cal. Error': f"{cal_error:.4f}",
-                'Brier Score': f"{brier:.4f}",
-                'Brier Skill': f"{brier_skill:.4f}",
-                'Status': status
-            })
+        
+        if cal_error < 0.05:
+            status = '✅ Excelente'
+        elif cal_error < 0.10:
+            status = '⚠️ Aceitável'
+        else:
+            status = '❌ Ruim'
+        
+        calibration_summary.append({
+            'Modelo': name.replace('_', ' ').title(),
+            'Cal. Error': f"{cal_error:.4f}",
+            'Brier Score': f"{brier:.4f}",
+            'Brier Skill': f"{brier_skill:.4f}",
+            'Status': status
+        })
     
     cal_df = pd.DataFrame(calibration_summary)
     print("\n📋 MÉTRICAS DE CALIBRAÇÃO:")

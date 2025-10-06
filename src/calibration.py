@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from typing import Literal
 from sklearn.calibration import CalibratedClassifierCV, calibration_curve
-from sklearn.metrics import brier_score_loss
+from sklearn.metrics import brier_score_loss, confusion_matrix
 from sklearn.model_selection import StratifiedKFold
 
 from .config import RESULTS_PATH, SEED
@@ -64,7 +64,15 @@ def brier_skill_score(y_true, y_proba):
     return bss, brier_model, brier_baseline
 
 
-def calibrate_model_comprehensive(model, X_train, y_train, X_val, y_val, cv_folds=10):
+def calibrate_model_comprehensive(
+    model,
+    X_train,
+    y_train,
+    X_val,
+    y_val,
+    cv_folds=10,
+    deployment_threshold: float | None = None
+):
     """
     Comprehensive calibration with multiple methods + validation
     
@@ -91,7 +99,6 @@ def calibrate_model_comprehensive(model, X_train, y_train, X_val, y_val, cv_fold
     }
     
     results = {}
-    results = {}
     
     # 1. Baseline (uncalibrated)
     print("\n📊 Baseline (Sem Calibração):")
@@ -105,6 +112,7 @@ def calibrate_model_comprehensive(model, X_train, y_train, X_val, y_val, cv_fold
     
     results['uncalibrated'] = {
         'model': model,
+        'method': 'uncalibrated',
         'ece': ece_uncal,
         'brier': brier_uncal,
         'bss': bss_uncal
@@ -144,6 +152,7 @@ def calibrate_model_comprehensive(model, X_train, y_train, X_val, y_val, cv_fold
             
             results[method_name] = {
                 'model': calibrated_model,
+                'method': method_name,
                 'ece': ece_cal,
                 'brier': brier_cal,
                 'bss': bss_cal,
@@ -188,6 +197,36 @@ def calibrate_model_comprehensive(model, X_train, y_train, X_val, y_val, cv_fold
         print(f"\n🎉 MODELO CALIBRADO APROVADO PARA PRODUÇÃO")
     else:
         print(f"\n⚠️ ATENÇÃO: Calibração não atingiu todos os targets")
+    
+    # Post-calibration validation metrics (for reporting/production)
+    y_proba_best = best_result['model'].predict_proba(X_val_array)[:, 1]
+    post_ece = expected_calibration_error(y_val_array, y_proba_best)
+    post_bss, post_brier, _ = brier_skill_score(y_val_array, y_proba_best)
+    
+    post_summary = {
+        'ece': post_ece,
+        'brier_score': post_brier,
+        'bss': post_bss
+    }
+    
+    if deployment_threshold is not None:
+        y_pred = (y_proba_best >= deployment_threshold).astype(int)
+        tn, fp, fn, tp = confusion_matrix(y_val_array, y_pred).ravel()
+        post_summary['threshold'] = float(deployment_threshold)
+        post_summary['precision'] = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        post_summary['recall'] = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        post_summary['specificity'] = tn / (tn + fp) if (tn + fp) > 0 else 0.0
+        post_summary['balanced_accuracy'] = (post_summary['recall'] + post_summary['specificity']) / 2
+    
+    print("\nPOST-RECALIBRATION METRICS (validação):")
+    print(f"   ECE: {post_summary['ece']:.4f}")
+    print(f"   Brier Score: {post_summary['brier_score']:.4f}")
+    print(f"   Brier Skill Score: {post_summary['bss']:.4f}")
+    if deployment_threshold is not None:
+        print(f"   Threshold: {post_summary['threshold']:.3f} "
+              f"(precision={post_summary['precision']:.3f}, recall={post_summary['recall']:.3f})")
+    
+    best_result['post_calibration'] = post_summary
     
     return best_result['model'], best_result
 
