@@ -13,6 +13,7 @@ from sklearn.metrics import brier_score_loss, confusion_matrix
 from sklearn.model_selection import StratifiedKFold
 
 from .config import RESULTS_PATH, SEED
+from .evaluation import summarize_threshold_performance
 
 logger = logging.getLogger(__name__)
 
@@ -210,24 +211,27 @@ def calibrate_model_comprehensive(
     }
     
     if deployment_threshold is not None:
-        y_pred = (y_proba_best >= deployment_threshold).astype(int)
-        tn, fp, fn, tp = confusion_matrix(y_val_array, y_pred).ravel()
+        thr_metrics = summarize_threshold_performance(
+            y_val_array, y_proba_best, threshold=deployment_threshold
+        )
         post_summary['threshold'] = float(deployment_threshold)
-        post_summary['precision'] = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-        post_summary['recall'] = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-        post_summary['specificity'] = tn / (tn + fp) if (tn + fp) > 0 else 0.0
-        post_summary['balanced_accuracy'] = (post_summary['recall'] + post_summary['specificity']) / 2
+        post_summary['threshold_metrics'] = thr_metrics
     
-    print("\nPOST-RECALIBRATION METRICS (validação):")
+    print("\nPOST-RECALIBRATION METRICS (validacao):")
     print(f"   ECE: {post_summary['ece']:.4f}")
     print(f"   Brier Score: {post_summary['brier_score']:.4f}")
     print(f"   Brier Skill Score: {post_summary['bss']:.4f}")
-    if deployment_threshold is not None:
-        print(f"   Threshold: {post_summary['threshold']:.3f} "
-              f"(precision={post_summary['precision']:.3f}, recall={post_summary['recall']:.3f})")
-    
+    thr_metrics = post_summary.get('threshold_metrics')
+    if thr_metrics is not None:
+        print(
+            f"   Threshold: {thr_metrics['threshold']:.3f} "
+            f"(precision={thr_metrics['precision']:.3f}, "
+            f"recall={thr_metrics['recall']:.3f}, "
+            f"bal_acc={thr_metrics['balanced_accuracy']:.3f})"
+        )
+   
     best_result['post_calibration'] = post_summary
-    
+   
     return best_result['model'], best_result
 
 

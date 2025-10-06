@@ -1,4 +1,4 @@
-"""
+﻿"""
 Comprehensive visualization module for Stroke Prediction v3
 All publication-ready plots and dashboards
 """
@@ -21,14 +21,14 @@ plt.style.use(VIZ_CONFIG['style'])
 sns.set_palette(VIZ_CONFIG['color_palette'])
 
 def plot_model_comparison_comprehensive(results, ranking, y_val):
-    """Visualização completa de comparação de modelos (como v2)"""
+    """VisualizaÃ§Ã£o completa de comparaÃ§Ã£o de modelos (como v2)"""
     
     fig = plt.figure(figsize=(24, 16))
     gs = fig.add_gridspec(4, 4, hspace=0.35, wspace=0.3)
     
     colors_models = VIZ_CONFIG['color_palette']
     
-    # 1. COMPARAÇÃO DE MÉTRICAS
+    # 1. COMPARAÃ‡ÃƒO DE MÃ‰TRICAS
     ax1 = fig.add_subplot(gs[0, :2])
     
     model_names = []
@@ -122,12 +122,12 @@ def plot_model_comparison_comprehensive(results, ranking, y_val):
                 dpi=VIZ_CONFIG['figure_dpi'], bbox_inches='tight')
     plt.show()
     
-    # ========== SUMÁRIO TEXTUAL ==========
+    # ========== SUMÃRIO TEXTUAL ==========
     print("\n" + "="*80)
-    print("📊 SUMÁRIO DA COMPARAÇÃO DE MODELOS")
+    print("ðŸ“Š SUMÃRIO DA COMPARAÃ‡ÃƒO DE MODELOS")
     print("="*80)
     
-    # Tabela de métricas
+    # Tabela de mÃ©tricas
     summary_data = []
     for name, result in results.items():
         if 'val_metrics' in result and 'dummy' not in name.lower():
@@ -139,20 +139,20 @@ def plot_model_comparison_comprehensive(results, ranking, y_val):
             })
     
     summary_df = pd.DataFrame(summary_data)
-    print("\n📋 TABELA DE MÉTRICAS (Validation Set):")
+    print("\nðŸ“‹ TABELA DE MÃ‰TRICAS (Validation Set):")
     print(summary_df.to_string(index=False))
     
     # Ranking
-    print("\n🏆 RANKING (por PR-AUC):")
+    print("\nðŸ† RANKING (por PR-AUC):")
     for i, (name, result) in enumerate(ranking[:5], 1):
         pr_auc = result['val_metrics']['pr_auc']
         roc_auc = result['val_metrics']['roc_auc']
-        print(f"   {i}. {name.replace('_', ' ').title():25s} → PR-AUC: {pr_auc:.4f} | ROC-AUC: {roc_auc:.4f}")
+        print(f"   {i}. {name.replace('_', ' ').title():25s} â†’ PR-AUC: {pr_auc:.4f} | ROC-AUC: {roc_auc:.4f}")
     
     # Melhor modelo
     if ranking:
         best_name, best_result = ranking[0]
-        print(f"\n🥇 MELHOR MODELO: {best_name.upper()}")
+        print(f"\nðŸ¥‡ MELHOR MODELO: {best_name.upper()}")
         print(f"   PR-AUC:      {best_result['val_metrics']['pr_auc']:.4f}")
         print(f"   ROC-AUC:     {best_result['val_metrics']['roc_auc']:.4f}")
         print(f"   Balanced Acc: {best_result['val_metrics'].get('balanced_acc', 0):.4f}")
@@ -161,226 +161,163 @@ def plot_model_comparison_comprehensive(results, ranking, y_val):
 
 
 def plot_calibration_analysis(results, ranking, y_val):
-    """Análise de calibração completa com todos os 6 gráficos"""
-    
+    """Analise de calibracao completa com graficos e resumo textual"""
+
     fig, axes = plt.subplots(2, 3, figsize=(20, 12))
     fig.suptitle('ANALISE DE CALIBRACAO', fontsize=16, fontweight='bold')
-    
-    # ========== 1. CURVAS DE CALIBRAÇÃO ==========
+
+    # 1. Curvas de calibracao
     ax1 = axes[0, 0]
-    
-    for i, (name, result) in enumerate(list(ranking[:5])):
-        y_proba = result.get('y_proba_calibrated_val') or result.get('y_proba')
+    for name, result in list(ranking[:5]):
+        y_proba = result.get('y_proba_calibrated_val')
+        if y_proba is None:
+            y_proba = result.get('y_proba')
         if y_proba is None:
             continue
-
-        fraction_of_positives, mean_predicted_value = calibration_curve(
-            y_val, y_proba, n_bins=10, strategy='uniform'
-        )
-        
-        ax1.plot(mean_predicted_value, fraction_of_positives, 's-',
-                label=name.replace('_', ' ').title(), 
-                linewidth=2, markersize=8, alpha=0.8)
-    
-    ax1.plot([0, 1], [0, 1], 'k:', label="Perfeitamente Calibrado", linewidth=2)
+        fraction_pos, mean_pred = calibration_curve(y_val, y_proba, n_bins=10, strategy='uniform')
+        ax1.plot(mean_pred, fraction_pos, 's-', label=name.replace('_', ' ').title(), linewidth=2, markersize=8, alpha=0.8)
+    ax1.plot([0, 1], [0, 1], 'k:', label='Perfeitamente Calibrado', linewidth=2)
     ax1.set_xlabel('Probabilidade Predita Media', fontweight='bold')
     ax1.set_ylabel('Fracao de Positivos', fontweight='bold')
     ax1.set_title('Curvas de Calibracao', fontweight='bold')
     ax1.legend(fontsize=9)
     ax1.grid(True, alpha=0.3)
-    
-    # ========== 2. ERRO DE CALIBRAÇÃO ==========
+
+    # 2. Erro de calibracao por modelo
     ax2 = axes[0, 1]
-    
     model_names_cal = []
     calibration_errors = []
-    
     for name, result in list(ranking[:6]):
-        y_proba = result.get('y_proba_calibrated_val') or result.get('y_proba')
+        y_proba = result.get('y_proba_calibrated_val')
+        if y_proba is None:
+            y_proba = result.get('y_proba')
         if y_proba is None:
             continue
-
         cal_report = result.get('calibration_report') or {}
         post_cal = cal_report.get('post_calibration')
         if post_cal and 'ece' in post_cal:
-            cal_error = post_cal['ece']
+            cal_error = float(post_cal['ece'])
         else:
-            fraction_pos, mean_pred = calibration_curve(y_val, y_proba, n_bins=10)
-            cal_error = np.mean(np.abs(fraction_pos - mean_pred))
-        
+            frac, mean_pred = calibration_curve(y_val, y_proba, n_bins=10)
+            cal_error = float(np.mean(np.abs(frac - mean_pred)))
         model_names_cal.append(name.replace('_', ' ').title())
         calibration_errors.append(cal_error)
-    
-    colors_cal = ['green' if e < 0.05 else 'orange' if e < 0.1 else 'red' 
-                  for e in calibration_errors]
-    
+    colors_cal = ['green' if e < 0.05 else 'orange' if e < 0.10 else 'red' for e in calibration_errors]
     ax2.barh(model_names_cal, calibration_errors, color=colors_cal, alpha=0.8, edgecolor='black')
     ax2.axvline(0.05, color='green', linestyle='--', linewidth=2, label='Excelente (<0.05)')
     ax2.axvline(0.10, color='orange', linestyle='--', linewidth=2, label='Aceitavel (<0.10)')
-    
     ax2.set_xlabel('Erro de Calibracao', fontweight='bold')
     ax2.set_title('Erro de Calibracao por Modelo', fontweight='bold')
     ax2.legend(fontsize=9)
     ax2.grid(True, alpha=0.3, axis='x')
-    
-    # ========== 3. BRIER SCORE ==========
+
+    # 3. Brier score
     ax3 = axes[0, 2]
-    
     model_names_brier = []
     brier_scores = []
-    
     for name, result in list(ranking[:6]):
-        y_proba = result.get('y_proba_calibrated_val') or result.get('y_proba')
+        y_proba = result.get('y_proba_calibrated_val')
+        if y_proba is None:
+            y_proba = result.get('y_proba')
         if y_proba is None:
             continue
-        
         cal_report = result.get('calibration_report') or {}
         post_cal = cal_report.get('post_calibration')
         if post_cal and 'brier_score' in post_cal:
-            brier = post_cal['brier_score']
+            brier = float(post_cal['brier_score'])
         else:
             brier = brier_score_loss(y_val, y_proba)
-        
         model_names_brier.append(name.replace('_', ' ').title())
         brier_scores.append(brier)
-    
-    ax3.bar(range(len(model_names_brier)), brier_scores, 
-           color=plt.cm.get_cmap('RdYlGn_r')(np.linspace(0.3, 0.7, len(brier_scores))), 
-           alpha=0.8, edgecolor='black')
-    
+    ax3.bar(range(len(model_names_brier)), brier_scores, color=plt.cm.get_cmap('RdYlGn_r')(np.linspace(0.3, 0.7, len(brier_scores))), alpha=0.8, edgecolor='black')
     ax3.set_xticks(range(len(model_names_brier)))
     ax3.set_xticklabels(model_names_brier, rotation=45, ha='right', fontsize=9)
     ax3.set_ylabel('Brier Score', fontweight='bold')
     ax3.set_title('Brier Score (Menor = Melhor)', fontweight='bold')
     ax3.grid(True, alpha=0.3, axis='y')
-    
-    # ========== 4. RELIABILITY DIAGRAM (MELHOR MODELO) ==========
+
+    # 4. Reliability diagram
     ax4 = axes[1, 0]
-    
-      if ranking:
-          best_result = ranking[0][1]
-          y_proba_best = best_result.get('y_proba_calibrated_val') or best_result.get('y_proba')
-          
-          if y_proba_best is not None:
-              fraction_of_positives, mean_predicted_value = calibration_curve(
-                  y_val, y_proba_best, n_bins=10
-              )
-          
-              bin_edges = np.linspace(0, 1, 11)
-              bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
-              
-              ax4.bar(bin_centers, fraction_of_positives, width=0.08, 
-                     alpha=0.7, color='#3498db', edgecolor='black')
-              ax4.plot([0, 1], [0, 1], 'k--', label='Ideal', linewidth=2)
-        
-        ax4.set_xlabel('Probabilidade Predita', fontweight='bold')
-        ax4.set_ylabel('Fracao Real de Positivos', fontweight='bold')
-        ax4.set_title(f'Reliability Diagram - {ranking[0][0].upper()}', fontweight='bold')
-        ax4.legend(fontsize=9)
-        ax4.grid(True, alpha=0.3)
-    
-    # ========== 5. DISTRIBUIÇÃO DE PROBABILIDADES ==========
-    ax5 = axes[1, 1]
-    
+    best_name = None
+    best_proba = None
     if ranking:
-        best_result = ranking[0][1]
-        y_proba_best = best_result['y_proba']
-        
-        ax5.hist(y_proba_best, bins=50, alpha=0.7, color='#9b59b6', edgecolor='black', density=True)
-        
-        mean_prob = np.mean(y_proba_best)
-        median_prob = np.median(y_proba_best)
-        
+        best_name, best_result = ranking[0]
+        best_proba = best_result.get('y_proba_calibrated_val')
+        if best_proba is None:
+            best_proba = best_result.get('y_proba')
+    if best_proba is not None:
+        frac_pos, mean_pred = calibration_curve(y_val, best_proba, n_bins=10)
+        ax4.plot(mean_pred, frac_pos, 's-', color='#3498db', linewidth=2, markersize=8, label='Calibrado')
+        ax4.plot([0, 1], [0, 1], 'k--', label='Ideal', linewidth=2)
+        ax4.legend(fontsize=9)
+    else:
+        ax4.text(0.5, 0.5, 'Sem dados de calibracao', ha='center', va='center', transform=ax4.transAxes, fontsize=12)
+    ax4.set_xlabel('Probabilidade Predita', fontweight='bold')
+    ax4.set_ylabel('Fracao Real de Positivos', fontweight='bold')
+    ax4.set_title(f'Reliability Diagram - {(best_name or 'N/A').upper()}', fontweight='bold')
+    ax4.grid(True, alpha=0.3)
+
+    # 5. Distribuicao de probabilidades
+    ax5 = axes[1, 1]
+    if best_proba is not None:
+        ax5.hist(best_proba, bins=50, alpha=0.7, color='#9b59b6', edgecolor='black', density=True)
+        mean_prob = np.mean(best_proba)
+        median_prob = np.median(best_proba)
         ax5.axvline(mean_prob, color='red', linestyle='--', linewidth=2, label=f'Media: {mean_prob:.3f}')
         ax5.axvline(median_prob, color='blue', linestyle='--', linewidth=2, label=f'Mediana: {median_prob:.3f}')
-        
-        ax5.set_xlabel('Probabilidade Predita', fontweight='bold')
-        ax5.set_ylabel('Densidade', fontweight='bold')
-        ax5.set_title('Distribuicao de Probabilidades', fontweight='bold')
-        ax5.legend(fontsize=9)
-        ax5.grid(True, alpha=0.3, axis='y')
-    
-    # ========== 6. CALIBRATION BINS ANALYSIS ==========
+    else:
+        ax5.text(0.5, 0.5, 'Sem probabilidades disponiveis', ha='center', va='center', transform=ax5.transAxes, fontsize=12)
+    ax5.set_xlabel('Probabilidade Predita', fontweight='bold')
+    ax5.set_ylabel('Densidade', fontweight='bold')
+    ax5.set_title('Distribuicao de Probabilidades', fontweight='bold')
+    ax5.legend(fontsize=9)
+    ax5.grid(True, alpha=0.3, axis='y')
+
+    # 6. Analise por bins
     ax6 = axes[1, 2]
-    
-    if ranking:
-        best_result = ranking[0][1]
-        y_proba_best = best_result['y_proba']
-        
+    if best_proba is not None:
         n_bins = 10
         bins = np.linspace(0, 1, n_bins + 1)
-        bin_indices = np.digitize(y_proba_best, bins) - 1
-        
-        bin_counts = []
+        bin_indices = np.digitize(best_proba, bins) - 1
         bin_accuracies = []
-        
         for i in range(n_bins):
             mask = bin_indices == i
-            if mask.sum() > 0:
-                bin_counts.append(mask.sum())
-                bin_accuracies.append(y_val[mask].mean())
-            else:
-                bin_counts.append(0)
-                bin_accuracies.append(0)
-        
-        x_bins = range(n_bins)
-        
-        ax6_twin = ax6.twinx()
-        
-        ax6.bar(x_bins, bin_counts, alpha=0.6, color='#3498db', edgecolor='black')
-        ax6_twin.plot(x_bins, bin_accuracies, 'ro-', linewidth=2.5, markersize=8)
-        
-        ax6.set_xlabel('Bin de Probabilidade', fontweight='bold')
-        ax6.set_ylabel('Contagem', color='#3498db', fontweight='bold')
-        ax6_twin.set_ylabel('Taxa Real de Stroke', color='red', fontweight='bold')
-        ax6.set_title('Analise por Bins de Probabilidade', fontweight='bold')
-        ax6.tick_params(axis='y', labelcolor='#3498db')
-        ax6_twin.tick_params(axis='y', labelcolor='red')
-        ax6.grid(True, alpha=0.3)
-        
-        bin_labels = [f'{bins[i]:.1f}-{bins[i+1]:.1f}' for i in range(n_bins)]
-        ax6.set_xticks(x_bins)
-        ax6.set_xticklabels(bin_labels, rotation=45, ha='right', fontsize=8)
-    
-    plt.tight_layout()
-    plt.savefig(RESULTS_PATH / 'calibration_analysis.png', 
-                dpi=VIZ_CONFIG['figure_dpi'], bbox_inches='tight')
-    plt.show()
-    
-    # ========== SUMÁRIO TEXTUAL ==========
-    print("\n" + "="*80)
-    print("📊 SUMÁRIO DA ANÁLISE DE CALIBRAÇÃO")
-    print("="*80)
-    
-    # Tabela de calibração
+            bin_accuracies.append(y_val[mask].mean() if mask.sum() > 0 else 0.0)
+        ax6.bar(range(n_bins), bin_accuracies, color='#2ecc71', alpha=0.8, edgecolor='black')
+        ax6.set_xticks(range(n_bins))
+        ax6.set_xticklabels([f"{bins[i]:.1f}-{bins[i+1]:.1f}" for i in range(n_bins)], rotation=45)
+    else:
+        ax6.text(0.5, 0.5, 'Sem dados suficientes', ha='center', va='center', transform=ax6.transAxes, fontsize=12)
+    ax6.set_xlabel('Faixas de Probabilidade', fontweight='bold')
+    ax6.set_ylabel('Recall por Bin', fontweight='bold')
+    ax6.set_title('Analise por Bins', fontweight='bold')
+    ax6.grid(True, alpha=0.3, axis='y')
+
     calibration_summary = []
-    
     for name, result in list(ranking[:6]):
-        y_proba = result.get('y_proba_calibrated_val') or result.get('y_proba')
+        y_proba = result.get('y_proba_calibrated_val')
+        if y_proba is None:
+            y_proba = result.get('y_proba')
         if y_proba is None:
             continue
-        
         cal_report = result.get('calibration_report') or {}
         post_cal = cal_report.get('post_calibration', {})
-        
         if post_cal:
             cal_error = float(post_cal.get('ece', np.nan))
             brier = float(post_cal.get('brier_score', np.nan))
             brier_skill = float(post_cal.get('bss', np.nan))
         else:
-            fraction_pos, mean_pred = calibration_curve(y_val, y_proba, n_bins=10)
-            cal_error = np.mean(np.abs(fraction_pos - mean_pred))
+            frac, mean_pred = calibration_curve(y_val, y_proba, n_bins=10)
+            cal_error = np.mean(np.abs(frac - mean_pred))
             brier = brier_score_loss(y_val, y_proba)
-            baseline_brier = brier_score_loss(y_val, np.full_like(y_proba, y_val.mean()))
-            brier_skill = 1 - (brier / baseline_brier)
-        
+            baseline = brier_score_loss(y_val, np.full_like(y_proba, y_val.mean()))
+            brier_skill = 1 - (brier / baseline)
         if cal_error < 0.05:
-            status = '✅ Excelente'
+            status = '? Excelente'
         elif cal_error < 0.10:
-            status = '⚠️ Aceitável'
+            status = '?? Aceitavel'
         else:
-            status = '❌ Ruim'
-        
+            status = '? Ruim'
         calibration_summary.append({
             'Modelo': name.replace('_', ' ').title(),
             'Cal. Error': f"{cal_error:.4f}",
@@ -388,26 +325,23 @@ def plot_calibration_analysis(results, ranking, y_val):
             'Brier Skill': f"{brier_skill:.4f}",
             'Status': status
         })
-    
+
     cal_df = pd.DataFrame(calibration_summary)
-    print("\n📋 MÉTRICAS DE CALIBRAÇÃO:")
-    print(cal_df.to_string(index=False))
-    
-    # Interpretação
-    print("\n📖 INTERPRETAÇÃO:")
-    print("   Cal. Error < 0.05:  Excelente calibração")
-    print("   Cal. Error < 0.10:  Calibração aceitável")
-    print("   Brier Score:        Menor = melhor (erro quadrático)")
+    print("\nMETRICAS DE CALIBRACAO:")
+    if not cal_df.empty:
+        print(cal_df.to_string(index=False))
+    else:
+        print("Sem dados de calibracao para exibir.")
+    print("\nINTERPRETACAO:")
+    print("   Cal. Error < 0.05:  Excelente calibracao")
+    print("   Cal. Error < 0.10:  Calibracao aceitavel")
+    print("   Brier Score:        Menor = melhor (erro quadratico)")
     print("   Brier Skill > 0:    Melhor que baseline")
-    
-    # Melhor calibrado
-    best_cal_idx = cal_df['Cal. Error'].str.replace('[^0-9.]', '', regex=True).astype(float).idxmin()
-    best_cal_model = cal_df.loc[best_cal_idx, 'Modelo']
-    print(f"\n🏆 MELHOR CALIBRAÇÃO: {best_cal_model}")
-    
+    if not cal_df.empty:
+        best_idx = cal_df['Cal. Error'].str.replace('[^0-9.]', '', regex=True).astype(float).idxmin()
+        print(f"\nMELHOR CALIBRACAO: {cal_df.loc[best_idx, 'Modelo']}")
+
     return cal_df
-
-
 def plot_confusion_matrices(results, ranking, y_val, threshold=0.15):
     """Confusion matrices para top modelos"""
     
@@ -445,9 +379,9 @@ def plot_confusion_matrices(results, ranking, y_val, threshold=0.15):
                 dpi=VIZ_CONFIG['figure_dpi'], bbox_inches='tight')
     plt.show()
     
-    # ========== SUMÁRIO TEXTUAL ==========
+    # ========== SUMÃRIO TEXTUAL ==========
     print("\n" + "="*80)
-    print("📊 SUMÁRIO DAS CONFUSION MATRICES")
+    print("ðŸ“Š SUMÃRIO DAS CONFUSION MATRICES")
     print("="*80)
     
     n_models = min(4, len(ranking))
@@ -461,7 +395,7 @@ def plot_confusion_matrices(results, ranking, y_val, threshold=0.15):
         cm = confusion_matrix(y_val, y_pred)
         tn, fp, fn, tp = cm.ravel()
         
-        # Calcular métricas
+        # Calcular mÃ©tricas
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0
         specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
@@ -480,29 +414,29 @@ def plot_confusion_matrices(results, ranking, y_val, threshold=0.15):
         })
     
     cm_df = pd.DataFrame(cm_summary)
-    print(f"\n📋 MÉTRICAS (Threshold = {threshold}):")
+    print(f"\nðŸ“‹ MÃ‰TRICAS (Threshold = {threshold}):")
     print(cm_df.to_string(index=False))
     
-    # Análise de tradeoff
-    print("\n⚖️ TRADEOFF RECALL vs PRECISION:")
+    # AnÃ¡lise de tradeoff
+    print("\nâš–ï¸ TRADEOFF RECALL vs PRECISION:")
     for _, row in cm_df.iterrows():
         recall = float(row['Recall'])
         precision = float(row['Precision'])
         
         if recall >= 0.70 and precision >= 0.15:
-            verdict = "✅ Atende requisitos"
+            verdict = "âœ… Atende requisitos"
         elif recall >= 0.70:
-            verdict = "⚠️ Baixa precisão"
+            verdict = "âš ï¸ Baixa precisÃ£o"
         else:
-            verdict = "❌ Baixo recall"
+            verdict = "âŒ Baixo recall"
         
-        print(f"   {row['Modelo']:25s}: Recall={recall:.3f}, Precision={precision:.3f} → {verdict}")
+        print(f"   {row['Modelo']:25s}: Recall={recall:.3f}, Precision={precision:.3f} â†’ {verdict}")
     
     return cm_df
 
 
 def plot_training_summary(results, summary_df):
-    """Visualização completa dos resultados de treinamento"""
+    """VisualizaÃ§Ã£o completa dos resultados de treinamento"""
     
     fig = plt.figure(figsize=(20, 12))
     gs = fig.add_gridspec(3, 3, hspace=0.35, wspace=0.3)
@@ -524,7 +458,7 @@ def plot_training_summary(results, summary_df):
     
     ax1.set_xlabel('Modelos', fontweight='bold', fontsize=12)
     ax1.set_ylabel('Score', fontweight='bold', fontsize=12)
-    ax1.set_title('COMPARAÇÃO DE MÉTRICAS - Cross-Validation vs Validation', 
+    ax1.set_title('COMPARAÃ‡ÃƒO DE MÃ‰TRICAS - Cross-Validation vs Validation', 
                  fontweight='bold', fontsize=14)
     ax1.set_xticks(x)
     ax1.set_xticklabels(models, rotation=45, ha='right')
@@ -548,10 +482,10 @@ def plot_training_summary(results, summary_df):
                     color=colors_overfit, alpha=0.8, edgecolor='black')
     
     ax2.axvline(0.05, color='green', linestyle='--', linewidth=2, label='OK (<0.05)')
-    ax2.axvline(0.10, color='orange', linestyle='--', linewidth=2, label='Atenção (<0.10)')
+    ax2.axvline(0.10, color='orange', linestyle='--', linewidth=2, label='AtenÃ§Ã£o (<0.10)')
     
     ax2.set_xlabel('Overfitting Gap', fontweight='bold')
-    ax2.set_title('ANÁLISE DE OVERFITTING', fontweight='bold', fontsize=12)
+    ax2.set_title('ANÃLISE DE OVERFITTING', fontweight='bold', fontsize=12)
     ax2.legend()
     ax2.grid(True, alpha=0.3, axis='x')
     
