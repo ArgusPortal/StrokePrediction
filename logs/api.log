@@ -1,0 +1,675 @@
+2025-10-05 18:45:32,175 - fastapi_app - INFO - Loading model from C:\Users\argus\workspace\StrokePrediction\models\stroke_model_v2_production.joblib...
+2025-10-05 18:46:45,244 - fastapi_app - INFO - Loading model from C:\Users\argus\workspace\StrokePrediction\models\stroke_model_v2_production.joblib...
+2025-10-05 18:47:49,731 - httpx - INFO - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-10-05 18:47:49,738 - httpx - INFO - HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2025-10-05 18:47:49,743 - httpx - INFO - HTTP Request: GET http://testserver/metrics "HTTP/1.1 200 OK"
+2025-10-05 18:47:49,748 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:49,760 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,026 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,029 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,036 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,039 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,087 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 422 Unprocessable Entity"
+2025-10-05 18:47:50,092 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 422 Unprocessable Entity"
+2025-10-05 18:47:50,098 - fastapi_app - ERROR - Batch prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 452, in batch_predict
+    probabilities = state.model.predict_proba(patients_df)[:, 1]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,101 - httpx - INFO - HTTP Request: POST http://testserver/batch_predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,110 - httpx - INFO - HTTP Request: POST http://testserver/batch_predict "HTTP/1.1 400 Bad Request"
+2025-10-05 18:47:50,114 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,117 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,124 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,128 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,135 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,137 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,147 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,149 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,151 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,151 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,154 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,154 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,155 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,156 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,158 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,160 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,164 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,166 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,169 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,171 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,174 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,176 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,178 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,180 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,181 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,183 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,200 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,203 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,204 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,206 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,208 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,210 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,210 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,212 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,213 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,213 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,217 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,221 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,224 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,227 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,229 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,230 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,233 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,234 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,236 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,237 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,242 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,243 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,246 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,247 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,250 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,254 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,255 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,259 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,262 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,264 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,266 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,268 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,270 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,271 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,273 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,276 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,278 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,279 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,281 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,283 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,286 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,288 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,290 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,294 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,296 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,299 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,300 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,303 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,306 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,307 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,311 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,313 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,314 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,316 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,317 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,319 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,321 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,323 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,325 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,327 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,329 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,331 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,334 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,336 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,338 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,342 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,343 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,346 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,349 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,351 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,353 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,354 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,356 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,359 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,361 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,363 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,365 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,366 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,368 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,370 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,372 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,374 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,378 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,379 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,381 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,384 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,385 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,388 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,390 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,393 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,395 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,397 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,399 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,400 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,402 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,403 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,405 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,408 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,409 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,411 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:47:50,426 - fastapi_app - ERROR - Prediction error: 'NoneType' object has no attribute 'predict_proba'
+Traceback (most recent call last):
+  File "c:\Users\argus\workspace\StrokePrediction\fastapi_app.py", line 384, in predict_stroke_risk
+    probability = float(state.model.predict_proba(patient_df)[0, 1])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'predict_proba'
+2025-10-05 18:47:50,429 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 500 Internal Server Error"
+2025-10-05 18:50:10,282 - httpx - INFO - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-10-05 18:50:10,296 - httpx - INFO - HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2025-10-05 18:50:10,301 - httpx - INFO - HTTP Request: GET http://testserver/metrics "HTTP/1.1 200 OK"
+2025-10-05 18:50:10,307 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,566 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,573 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,580 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 422 Unprocessable Entity"
+2025-10-05 18:50:10,586 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 422 Unprocessable Entity"
+2025-10-05 18:50:10,592 - httpx - INFO - HTTP Request: POST http://testserver/batch_predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,601 - httpx - INFO - HTTP Request: POST http://testserver/batch_predict "HTTP/1.1 400 Bad Request"
+2025-10-05 18:50:10,607 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,615 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,622 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,633 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,635 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,636 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,641 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,641 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,642 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,643 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,643 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,644 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,644 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,663 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,665 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,666 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,667 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,668 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,668 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,669 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,669 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,670 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,671 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,675 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,675 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,677 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,679 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,681 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,683 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,684 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,686 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,689 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,692 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,694 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,697 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,698 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,700 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,701 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,703 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,704 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,708 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,709 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,711 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,713 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,714 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,717 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,718 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,720 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,722 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,724 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,726 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,728 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,730 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,731 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,733 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,737 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,737 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,739 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,741 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,743 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,744 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,747 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,748 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:10,759 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:40,525 - fastapi_app - INFO - Starting Stroke Prediction API v2.0...
+2025-10-05 18:50:40,525 - fastapi_app - INFO - Loading model from C:\Users\argus\workspace\StrokePrediction\models\stroke_model_v2_production.joblib...
+2025-10-05 18:50:40,834 - fastapi_app - INFO - Model vv2.0_production loaded successfully
+2025-10-05 18:50:40,850 - fastapi_app - INFO - SHAP explainer initialized successfully
+2025-10-05 18:50:40,851 - fastapi_app - INFO - API ready for requests
+2025-10-05 18:50:57,545 - httpx - INFO - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2025-10-05 18:50:57,558 - httpx - INFO - HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2025-10-05 18:50:57,563 - httpx - INFO - HTTP Request: GET http://testserver/metrics "HTTP/1.1 200 OK"
+2025-10-05 18:50:57,567 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,801 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,808 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,816 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 422 Unprocessable Entity"
+2025-10-05 18:50:57,822 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 422 Unprocessable Entity"
+2025-10-05 18:50:57,827 - httpx - INFO - HTTP Request: POST http://testserver/batch_predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,834 - httpx - INFO - HTTP Request: POST http://testserver/batch_predict "HTTP/1.1 400 Bad Request"
+2025-10-05 18:50:57,839 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,846 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,854 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,868 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,869 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,870 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,871 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,871 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,873 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,875 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,876 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,876 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,876 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,894 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,898 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,898 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,898 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,898 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,901 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,902 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,903 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,903 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,903 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,905 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,908 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,911 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,912 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,917 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,917 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,919 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,921 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,925 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,927 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,930 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,931 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,934 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,937 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,938 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,939 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,943 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,946 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,947 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,950 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,953 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,953 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,955 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,957 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,961 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,962 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,964 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,966 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,968 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,969 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,971 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,972 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,974 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,977 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,979 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,981 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,982 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,984 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,986 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,987 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:57,999 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 503 Service Unavailable"
+2025-10-05 18:50:58,086 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:50:58,440 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:50:58,805 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:50:59,267 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:50:59,634 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:50:59,993 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:00,352 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:00,761 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:01,168 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:01,578 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:01,984 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:02,388 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:02,795 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:03,202 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:03,608 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:04,015 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:04,421 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:04,831 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:05,236 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:05,645 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:06,049 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:06,454 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:06,857 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:07,266 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:07,628 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:08,041 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:08,450 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:08,855 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:09,261 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:09,616 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:10,125 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:10,491 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:10,903 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:11,310 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:11,671 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:12,084 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:12,491 - watchfiles.main - INFO - 1 change detected
+2025-10-05 18:51:12,898 - watchfiles.main - INFO - 1 change detected
