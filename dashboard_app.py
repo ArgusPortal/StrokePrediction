@@ -8,16 +8,12 @@ import joblib
 import json
 from pathlib import Path
 from datetime import datetime, timedelta
+import os
+import requests
 import sys
+from typing import Optional, Any, Dict, Tuple
 
 # Add src to path for imports
-sys.path.append(str(Path(__file__).parent / "src"))
-
-try:
-    from models.production_pipeline import StrokePredictionPipeline
-except ImportError:
-    StrokePredictionPipeline = None
-    st.warning("⚠️ Production pipeline not available - using fallback mode")
 
 # Configuração da página
 st.set_page_config(
@@ -27,7 +23,11 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Paths
+# API endpoint
+API_URL = os.getenv("STROKE_API_URL", "http://localhost:8000")
+DEFAULT_THRESHOLD = 0.085
+
+# Paths (utilizados apenas para carregamento de metadados/artefatos locais)
 BASE_DIR = Path(__file__).parent
 MODELS_PATH = BASE_DIR / "models"
 RESULTS_PATH = BASE_DIR / "results"
@@ -35,32 +35,6 @@ DATA_DIR = BASE_DIR / "data"
 
 # === FUNÇÕES AUXILIARES ===
 
-@st.cache_resource
-def load_production_model():
-    """Carrega modelo de produção com cache"""
-    model_path = MODELS_PATH / "stroke_model_v2_production.joblib"
-    
-    # Try to load real model first
-    if model_path.exists() and StrokePredictionPipeline:
-        try:
-            pipeline = StrokePredictionPipeline(str(model_path))
-            st.success("✅ Modelo de produção carregado com sucesso")
-            return pipeline, True
-        except Exception as e:
-            st.error(f"❌ Erro ao carregar modelo real: {e}")
-    
-    # Fallback to demo model
-    if StrokePredictionPipeline:
-        try:
-            pipeline = StrokePredictionPipeline.create_demo_model()
-            st.warning("⚠️ Usando modelo demo - predições são simuladas")
-            return pipeline, False
-        except Exception as e:
-            st.error(f"❌ Erro ao criar modelo demo: {e}")
-    
-    return None, False
-
-@st.cache_resource
 def load_model_metadata():
     """Carrega metadados do modelo"""
     metadata_path = MODELS_PATH / "model_metadata_production.json"
@@ -116,6 +90,18 @@ def safe_get(dictionary, keys, default=None):
     return dictionary
 
 
+def check_api_health() -> Tuple[bool, str]:
+    """Verifica a disponibilidade da API FastAPI."""
+    try:
+        response = requests.get(f"{API_URL}/health", timeout=3)
+        response.raise_for_status()
+        data = response.json()
+        status_msg = data.get("status", "ok")
+        return True, status_msg
+    except Exception as exc:
+        return False, str(exc)
+
+
 @st.cache_data
 def load_production_data():
     """Carrega dados de produção simulados"""
@@ -155,14 +141,17 @@ def calculate_psi(baseline_dist, current_dist, bins=10):
 st.sidebar.title("🏥 Stroke Prediction System")
 st.sidebar.markdown("---")
 
+# Carregar metadados e status da API
+metadata = load_model_metadata()
+api_available, api_status = check_api_health()
+
 # Model status indicator
-if model_pipeline:
-    if is_real_model:
-        st.sidebar.success("✅ Modelo Real Carregado")
-    else:
-        st.sidebar.warning("⚠️ Modo Demo Ativo")
+if api_available:
+    st.sidebar.success("✅ API operacional")
+    st.sidebar.caption(f"Status: {api_status}")
 else:
-    st.sidebar.error("❌ Modelo Não Disponível")
+    st.sidebar.error("❌ API indisponível")
+    st.sidebar.caption(f"Detalhes: {api_status}")
 
 page = st.sidebar.radio(
     "Navegação",
@@ -171,10 +160,6 @@ page = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-
-# Carregar modelo e metadados
-model_pipeline, is_real_model = load_production_model()
-metadata = load_model_metadata()
 
 if metadata:
     st.sidebar.markdown("### 📌 Informações do Modelo")
@@ -388,8 +373,8 @@ elif page == "🔮 Predição Individual":
     st.title("🔮 Predição de Risco Individual")
     st.markdown("### Insira os dados do paciente para obter a predição de risco de AVC")
     
-    if not model_pipeline:
-        st.error("❌ Modelo não disponível. Verifique a instalação.")
+    if not api_available:
+        st.error("❌ API indisponível. Verifique o serviço FastAPI.")
         st.stop()
     
     # Formulário de entrada
@@ -441,8 +426,7 @@ elif page == "🔮 Predição Individual":
         submit_button = st.form_submit_button("🔮 Obter Predição", type="primary")
     
     if submit_button:
-        # Preparar dados do paciente
-        patient_data = {
+        patient_payload: Dict[str, Any] = {
             'gender': gender,
             'age': age,
             'hypertension': hypertension,
@@ -454,90 +438,95 @@ elif page == "🔮 Predição Individual":
             'bmi': bmi,
             'smoking_status': smoking_status
         }
-        
+
+        payload = {
+            "patient_id": None,
+            "patient_data": patient_payload,
+            "return_explanation": False
+        }
+
         try:
-            # *** USAR MODELO REAL AQUI ***
             with st.spinner("Processando predição..."):
-                # Obter probabilidades reais do modelo
-                probabilities = model_pipeline.predict_proba(patient_data)
-                probability = float(probabilities[0, 1])  # Probabilidade de stroke
-                
-                # Obter tier de risco
-                risk_tier = model_pipeline.predict_risk_tier(patient_data)[0]
-                
-                # Obter recomendação clínica
-                clinical_rec = model_pipeline.get_clinical_recommendation(patient_data)
-                
-                # Obter explicação
-                explanation = model_pipeline.explain_prediction(patient_data)
-            
-            # Determinar cor baseada no tier
+                response = requests.post(f"{API_URL}/predict", json=payload, timeout=10)
+                response.raise_for_status()
+                result = response.json()
+        except Exception as e:
+            st.error(f"❌ Erro na predição via API: {e}")
+        else:
+            probability = float(result.get("probability_stroke", 0.0))
+            risk_info = result.get("risk_tier", {}) or {}
+            risk_tier = risk_info.get("tier", "DESCONHECIDO")
+            risk_description = risk_info.get("description", "")
+            risk_action = risk_info.get("recommended_action", "")
+            alert_flag = bool(result.get("alert_flag", False))
+            threshold_used = float(result.get("threshold_used", DEFAULT_THRESHOLD))
+            model_version = result.get("model_version", "unknown")
+            latency_ms = result.get("latency_ms")
+            explanation = result.get("explanation") or {}
+            confidence_interval = result.get("confidence_interval_95")
+
             tier_colors = {
                 "VERY_LOW": ("⚪", "#f5f5f5"),
                 "LOW": ("🟢", "#e8f5e9"),
                 "MODERATE": ("🟡", "#fffde7"),
                 "HIGH": ("🟠", "#fff3e0"),
-                "CRITICAL": ("🔴", "#ffebee")
+                "CRITICAL": ("🔴", "#ffebee"),
             }
-            
+
             risk_color, risk_bg = tier_colors.get(risk_tier, ("🟡", "#fffde7"))
-            
-            # Exibir resultados
+
             st.markdown("---")
             st.markdown("## 📊 Resultado da Predição")
-            
+
             col_res1, col_res2, col_res3 = st.columns(3)
-            
+
             with col_res1:
-                st.markdown(f"""
-                <div style="background-color: {risk_bg}; padding: 20px; border-radius: 10px; text-align: center;">
-                    <h2>{risk_color} {risk_tier}</h2>
-                    <h3>Probabilidade: {probability*100:.2f}%</h3>
-                </div>
-                """, unsafe_allow_html=True)
-            
+                st.markdown(
+                    f"""
+                    <div style="background-color: {risk_bg}; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h2>{risk_color} {risk_tier}</h2>
+                        <h3>Probabilidade: {probability*100:.2f}%</h3>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                if confidence_interval:
+                    st.caption(f"IC95%: [{confidence_interval[0]:.2%}, {confidence_interval[1]:.2%}]")
+
             with col_res2:
-                st.metric("Threshold Utilizado", f"{model_pipeline.optimal_threshold:.3f}")
-                st.metric("Versão do Modelo", model_pipeline.model_version)
-            
+                st.metric("Threshold Utilizado", f"{threshold_used:.3f}")
+                st.metric("Versão do Modelo", model_version)
+
             with col_res3:
-                follow_up = clinical_rec.get('follow_up_months', 12)
-                st.metric("Follow-up Recomendado", f"{follow_up} meses")
-                specialist = "Sim" if clinical_rec.get('specialist_referral', False) else "Não"
-                st.metric("Referência Especialista", specialist)
-            
-            # Recomendações clínicas
+                alert_label = "Sim" if alert_flag else "Não"
+                st.metric("Alerta Operacional", alert_label)
+                if latency_ms is not None:
+                    st.metric("Latência (ms)", f"{latency_ms:.1f}")
+
             st.markdown("### 🏥 Recomendações Clínicas")
-            
-            st.info(f"""
-            **Ação Recomendada:** {clinical_rec.get('recommendation', 'Cuidado padrão')}
-            
-            **Intervenções Sugeridas:**
-            """)
-            
-            for intervention in clinical_rec.get('lifestyle_interventions', []):
-                st.markdown(f"- {intervention}")
-            
-            # Explicação dos fatores de risco
+            st.info(
+                f"""
+                **Descrição do Tier:** {risk_description or 'Não informado.'}
+
+                **Ação Recomendada:** {risk_action or 'Cuidado padrão.'}
+                """
+            )
+
             st.markdown("### 🔍 Principais Fatores de Risco Identificados")
-            
-            if explanation.get('top_risk_factors'):
-                for factor, description in explanation['top_risk_factors']:
+            top_factors = explanation.get("top_risk_factors") if isinstance(explanation, dict) else None
+            if top_factors:
+                for factor, description in top_factors:
                     st.markdown(f"- **{factor.replace('_', ' ').title()}:** {description}")
             else:
-                st.markdown("- Perfil de baixo risco identificado")
-            
-            # Disclaimer
+                st.markdown("- Explicação não disponível para esta predição.")
+
             st.markdown("---")
-            st.warning("""
-            ⚠️ **IMPORTANTE:** Esta predição é uma ferramenta de apoio à decisão clínica. 
-            Sempre consulte um profissional de saúde qualificado para avaliação completa e decisões de tratamento.
-            """)
-            
-        except Exception as e:
-            st.error(f"❌ Erro na predição: {str(e)}")
-            st.markdown("**Detalhes técnicos:**")
-            st.code(str(e))
+            st.warning(
+                """
+                ⚠️ **IMPORTANTE:** Esta predição é um apoio à decisão clínica. 
+                Sempre consulte um profissional de saúde qualificado para avaliação completa e decisões de tratamento.
+                """
+            )
 
 
 # === PÁGINA 3: ANÁLISE DE PERFORMANCE ===
@@ -1024,51 +1013,6 @@ elif page == "📋 Model Card":
     compliance = safe_get(metadata, ['compliance'], {})
     
     col_comp1, col_comp2 = st.columns(2)
-    
-    with col_comp1:
-        st.markdown(f"""
-        **HIPAA Compliant:** {'✅' if compliance.get('hipaa_compliant', True) else '❌'}  
-        **GDPR Compliant:** {'✅' if compliance.get('gdpr_compliant', True) else '❌'}  
-        **FDA Cleared:** {'✅' if compliance.get('fda_cleared', False) else '❌'}  
-        """)
-    
-    with col_comp2:
-        st.markdown(f"""
-        **Validação Clínica Requerida:** {'✅' if compliance.get('clinical_validation_required', True) else '❌'}  
-        **Auditoria de Viés Completa:** {'✅' if compliance.get('bias_audit_completed', True) else '❌'}  
-        **Última Auditoria:** {compliance.get('last_audit_date', '2024-01-01')[:10]}  
-        """)
-    
-    st.markdown("---")
-    
-    # Contato
-    st.markdown("## 📧 Contato e Suporte")
-    
-    st.info("""
-    **Questões Técnicas:** ml-team@strokeprediction.ai  
-    **Questões Clínicas:** clinical-advisory@strokeprediction.ai  
-    **Privacidade de Dados:** privacy@strokeprediction.ai  
-    **Relato de Incidentes:** incidents@strokeprediction.ai
-    
-    **Documentação:** https://docs.strokeprediction.ai  
-    **Registro de Modelos:** https://models.strokeprediction.ai/v2.0
-    """)
-    
-    st.markdown(f"""
-    ---
-    *Última Atualização: {datetime.now().strftime('%Y-%m-%d %H:%M UTC')}*  
-    *Model Card Version: 2.0*
-    """)
-
-
-# === RODAPÉ ===
-
-st.markdown("---")
-st.markdown("""
-<div style="text-align: center; color: gray; font-size: 12px;">
-    Stroke Prediction System v2.0 | Desenvolvido com ❤️ para salvar vidas | © 2024
-</div>
-""", unsafe_allow_html=True)
     
     with col_comp1:
         st.markdown(f"""

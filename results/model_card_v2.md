@@ -4,8 +4,8 @@
 
 - **Model Name:** Stroke Risk Prediction Model v2.0
 - **Model Version:** 2.0.0
-- **Creation Date:** 2025-10-05T20:57:50.961387+00:00
-- **Last Updated:** 2025-10-05T20:57:50.961395+00:00
+- **Creation Date:** 2025-10-07T16:22:07.449793+00:00
+- **Last Updated:** 2025-10-07T16:22:07.449801+00:00
 - **Model Type:** Binary Classification (Medical Risk Prediction)
 - **Framework:** scikit-learn + XGBoost
 - **License:** Proprietary

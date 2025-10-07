@@ -25,6 +25,7 @@ import hashlib
 import asyncio
 from contextlib import asynccontextmanager
 import sys
+import os
 
 # Advanced imports (optional)
 try:
@@ -49,6 +50,21 @@ for directory in [LOGS_DIR, DATA_DIR]:
 # Model path
 MODEL_PATH = MODELS_DIR / "stroke_model_v2_production.joblib"
 METADATA_PATH = MODELS_DIR / "model_metadata_production.json"
+MODEL_CANDIDATES = [
+    MODEL_PATH,
+    MODELS_DIR / "logistic_l2_calibrated_v4_v3.0.0.joblib",
+    MODELS_DIR / "logistic_l2_calibrated_v3_1_v3.0.0.joblib",
+    MODELS_DIR / "logistic_l2_v3.0.0.joblib",
+]
+env_model_path = os.getenv("STROKE_MODEL_PATH")
+if env_model_path:
+    MODEL_CANDIDATES.insert(0, Path(env_model_path))
+
+METADATA_CANDIDATES: List[Path] = []
+env_metadata_path = os.getenv("STROKE_MODEL_METADATA")
+if env_metadata_path:
+    METADATA_CANDIDATES.append(Path(env_metadata_path))
+METADATA_CANDIDATES.append(METADATA_PATH)
 
 # Logging setup with UTF-8 encoding
 logging.basicConfig(
@@ -66,6 +82,37 @@ if sys.platform == 'win32':
     # Use a more compatible approach that works across Python versions
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+THRESHOLD_PATH = BASE_DIR / "results" / "threshold.json"
+DEFAULT_THRESHOLD = 0.085
+
+def load_threshold() -> float:
+    try:
+        import json
+        with open(THRESHOLD_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return float(data.get("threshold", DEFAULT_THRESHOLD))
+    except Exception:
+        return DEFAULT_THRESHOLD
+
+OP_THRESHOLD = load_threshold()
+
+# ========== UTILITIES ==========
+
+def _guess_metadata_path(model_file: Path) -> Optional[Path]:
+    """Attempt to infer a metadata file that corresponds to a given model artifact."""
+    if not model_file.name.endswith(".joblib"):
+        return None
+    stem = model_file.name[:-len(".joblib")]
+    if stem.endswith("_v3.0.0"):
+        base = stem[:-len("_v3.0.0")]
+        candidate = model_file.with_name(f"{base}_metadata_v3.0.0.json")
+        if candidate.exists():
+            return candidate
+    candidate_default = model_file.with_suffix(".json")
+    if candidate_default.exists():
+        return candidate_default
+    return None
 
 # ========== GLOBAL STATE ==========
 
@@ -99,19 +146,27 @@ async def lifespan(app: FastAPI):
     
     # Startup: Load model
     try:
-        if not MODEL_PATH.exists():
-            raise FileNotFoundError(f"Model not found at {MODEL_PATH}")
+        model_file = next((path for path in MODEL_CANDIDATES if path.exists()), None)
+        if model_file is None:
+            candidates_str = ", ".join(str(path) for path in MODEL_CANDIDATES)
+            raise FileNotFoundError(f"No model artifact found. Checked: {candidates_str}")
         
-        logger.info(f"Loading model from {MODEL_PATH}...")
-        state.model = joblib.load(MODEL_PATH)
+        logger.info(f"Loading model from {model_file}...")
+        state.model = joblib.load(model_file)
         
         # Load metadata
-        if METADATA_PATH.exists():
-            with open(METADATA_PATH, 'r') as f:
+        metadata_candidates = [path for path in METADATA_CANDIDATES if path.exists()]
+        guessed_metadata = _guess_metadata_path(model_file)
+        if guessed_metadata and guessed_metadata.exists():
+            metadata_candidates.insert(0, guessed_metadata)
+        metadata_file = next((path for path in metadata_candidates if path.exists()), None)
+        if metadata_file:
+            with metadata_file.open('r', encoding='utf-8') as f:
                 state.metadata = json.load(f)
-            logger.info(f"Model v{state.metadata['model_info']['version']} loaded successfully")
+            version = state.metadata.get('model_info', {}).get('version', 'unknown') if state.metadata else 'unknown'
+            logger.info(f"Model v{version} loaded successfully (metadata: {metadata_file.name})")
         else:
-            logger.warning("Model metadata not found")
+            logger.warning(f"Model metadata not found for {model_file.name}")
         
         # Initialize SHAP explainer (optional - can be slow)
         if SHAP_AVAILABLE:
@@ -231,6 +286,8 @@ class PredictionResponse(BaseModel):
     explanation: Optional[Dict] = None
     model_version: str
     latency_ms: float
+    alert_flag: bool
+    threshold_used: float
 
 
 # ========== HELPER FUNCTIONS ==========
@@ -418,15 +475,20 @@ async def predict_stroke_risk(
             f"{request.patient_id}-{start_time.isoformat()}".encode()
         ).hexdigest()[:16]
         
+        alert_flag = probability >= OP_THRESHOLD
+
         # Build response
         response = PredictionResponse(
             prediction_id=prediction_id,
             timestamp=start_time.isoformat(),
             probability_stroke=round(probability, 4),
             risk_tier=risk_tier,
+            confidence_interval_95=None,
             explanation=explanation,
             model_version=state.metadata['model_info']['version'] if state.metadata else "unknown",
-            latency_ms=round(latency_ms, 2)
+            latency_ms=round(latency_ms, 2),
+            alert_flag=alert_flag,
+            threshold_used=OP_THRESHOLD,
         )
         
         # Log prediction asynchronously

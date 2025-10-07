@@ -5,6 +5,7 @@
 models/
 __pycache__/
 .ipynb_checkpoints
+
 PROJECT_NARRATIVE.md
 README_DASHBOARD.md
 tmp_cell4.py
@@ -17,3 +18,5 @@ tmp_replace.py
 nb2_cells.txt
 *.png
 display_results.py
+*.joblib
+*.json

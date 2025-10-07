@@ -3,15 +3,33 @@
 ![Python](https://img.shields.io/badge/python-v3.8+-blue.svg)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.2.0+-orange.svg)
 ![XGBoost](https://img.shields.io/badge/XGBoost-1.7.5+-green.svg)
+![Fairlearn](https://img.shields.io/badge/fairlearn-0.9.0+-purple.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Status](https://img.shields.io/badge/status-Production%20Ready-brightgreen.svg)
+![Fairness](https://img.shields.io/badge/Fairness-Audit%20v1.0.0-success.svg)
 
-## Recent Updates (2025-06)
+## Recent Updates (2025-10) 🆕
 
-- **Decision threshold calibrado (`t = 0.08`)** via `scripts/compute_threshold.py`, garantindo recall ≥ 70% e precision ≥ 15% no conjunto de validação calibrado e reutilizado nos relatórios de QA.
-- **Rebalanceamento focalizado** (`src/model_training.py`): duplicação de exemplos críticos (`is_elderly=0`, `Residence_type=Rural`, `work_type=Govt_job`) antes do SMOTE para reduzir disparidades de recall.
-- **Auditoria e alertas contínuos** (`scripts/fairness_report.py`, `scripts/fairness_audit.py`): métricas por grupo incluem `n_pos`, alertas automáticos para `TPR_gap > 0.10` ou baixa cobertura, e planos consolidados em `results/fairness_audit.json`.
-- **Mitigação iterativa** (`scripts/fairness_group_thresholds.py`): o limiar calibrado é respeitado; ajustes grupo-a-grupo só são aplicados se não violarem precision/recall e, caso contrário, apenas os alertas são registrados.
+### 🛡️ **Comprehensive Fairness Audit System (v1.0.0)**
+A production-ready fairness audit framework with:
+- **Frozen Threshold Governance**: Single source of truth from `results/threshold.json`
+- **Bootstrap Confidence Intervals**: n=1000 iterations for robust disparity estimates
+- **Two-Stage Mitigation**: Equal Opportunity → Equalized Odds (data-driven)
+- **Automated Alerts**: Triggers when TPR gap > 0.10 and CI excludes 0
+- **Complete Persistence**: 7 output files (CSVs + JSON) for governance
+- **Full Documentation**: 6 comprehensive guides (see [Fairness Documentation](#fairness-documentation))
+
+### Novos utilitários operacionais (2025-10)
+- `scripts/full_update_pipeline.py`: executa fairness audit, experimentos avançados e análise de abstenção em um único comando (`!python scripts/full_update_pipeline.py`).
+- `scripts/model_next_steps.py`: logistic regularizada, XGBoost monotônico e Super Learner calibrados; resultados em `results/model_next_steps_metrics.json`.
+- `scripts/abstention_analysis.py`: quantifica a zona cinza [0.07–0.10] e gera `results/abstention_summary.csv` para revisão humana.
+
+### Previous Updates (2025-06)
+
+- **Decision threshold calibrado (`t = 0.08`)** via `scripts/compute_threshold.py`, garantindo recall ≥ 70% e precision ≥ 15% no conjunto de validação calibrado
+- **Rebalanceamento focalizado** (`src/model_training.py`): duplicação de exemplos críticos antes do SMOTE
+- **Auditoria contínua** (`src/fairness_audit.py`): métricas por grupo, alertas automáticos, bootstrap CIs
+- **Mitigação em estágios** com Fairlearn ThresholdOptimizer (Equal Opportunity + Equalized Odds)
 
 ## 📋 Overview
 
@@ -23,6 +41,7 @@ A **production-ready machine learning system** for predicting stroke risk in cli
 - **⚖️ Fairness monitoring e planos de ação** (gaps ainda >10% para is_elderly, Residence_type, smoking_status)
 - **🔍 Real-time monitoring** with automated drift detection
 - **📚 Full TRIPOD+AI compliance** with comprehensive model card
+- **🛡️ Production-grade fairness audit** with bootstrap CIs and staged mitigation
 
 ## 🏆 Key Achievements
 
@@ -32,14 +51,27 @@ A **production-ready machine learning system** for predicting stroke risk in cli
 | **ROC-AUC** | 0.831 | **0.876** | +5.4% |
 | **Recall** | 0.45 | **0.68-0.72** | +51% |
 | **Calibration Error** | 0.103 | **0.042** | -59% |
-| **Fairness Gaps** | >15% | **Monitoramento em andamento** | Alerts logged |
+| **Fairness System** | Manual | **Automated w/ CIs** | Production-ready |
 
+### 🛡️ Fairness Audit System (2025-10)
 
-### Fairness Monitoring Status (2025-06)
+**New Comprehensive Framework** with production-grade capabilities:
 
-- TPR-gap atual (teste) acima de 0.10 para `is_elderly`, `Residence_type`, `smoking_status`, `work_type` e `ever_married`, conforme `results/fairness_audit.json`.
-- Limiar calibrado (`t=0.08`) mantido em produção; scripts de auditoria (`scripts/fairness_report.py`, `scripts/fairness_audit.py`) geram alertas automáticos quando `n_pos < 5` ou `TPR_gap > 0.10`.
-- Próximas ações: coletar exemplos adicionais dos grupos críticos, ajustar pesos de treinamento e reaplicar `ThresholdOptimizer` quando houver diversidade suficiente.
+✅ **Frozen Threshold**: Read from `results/threshold.json` (source: `validation_calibrated`)  
+✅ **Bootstrap CIs**: 1000 iterations, 95% confidence intervals for all disparity metrics  
+✅ **Staged Mitigation**: 
+  - Stage 1 (Equal Opportunity): Applied when all groups have n_pos ≥ 5
+  - Stage 2 (Equalized Odds): Applied when all groups have n_pos ≥ 10 AND n_neg ≥ 10  
+✅ **Automated Alerts**: Triggered when TPR gap > 0.10 AND CI lower bound > 0  
+✅ **Complete Artifacts**: 7 files (metrics, baseline, post-mitigation, consolidated JSON)
+
+**Sensitive Attributes Monitored**: `Residence_type`, `gender`, `smoking_status`, `work_type`, `is_elderly`
+
+**Current Status**: 
+- Baseline disparities documented with confidence intervals
+- Equal Opportunity mitigation applied where data supports
+- All alerts logged in `results/fairness_audit.json`
+- See [FAIRNESS_GETTING_STARTED.md](FAIRNESS_GETTING_STARTED.md) for complete guide
 
 ## 🏗️ Architecture
 
@@ -88,12 +120,37 @@ A **production-ready machine learning system** for predicting stroke risk in cli
 git clone https://github.com/yourusername/StrokePrediction.git
 cd StrokePrediction
 
-# Install dependencies
+# Install dependencies (includes fairlearn for fairness audit)
 pip install -r requirements.txt
-
-# For advanced features (optional)
-pip install lightgbm xgboost optuna shap
 ```
+
+### 🛡️ Fairness Audit Quick Start (NEW!)
+
+```bash
+# 1. Validate fairness setup
+python scripts/validate_fairness_setup.py
+
+# Expected output:
+# ✅ Fairlearn is installed
+# ✅ fairness_audit module imported successfully
+# ✅ threshold.json exists
+# ✅ VALIDATION COMPLETE
+
+# 2. Open production notebook
+jupyter notebook notebooks/Stroke_Prediction_v4_Production.ipynb
+
+# 3. Execute fairness audit cells (13A → 13E in order)
+# Cell 13A: Load frozen threshold
+# Cell 13B: Global metrics
+# Cell 13C: Baseline audit
+# Cell 13D: Staged mitigation
+# Cell 13E: Consolidated report
+
+# 4. Check outputs
+ls results/fairness_*.csv results/fairness_audit.json
+```
+
+**📚 Full Guide**: See [FAIRNESS_GETTING_STARTED.md](FAIRNESS_GETTING_STARTED.md) for complete instructions.
 
 ### Basic Usage
 
@@ -122,10 +179,13 @@ risk_scores = pipeline.predict_risk_tier(new_patients)
 explanations = pipeline.explain_prediction(patient_data)
 ```
 
-### Jupyter Notebook Demo
+### Jupyter Notebook Demos
 
 ```bash
-# Launch the comprehensive analysis notebook
+# Production notebook with fairness audit (RECOMMENDED)
+jupyter notebook notebooks/Stroke_Prediction_v4_Production.ipynb
+
+# Legacy enhanced analysis notebook
 jupyter notebook notebooks/Stroke_Prediction_v2_Enhanced.ipynb
 ```
 
@@ -138,7 +198,8 @@ StrokePrediction/
 │   ├── interim/               # Intermediate processed data
 │   └── processed/             # Final training/test sets
 ├── 📁 notebooks/
-│   ├── Stroke_Prediction_v2_Enhanced.ipynb  # Main analysis
+│   ├── Stroke_Prediction_v4_Production.ipynb  # 🆕 Production notebook with fairness audit
+│   ├── Stroke_Prediction_v2_Enhanced.ipynb    # Main analysis
 │   └── data-storytelling-auc-focus-on-strokes.ipynb
 ├── 📁 src/
 │   ├── data/
@@ -150,17 +211,32 @@ StrokePrediction/
 │   │   └── ensemble.py            # Model ensemble methods
 │   ├── evaluation/
 │   │   ├── metrics.py            # Custom evaluation metrics
-│   │   ├── fairness.py           # Bias detection & mitigation
+│   │   ├── fairness.py           # Bias detection & mitigation (legacy)
 │   │   └── drift_detection.py    # Model monitoring
+│   ├── fairness_audit.py       # 🆕 Comprehensive fairness audit system
 │   └── visualization/
 │       └── plots.py             # Enhanced visualizations
 ├── 📁 models/                   # Saved model artifacts
 ├── 📁 results/                  # Outputs, reports, figures
+│   ├── threshold.json          # 🆕 Frozen threshold (single source of truth)
+│   ├── metrics_threshold_*.csv # 🆕 Global metrics
+│   ├── fairness_pre_*.csv      # 🆕 Baseline fairness with CIs
+│   ├── fairness_post_*.csv     # 🆕 Post-mitigation metrics
+│   └── fairness_audit.json     # 🆕 Consolidated fairness report
+├── 📁 scripts/
+│   └── validate_fairness_setup.py  # 🆕 Fairness system validation
 ├── 📁 docs/                     # Documentation
 │   ├── model_card_v2.md        # TRIPOD+AI compliant model card
 │   └── deployment_guide.md     # Production deployment guide
 ├── 📁 tests/                    # Unit tests
-├── requirements.txt            # Python dependencies
+├── 📁 Fairness Documentation/   # 🆕 Complete fairness audit guides
+│   ├── FAIRNESS_GETTING_STARTED.md
+│   ├── FAIRNESS_QUICK_REFERENCE.md
+│   ├── FAIRNESS_FLOW_DIAGRAM.md
+│   ├── README_FAIRNESS_AUDIT.md
+│   ├── IMPLEMENTATION_SUMMARY.md
+│   └── FILE_INDEX.md
+├── requirements.txt            # Python dependencies (includes fairlearn≥0.9.0)
 ├── PROJECT_NARRATIVE.md       # Detailed project story
 └── README.md                  # This file
 ```
@@ -183,12 +259,17 @@ StrokePrediction/
 | **Ensemble Stack** | Maximum accuracy | Best overall |
 | **Calibrated Models** | Clinical probabilities | ECE: 0.042 |
 
-### ⚖️ Fairness & Bias Mitigation
+### ⚖️ Fairness & Bias Mitigation (Enhanced v1.0.0) 🆕
 
-- **Equal Opportunity Analysis**: TPR equity across demographics
-- **Threshold Optimization**: Group-specific decision boundaries
-- **Continuous Monitoring**: Automated bias detection
-- **Mitigation Strategies**: Preprocessor + postprocessor corrections
+- **Frozen Threshold Governance**: Single source of truth from `results/threshold.json`
+- **Bootstrap Confidence Intervals**: 1000 iterations for robust disparity estimates (95% CIs)
+- **Two-Stage Mitigation**: 
+  - Equal Opportunity (TPR parity) - when n_pos ≥ 5 per group
+  - Equalized Odds (TPR + FPR parity) - when n_pos ≥ 10 AND n_neg ≥ 10 per group
+- **Automated Alert System**: Triggers when TPR gap > 0.10 AND CI lower bound > 0
+- **Sensitive Attributes**: `Residence_type`, `gender`, `smoking_status`, `work_type`, `is_elderly`
+- **Complete Persistence**: 7 output files (CSVs + JSON) for full governance trail
+- **Production Monitoring**: Continuous fairness tracking with quarterly re-audits
 
 ### 📈 Production Monitoring
 
@@ -236,15 +317,25 @@ For **resource-constrained settings**:
 
 ## 🛡️ Ethical AI & Compliance
 
-### Fairness Metrics
+### Fairness Metrics (Comprehensive Audit v1.0.0) 🆕
 
-All demographic groups achieve **<10% gaps** (compliant):
+**Framework**: Bootstrap confidence intervals (n=1000, 95% CI) for robust inference
 
-| Attribute | TPR Gap | FPR Gap | Status |
-|-----------|---------|---------|---------|
-| Gender | 0.08 | 0.04 | ✅ Compliant |
-| Residence | 0.06 | 0.03 | ✅ Compliant |
-| Age Group | 0.09 | 0.05 | ✅ Compliant |
+| Attribute | TPR Gap (Test) | CI [Lower, Upper] | Mitigation Status | Alert |
+|-----------|----------------|-------------------|-------------------|-------|
+| **Residence_type** | Monitored | With CIs | Equal Opportunity Applied | See JSON |
+| **gender** | Monitored | With CIs | Equal Opportunity Applied | See JSON |
+| **smoking_status** | Monitored | With CIs | Stage-dependent | See JSON |
+| **work_type** | Monitored | With CIs | Stage-dependent | See JSON |
+| **is_elderly** | Monitored | With CIs | Stage-dependent | See JSON |
+
+**📊 Complete Results**: See `results/fairness_audit.json` for:
+- Baseline metrics with bootstrap CIs
+- Post-mitigation performance
+- Support info (n_pos, n_neg per group)
+- Automated alerts and recommendations
+
+**🎯 Policy**: Equal Opportunity prioritized for calibration compatibility. Equalized Odds attempted when data sufficient.
 
 ### Regulatory Compliance
 
@@ -288,7 +379,56 @@ print(f"Stroke Risk: {risk_prob:.1%}")
 print(f"Risk Tier: {risk_tier}")  # LOW, MODERATE, HIGH, CRITICAL
 ```
 
-### 2. Clinical Decision Support
+### 2. Fairness Audit (NEW!) 🆕
+
+```python
+from src.fairness_audit import (
+    audit_fairness_baseline,
+    mitigate_fairness_staged,
+    generate_fairness_report
+)
+import json
+
+# Load frozen threshold
+with open('results/threshold.json', 'r') as f:
+    threshold_config = json.load(f)
+    
+production_threshold = threshold_config['threshold']  # e.g., 0.085
+
+# Run baseline audit
+baseline_test = audit_fairness_baseline(
+    X=X_test,
+    y=y_test,
+    y_proba=y_proba_test_calibrated,
+    threshold=production_threshold,
+    sensitive_attrs=['Residence_type', 'gender', 'smoking_status', 'work_type', 'is_elderly'],
+    dataset_name='test',
+    n_boot=1000
+)
+
+# Run staged mitigation
+mitigation_results = mitigate_fairness_staged(
+    X_val=X_val,
+    y_val=y_val,
+    y_proba_val=y_proba_val_calibrated,
+    X_test=X_test,
+    y_test=y_test,
+    y_proba_test=y_proba_test_calibrated,
+    sensitive_attrs=['Residence_type', 'gender', 'smoking_status', 'work_type', 'is_elderly'],
+    threshold_base=production_threshold
+)
+
+# Generate report
+fairness_report = generate_fairness_report(
+    baseline_val, baseline_test, mitigation_results
+)
+
+# Check for alerts
+if mitigation_results['alerts']:
+    print(f"🚨 {len(mitigation_results['alerts'])} fairness alerts detected!")
+    for alert in mitigation_results['alerts']:
+        print(f"  - {alert['message']}")
+```
 
 ```python
 # Get clinical recommendations
@@ -305,7 +445,7 @@ print(recommendation)
 # }
 ```
 
-### 3. Model Explanations
+### 4. Model Explanations
 
 ```python
 # SHAP-based explanations
@@ -322,7 +462,7 @@ for feature, impact in explanation['top_features']:
 #   smoking_status: +0.019
 ```
 
-### 4. Batch Processing
+### 5. Batch Processing
 
 ```python
 # Process multiple patients
@@ -341,7 +481,7 @@ report = model.generate_clinical_report(
 )
 ```
 
-### 5. Production Monitoring
+### 6. Production Monitoring
 
 ```python
 from src.evaluation.drift_detection import DriftMonitor
@@ -456,12 +596,22 @@ Example response:
 
 ## 📚 Documentation
 
+### Core Documentation
 - **📖 [Complete Project Narrative](PROJECT_NARRATIVE.md)** - Detailed project story
 - **🏥 [Clinical Integration Guide](docs/clinical_integration.md)** - EHR implementation
 - **🚀 [Deployment Guide](docs/deployment_guide.md)** - Production setup
-- **⚖️ [Fairness Audit Report](docs/fairness_audit.md)** - Bias analysis
 - **📊 [Model Performance Report](results/model_performance_report.pdf)** - Technical validation
 - **🔬 [API Documentation](docs/api_documentation.md)** - REST API reference
+
+### Fairness Documentation 🆕
+- **🚀 [Fairness Getting Started](FAIRNESS_GETTING_STARTED.md)** - Quick start (5 min)
+- **📋 [Fairness Quick Reference](FAIRNESS_QUICK_REFERENCE.md)** - Cell-by-cell guide
+- **🔄 [Fairness Flow Diagram](FAIRNESS_FLOW_DIAGRAM.md)** - Visual pipeline
+- **📚 [Fairness Audit Guide](README_FAIRNESS_AUDIT.md)** - Comprehensive technical docs
+- **📊 [Implementation Summary](IMPLEMENTATION_SUMMARY.md)** - Acceptance criteria mapping
+- **📁 [File Index](FILE_INDEX.md)** - Complete file inventory
+
+**Recommended Reading**: Start with `FAIRNESS_GETTING_STARTED.md` (5 min) → `FAIRNESS_QUICK_REFERENCE.md` → Deep dive in `README_FAIRNESS_AUDIT.md` as needed.
 
 ## 🧪 Testing
 
@@ -541,10 +691,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ![ROC-AUC](https://img.shields.io/badge/ROC--AUC-0.876-green.svg)
 ![Recall](https://img.shields.io/badge/Recall-0.68--0.72-blue.svg)
 ![Calibration](https://img.shields.io/badge/Calibration%20Error-0.042-brightgreen.svg)
-![Fairness](https://img.shields.io/badge/Fairness%20Gaps-%3C10%25-success.svg)
+![Fairness Audit](https://img.shields.io/badge/Fairness%20Audit-v1.0.0%20(Bootstrap%20CIs)-success.svg)
 
 ---
 
 **Built with ❤️ for better healthcare outcomes**
 
-*Last Updated: January 15, 2024*
+**Fairness First**: Comprehensive audit system with bootstrap confidence intervals and staged mitigation  
+**Production Ready**: Frozen threshold governance, automated alerts, complete persistence
+
+*Last Updated: October 7, 2025*

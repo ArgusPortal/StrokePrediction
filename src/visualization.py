@@ -343,95 +343,129 @@ def plot_calibration_analysis(results, ranking, y_val):
 
     return cal_df
 def plot_confusion_matrices(results, ranking, y_val, threshold=0.15):
-    """Confusion matrices para top modelos"""
-    
+    """Plot das confusion matrices para os top modelos.
+
+    Quando disponível, utiliza a matriz de confusão calibrada do TEST para
+    garantir consistência com os artefatos persistidos. Caso contrário, usa
+    as predições de validação como fallback."""
+
     n_models = min(4, len(ranking))
     fig, axes = plt.subplots(2, 2, figsize=(16, 14))
     axes = axes.ravel()
-    
-    fig.suptitle('CONFUSION MATRICES - TOP 4 MODELOS', 
-                fontsize=16, fontweight='bold')
-    
+
+    fig.suptitle('CONFUSION MATRICES - TOP 4 MODELOS', fontsize=16, fontweight='bold')
+
     for i, (name, result) in enumerate(ranking[:n_models]):
         ax = axes[i]
-        
-        y_proba = result['y_proba']
-        y_pred = (y_proba >= threshold).astype(int)
-        
-        cm = confusion_matrix(y_val, y_pred)
-        
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax,
-                   xticklabels=['No Stroke', 'Stroke'],
-                   yticklabels=['No Stroke', 'Stroke'],
-                   linewidths=2, linecolor='black')
-        
-        tn, fp, fn, tp = cm.ravel()
+
+        test_summary = result.get('test_threshold_summary', {})
+        if isinstance(test_summary, dict) and 'confusion_matrix' in test_summary:
+            cm_array = np.asarray(test_summary['confusion_matrix'], dtype=int).reshape(2, 2)
+            dataset_used = 'TEST (calibrado)'
+        else:
+            y_proba = result['y_proba']
+            y_pred = (y_proba >= threshold).astype(int)
+            cm_array = confusion_matrix(y_val, y_pred)
+            dataset_used = 'VALIDACAO'
+
+        sns.heatmap(
+            cm_array,
+            annot=True,
+            fmt='d',
+            cmap='Blues',
+            ax=ax,
+            xticklabels=['No Stroke', 'Stroke'],
+            yticklabels=['No Stroke', 'Stroke'],
+            linewidths=2,
+            linecolor='black',
+        )
+
+        tn, fp, fn, tp = cm_array.ravel()
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0
-        
-        title = f"{name.replace('_', ' ').title()}\n"
+
+        title = f"{name.replace('_', ' ').title()} ({dataset_used})\n"
         title += f"Recall: {recall:.3f} | Precision: {precision:.3f}"
-        
+
         ax.set_title(title, fontweight='bold', fontsize=12)
-    
+        ax.set_xlabel('Predito')
+        ax.set_ylabel('Real')
+
+    for j in range(n_models, len(axes)):
+        fig.delaxes(axes[j])
+
     plt.tight_layout()
-    plt.savefig(RESULTS_PATH / 'confusion_matrices.png', 
-                dpi=VIZ_CONFIG['figure_dpi'], bbox_inches='tight')
+    plt.savefig(
+        RESULTS_PATH / 'confusion_matrices.png',
+        dpi=VIZ_CONFIG['figure_dpi'],
+        bbox_inches='tight',
+    )
     plt.show()
-    
-    # ========== SUMÃRIO TEXTUAL ==========
-    print("\n" + "="*80)
-    print("ðŸ“Š SUMÃRIO DAS CONFUSION MATRICES")
-    print("="*80)
-    
-    n_models = min(4, len(ranking))
-    
-    cm_summary = []
-    
-    for i, (name, result) in enumerate(ranking[:n_models]):
-        y_proba = result['y_proba']
-        y_pred = (y_proba >= threshold).astype(int)
-        
-        cm = confusion_matrix(y_val, y_pred)
-        tn, fp, fn, tp = cm.ravel()
-        
-        # Calcular mÃ©tricas
+
+    print('\n' + '=' * 80)
+    print('SUMMARY CONFUSION MATRICES (calibradas quando possivel)')
+    print('=' * 80)
+
+    rows = []
+    for name, result in ranking[:n_models]:
+        test_summary = result.get('test_threshold_summary', {})
+        if isinstance(test_summary, dict) and 'confusion_matrix' in test_summary:
+            cm_array = np.asarray(test_summary['confusion_matrix'], dtype=int).reshape(2, 2)
+            dataset_used = 'TEST'
+        else:
+            y_proba = result['y_proba']
+            y_pred = (y_proba >= threshold).astype(int)
+            cm_array = confusion_matrix(y_val, y_pred)
+            dataset_used = 'VALIDACAO'
+
+        tn, fp, fn, tp = cm_array.ravel()
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0
         specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
-        
-        cm_summary.append({
-            'Modelo': name.replace('_', ' ').title(),
-            'TP': int(tp),
-            'FP': int(fp),
-            'FN': int(fn),
-            'TN': int(tn),
-            'Recall': f"{recall:.3f}",
-            'Precision': f"{precision:.3f}",
-            'F1-Score': f"{f1:.3f}",
-            'Specificity': f"{specificity:.3f}"
-        })
-    
-    cm_df = pd.DataFrame(cm_summary)
-    print(f"\nðŸ“‹ MÃ‰TRICAS (Threshold = {threshold}):")
+        support = cm_array.sum()
+
+        rows.append(
+            {
+                'Modelo': name.replace('_', ' ').title(),
+                'Dataset': dataset_used,
+                'TP': int(tp),
+                'FP': int(fp),
+                'FN': int(fn),
+                'TN': int(tn),
+                'Recall': f"{recall:.3f}",
+                'Precision': f"{precision:.3f}",
+                'F1-Score': f"{f1:.3f}",
+                'Specificity': f"{specificity:.3f}",
+                'Support': int(support),
+            }
+        )
+
+    cm_df = pd.DataFrame(rows)
+    print(f'\nMETRICAS (Threshold = {threshold}):')
     print(cm_df.to_string(index=False))
-    
-    # AnÃ¡lise de tradeoff
-    print("\nâš–ï¸ TRADEOFF RECALL vs PRECISION:")
+
+    print('\nTRADEOFF RECALL vs PRECISION:')
     for _, row in cm_df.iterrows():
         recall = float(row['Recall'])
         precision = float(row['Precision'])
-        
         if recall >= 0.70 and precision >= 0.15:
-            verdict = "âœ… Atende requisitos"
+            verdict = 'OK Atende requisitos'
         elif recall >= 0.70:
-            verdict = "âš ï¸ Baixa precisÃ£o"
+            verdict = 'CAUTION Baixa precisao'
         else:
-            verdict = "âŒ Baixo recall"
-        
-        print(f"   {row['Modelo']:25s}: Recall={recall:.3f}, Precision={precision:.3f} â†’ {verdict}")
-    
+            verdict = 'FAIL Baixo recall'
+        print(
+            f"   {row['Modelo']:25s} ({row['Dataset']}): "
+            f"Recall={recall:.3f}, Precision={precision:.3f} -> {verdict}"
+        )
+
+    if any(row['Dataset'] != 'TEST' for row in rows):
+        print(
+            '\nCAUTION: matrizes marcadas como VALIDACAO usam o split de validacao; '
+            'para o piloto utilize os valores TEST (calibrados).'
+        )
+
     return cm_df
 
 

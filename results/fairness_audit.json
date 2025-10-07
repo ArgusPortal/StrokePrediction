@@ -1,1875 +1,1125 @@
 {
-  "threshold": 0.08499999999999999,
-  "threshold_source": "validation_calibrated",
-  "attributes": [
-    {
-      "attribute": "Residence_type",
-      "support": {
-        "validation": {
-          "min_pos": 15,
-          "min_neg": 356
-        },
-        "test": {
-          "min_pos": 23,
-          "min_neg": 472
-        }
-      },
-      "baseline": {
-        "validation": {
-          "tpr_gap": 0.2848484848484849,
-          "tpr_gap_ci": [
-            0.023763736263736186,
-            0.5800559210526316
-          ],
+  "baseline": {
+    "validation": {
+      "attributes": {
+        "Residence_type": {
+          "support_info": {
+            "Urban": {
+              "n_pos": 22,
+              "n_neg": 356,
+              "n_total": 378
+            },
+            "Rural": {
+              "n_pos": 15,
+              "n_neg": 374,
+              "n_total": 389
+            }
+          },
           "metrics": [
             {
-              "attribute": "Residence_type",
               "group": "Rural",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": 389.0,
-              "n_pos": 15.0,
-              "n_neg": 374.0,
-              "tp": 8.0,
-              "fp": 69.0,
-              "fn": 7.0,
-              "tn": 305.0,
-              "pred_pos": 77.0,
-              "pred_neg": 312.0,
-              "selection_rate": 0.19794344473007713,
-              "TPR": 0.5333333333333333,
-              "FPR": 0.18449197860962566,
-              "PPV": 0.1038961038961039,
-              "tpr_ci_low": 0.3,
-              "tpr_ci_high": 0.8,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
+              "TPR": 0.4666666666666667,
+              "FPR": 0.14705882352941177,
+              "PPV": 0.11290322580645161,
+              "selection_rate": 0.15938303341902313,
+              "attribute": "Residence_type",
+              "dataset": "validation"
             },
             {
-              "attribute": "Residence_type",
               "group": "Urban",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": 378.0,
-              "n_pos": 22.0,
-              "n_neg": 356.0,
-              "tp": 18.0,
-              "fp": 77.0,
-              "fn": 4.0,
-              "tn": 279.0,
-              "pred_pos": 95.0,
-              "pred_neg": 283.0,
-              "selection_rate": 0.25132275132275134,
-              "TPR": 0.8181818181818182,
-              "FPR": 0.21629213483146068,
-              "PPV": 0.18947368421052632,
-              "tpr_ci_low": 0.65,
-              "tpr_ci_high": 0.9583333333333334,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
+              "TPR": 0.6818181818181818,
+              "FPR": 0.16292134831460675,
+              "PPV": 0.2054794520547945,
+              "selection_rate": 0.1931216931216931,
+              "attribute": "Residence_type",
+              "dataset": "validation"
+            }
+          ],
+          "confidence_intervals": [
+            {
+              "group": "Urban",
+              "TPR_mean": 0.6825244630764814,
+              "TPR_ci_lower": 0.5,
+              "TPR_ci_upper": 0.8333333333333334
             },
             {
-              "attribute": "Residence_type",
-              "group": "__GAP__",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": NaN,
-              "n_pos": NaN,
-              "n_neg": NaN,
-              "tp": NaN,
-              "fp": NaN,
-              "fn": NaN,
-              "tn": NaN,
-              "pred_pos": NaN,
-              "pred_neg": NaN,
-              "selection_rate": NaN,
-              "TPR": NaN,
-              "FPR": NaN,
-              "PPV": NaN,
-              "tpr_ci_low": NaN,
-              "tpr_ci_high": NaN,
-              "tpr_gap": 0.2848484848484849,
-              "tpr_gap_ci_low": 0.023763736263736186,
-              "tpr_gap_ci_high": 0.5800559210526316
-            }
-          ]
-        },
-        "test": {
-          "tpr_gap": 0.11916264090177131,
-          "tpr_gap_ci": [
-            0.004830917874396157,
-            0.36253230815467846
-          ],
-          "metrics": [
-            {
-              "attribute": "Residence_type",
               "group": "Rural",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": 495.0,
-              "n_pos": 23.0,
-              "n_neg": 472.0,
-              "tp": 16.0,
-              "fp": 87.0,
-              "fn": 7.0,
-              "tn": 385.0,
-              "pred_pos": 103.0,
-              "pred_neg": 392.0,
-              "selection_rate": 0.2080808080808081,
-              "TPR": 0.6956521739130435,
-              "FPR": 0.1843220338983051,
-              "PPV": 0.1553398058252427,
-              "tpr_ci_low": 0.5,
-              "tpr_ci_high": 0.88,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "Residence_type",
-              "group": "Urban",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": 527.0,
-              "n_pos": 27.0,
-              "n_neg": 500.0,
-              "tp": 22.0,
-              "fp": 97.0,
-              "fn": 5.0,
-              "tn": 403.0,
-              "pred_pos": 119.0,
-              "pred_neg": 408.0,
-              "selection_rate": 0.22580645161290322,
-              "TPR": 0.8148148148148148,
-              "FPR": 0.194,
-              "PPV": 0.18487394957983194,
-              "tpr_ci_low": 0.6666666666666666,
-              "tpr_ci_high": 0.9523809523809523,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "Residence_type",
-              "group": "__GAP__",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": NaN,
-              "n_pos": NaN,
-              "n_neg": NaN,
-              "tp": NaN,
-              "fp": NaN,
-              "fn": NaN,
-              "tn": NaN,
-              "pred_pos": NaN,
-              "pred_neg": NaN,
-              "selection_rate": NaN,
-              "TPR": NaN,
-              "FPR": NaN,
-              "PPV": NaN,
-              "tpr_ci_low": NaN,
-              "tpr_ci_high": NaN,
-              "tpr_gap": 0.11916264090177131,
-              "tpr_gap_ci_low": 0.004830917874396157,
-              "tpr_gap_ci_high": 0.36253230815467846
+              "TPR_mean": 0.47264744959190463,
+              "TPR_ci_lower": 0.2724242424242424,
+              "TPR_ci_upper": 0.6674242424242417
             }
-          ]
-        }
-      },
-      "final_stage": {
-        "stage": "post_equal_opportunity",
-        "validation_tpr_gap": 0.00303030303030305,
-        "validation_tpr_gap_ci": [
-          0.002105263157894721,
-          0.27083507525083617
-        ],
-        "test_tpr_gap": 0.1497584541062802,
-        "test_tpr_gap_ci": [
-          0.00766283524904221,
-          0.35716654035619555
-        ],
-        "metrics_validation": [
-          {
-            "attribute": "Residence_type",
-            "group": "Rural",
-            "dataset": "validation",
-            "stage": "post_equal_opportunity",
-            "n_total": 389.0,
-            "n_pos": 15.0,
-            "n_neg": 374.0,
-            "tp": 13.0,
-            "fp": 102.0,
-            "fn": 2.0,
-            "tn": 272.0,
-            "pred_pos": 115.0,
-            "pred_neg": 274.0,
-            "selection_rate": 0.29562982005141386,
-            "TPR": 0.8666666666666667,
-            "FPR": 0.2727272727272727,
-            "PPV": 0.11304347826086956,
-            "tpr_ci_low": 0.6666666666666666,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "Residence_type",
-            "group": "Urban",
-            "dataset": "validation",
-            "stage": "post_equal_opportunity",
-            "n_total": 378.0,
-            "n_pos": 22.0,
-            "n_neg": 356.0,
-            "tp": 19.0,
-            "fp": 90.0,
-            "fn": 3.0,
-            "tn": 266.0,
-            "pred_pos": 109.0,
-            "pred_neg": 269.0,
-            "selection_rate": 0.28835978835978837,
-            "TPR": 0.8636363636363636,
-            "FPR": 0.25280898876404495,
-            "PPV": 0.1743119266055046,
-            "tpr_ci_low": 0.7,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "Residence_type",
-            "group": "__GAP__",
-            "dataset": "validation",
-            "stage": "post_equal_opportunity",
-            "n_total": NaN,
-            "n_pos": NaN,
-            "n_neg": NaN,
-            "tp": NaN,
-            "fp": NaN,
-            "fn": NaN,
-            "tn": NaN,
-            "pred_pos": NaN,
-            "pred_neg": NaN,
-            "selection_rate": NaN,
-            "TPR": NaN,
-            "FPR": NaN,
-            "PPV": NaN,
-            "tpr_ci_low": NaN,
-            "tpr_ci_high": NaN,
-            "tpr_gap": 0.00303030303030305,
-            "tpr_gap_ci_low": 0.002105263157894721,
-            "tpr_gap_ci_high": 0.27083507525083617
-          }
-        ],
-        "metrics_test": [
-          {
-            "attribute": "Residence_type",
-            "group": "Rural",
-            "dataset": "test",
-            "stage": "post_equal_opportunity",
-            "n_total": 495.0,
-            "n_pos": 23.0,
-            "n_neg": 472.0,
-            "tp": 17.0,
-            "fp": 151.0,
-            "fn": 6.0,
-            "tn": 321.0,
-            "pred_pos": 168.0,
-            "pred_neg": 327.0,
-            "selection_rate": 0.3393939393939394,
-            "TPR": 0.7391304347826086,
-            "FPR": 0.3199152542372881,
-            "PPV": 0.10119047619047619,
-            "tpr_ci_low": 0.5483137829912023,
-            "tpr_ci_high": 0.9090909090909091,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "Residence_type",
-            "group": "Urban",
-            "dataset": "test",
-            "stage": "post_equal_opportunity",
-            "n_total": 527.0,
-            "n_pos": 27.0,
-            "n_neg": 500.0,
-            "tp": 24.0,
-            "fp": 105.0,
-            "fn": 3.0,
-            "tn": 395.0,
-            "pred_pos": 129.0,
-            "pred_neg": 398.0,
-            "selection_rate": 0.24478178368121442,
-            "TPR": 0.8888888888888888,
-            "FPR": 0.21,
-            "PPV": 0.18604651162790697,
-            "tpr_ci_low": 0.7428341013824885,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "Residence_type",
-            "group": "__GAP__",
-            "dataset": "test",
-            "stage": "post_equal_opportunity",
-            "n_total": NaN,
-            "n_pos": NaN,
-            "n_neg": NaN,
-            "tp": NaN,
-            "fp": NaN,
-            "fn": NaN,
-            "tn": NaN,
-            "pred_pos": NaN,
-            "pred_neg": NaN,
-            "selection_rate": NaN,
-            "TPR": NaN,
-            "FPR": NaN,
-            "PPV": NaN,
-            "tpr_ci_low": NaN,
-            "tpr_ci_high": NaN,
-            "tpr_gap": 0.1497584541062802,
-            "tpr_gap_ci_low": 0.00766283524904221,
-            "tpr_gap_ci_high": 0.35716654035619555
-          }
-        ]
-      },
-      "history": [
-        {
-          "constraint": "true_positive_rate_parity",
-          "status": "applied",
-          "validation_tpr_gap": 0.00303030303030305,
-          "validation_tpr_gap_ci": [
-            0.002105263157894721,
-            0.27083507525083617
           ],
-          "test_tpr_gap": 0.1497584541062802,
-          "test_tpr_gap_ci": [
-            0.00766283524904221,
-            0.35716654035619555
-          ]
+          "TPR_gap": 0.2151515151515151,
+          "FPR_gap": 0.01586252478519498,
+          "TPR_gap_ci": {
+            "gap_mean": 0.22491676789388532,
+            "gap_ci_lower": 0.022222222222222254,
+            "gap_ci_upper": 0.4649721293199553
+          }
         },
-        {
-          "constraint": "equalized_odds",
-          "status": "skipped_due_to_data",
-          "reason": "insufficient_support"
-        }
-      ]
-    },
-    {
-      "attribute": "gender",
-      "support": {
-        "validation": {
-          "min_pos": 18,
-          "min_neg": 318
-        },
-        "test": {
-          "min_pos": 21,
-          "min_neg": 402
-        }
-      },
-      "baseline": {
-        "validation": {
-          "tpr_gap": 0.03801169590643272,
-          "tpr_gap_ci": [
-            0.0045204603580563585,
-            0.352063230994152
-          ],
+        "gender": {
+          "support_info": {
+            "Male": {
+              "n_pos": 18,
+              "n_neg": 318,
+              "n_total": 336
+            },
+            "Female": {
+              "n_pos": 19,
+              "n_neg": 412,
+              "n_total": 431
+            }
+          },
           "metrics": [
             {
-              "attribute": "gender",
               "group": "Female",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": 431.0,
-              "n_pos": 19.0,
-              "n_neg": 412.0,
-              "tp": 13.0,
-              "fp": 89.0,
-              "fn": 6.0,
-              "tn": 323.0,
-              "pred_pos": 102.0,
-              "pred_neg": 329.0,
-              "selection_rate": 0.23665893271461716,
-              "TPR": 0.6842105263157895,
-              "FPR": 0.21601941747572814,
-              "PPV": 0.12745098039215685,
-              "tpr_ci_low": 0.4666666666666667,
-              "tpr_ci_high": 0.8888888888888888,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
+              "TPR": 0.5789473684210527,
+              "FPR": 0.16019417475728157,
+              "PPV": 0.14285714285714285,
+              "selection_rate": 0.17865429234338748,
+              "attribute": "gender",
+              "dataset": "validation"
             },
             {
-              "attribute": "gender",
               "group": "Male",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": 336.0,
-              "n_pos": 18.0,
-              "n_neg": 318.0,
-              "tp": 13.0,
-              "fp": 57.0,
-              "fn": 5.0,
-              "tn": 261.0,
-              "pred_pos": 70.0,
-              "pred_neg": 266.0,
-              "selection_rate": 0.20833333333333334,
-              "TPR": 0.7222222222222222,
-              "FPR": 0.1792452830188679,
-              "PPV": 0.18571428571428572,
-              "tpr_ci_low": 0.5,
-              "tpr_ci_high": 0.9230769230769231,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
+              "TPR": 0.6111111111111112,
+              "FPR": 0.14779874213836477,
+              "PPV": 0.1896551724137931,
+              "selection_rate": 0.17261904761904762,
+              "attribute": "gender",
+              "dataset": "validation"
+            }
+          ],
+          "confidence_intervals": [
+            {
+              "group": "Male",
+              "TPR_mean": 0.613519033587776,
+              "TPR_ci_lower": 0.43478260869565216,
+              "TPR_ci_upper": 0.7894736842105263
             },
             {
-              "attribute": "gender",
-              "group": "__GAP__",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": NaN,
-              "n_pos": NaN,
-              "n_neg": NaN,
-              "tp": NaN,
-              "fp": NaN,
-              "fn": NaN,
-              "tn": NaN,
-              "pred_pos": NaN,
-              "pred_neg": NaN,
-              "selection_rate": NaN,
-              "TPR": NaN,
-              "FPR": NaN,
-              "PPV": NaN,
-              "tpr_ci_low": NaN,
-              "tpr_ci_high": NaN,
-              "tpr_gap": 0.03801169590643272,
-              "tpr_gap_ci_low": 0.0045204603580563585,
-              "tpr_gap_ci_high": 0.352063230994152
-            }
-          ]
-        },
-        "test": {
-          "tpr_gap": 0.16091954022988508,
-          "tpr_gap_ci": [
-            0.009047038980509675,
-            0.4259920634920634
-          ],
-          "metrics": [
-            {
-              "attribute": "gender",
               "group": "Female",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": 599.0,
-              "n_pos": 29.0,
-              "n_neg": 570.0,
-              "tp": 24.0,
-              "fp": 101.0,
-              "fn": 5.0,
-              "tn": 469.0,
-              "pred_pos": 125.0,
-              "pred_neg": 474.0,
-              "selection_rate": 0.20868113522537562,
-              "TPR": 0.8275862068965517,
-              "FPR": 0.17719298245614035,
-              "PPV": 0.192,
-              "tpr_ci_low": 0.6774193548387096,
-              "tpr_ci_high": 0.9565670289855073,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "gender",
-              "group": "Male",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": 423.0,
-              "n_pos": 21.0,
-              "n_neg": 402.0,
-              "tp": 14.0,
-              "fp": 83.0,
-              "fn": 7.0,
-              "tn": 319.0,
-              "pred_pos": 97.0,
-              "pred_neg": 326.0,
-              "selection_rate": 0.2293144208037825,
-              "TPR": 0.6666666666666666,
-              "FPR": 0.2064676616915423,
-              "PPV": 0.14432989690721648,
-              "tpr_ci_low": 0.4583333333333333,
-              "tpr_ci_high": 0.8573051948051946,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "gender",
-              "group": "__GAP__",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": NaN,
-              "n_pos": NaN,
-              "n_neg": NaN,
-              "tp": NaN,
-              "fp": NaN,
-              "fn": NaN,
-              "tn": NaN,
-              "pred_pos": NaN,
-              "pred_neg": NaN,
-              "selection_rate": NaN,
-              "TPR": NaN,
-              "FPR": NaN,
-              "PPV": NaN,
-              "tpr_ci_low": NaN,
-              "tpr_ci_high": NaN,
-              "tpr_gap": 0.16091954022988508,
-              "tpr_gap_ci_low": 0.009047038980509675,
-              "tpr_gap_ci_high": 0.4259920634920634
+              "TPR_mean": 0.5815214073174233,
+              "TPR_ci_lower": 0.391304347826087,
+              "TPR_ci_upper": 0.75
             }
-          ]
-        }
-      },
-      "final_stage": {
-        "stage": "baseline",
-        "validation_tpr_gap": 0.03801169590643272,
-        "validation_tpr_gap_ci": [
-          0.0045204603580563585,
-          0.352063230994152
-        ],
-        "test_tpr_gap": 0.16091954022988508,
-        "test_tpr_gap_ci": [
-          0.009047038980509675,
-          0.4259920634920634
-        ],
-        "metrics_validation": [
-          {
-            "attribute": "gender",
-            "group": "Female",
-            "dataset": "validation",
-            "stage": "baseline",
-            "n_total": 431.0,
-            "n_pos": 19.0,
-            "n_neg": 412.0,
-            "tp": 13.0,
-            "fp": 89.0,
-            "fn": 6.0,
-            "tn": 323.0,
-            "pred_pos": 102.0,
-            "pred_neg": 329.0,
-            "selection_rate": 0.23665893271461716,
-            "TPR": 0.6842105263157895,
-            "FPR": 0.21601941747572814,
-            "PPV": 0.12745098039215685,
-            "tpr_ci_low": 0.4666666666666667,
-            "tpr_ci_high": 0.8888888888888888,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "gender",
-            "group": "Male",
-            "dataset": "validation",
-            "stage": "baseline",
-            "n_total": 336.0,
-            "n_pos": 18.0,
-            "n_neg": 318.0,
-            "tp": 13.0,
-            "fp": 57.0,
-            "fn": 5.0,
-            "tn": 261.0,
-            "pred_pos": 70.0,
-            "pred_neg": 266.0,
-            "selection_rate": 0.20833333333333334,
-            "TPR": 0.7222222222222222,
-            "FPR": 0.1792452830188679,
-            "PPV": 0.18571428571428572,
-            "tpr_ci_low": 0.5,
-            "tpr_ci_high": 0.9230769230769231,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "gender",
-            "group": "__GAP__",
-            "dataset": "validation",
-            "stage": "baseline",
-            "n_total": NaN,
-            "n_pos": NaN,
-            "n_neg": NaN,
-            "tp": NaN,
-            "fp": NaN,
-            "fn": NaN,
-            "tn": NaN,
-            "pred_pos": NaN,
-            "pred_neg": NaN,
-            "selection_rate": NaN,
-            "TPR": NaN,
-            "FPR": NaN,
-            "PPV": NaN,
-            "tpr_ci_low": NaN,
-            "tpr_ci_high": NaN,
-            "tpr_gap": 0.03801169590643272,
-            "tpr_gap_ci_low": 0.0045204603580563585,
-            "tpr_gap_ci_high": 0.352063230994152
-          }
-        ],
-        "metrics_test": [
-          {
-            "attribute": "gender",
-            "group": "Female",
-            "dataset": "test",
-            "stage": "baseline",
-            "n_total": 599.0,
-            "n_pos": 29.0,
-            "n_neg": 570.0,
-            "tp": 24.0,
-            "fp": 101.0,
-            "fn": 5.0,
-            "tn": 469.0,
-            "pred_pos": 125.0,
-            "pred_neg": 474.0,
-            "selection_rate": 0.20868113522537562,
-            "TPR": 0.8275862068965517,
-            "FPR": 0.17719298245614035,
-            "PPV": 0.192,
-            "tpr_ci_low": 0.6774193548387096,
-            "tpr_ci_high": 0.9565670289855073,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "gender",
-            "group": "Male",
-            "dataset": "test",
-            "stage": "baseline",
-            "n_total": 423.0,
-            "n_pos": 21.0,
-            "n_neg": 402.0,
-            "tp": 14.0,
-            "fp": 83.0,
-            "fn": 7.0,
-            "tn": 319.0,
-            "pred_pos": 97.0,
-            "pred_neg": 326.0,
-            "selection_rate": 0.2293144208037825,
-            "TPR": 0.6666666666666666,
-            "FPR": 0.2064676616915423,
-            "PPV": 0.14432989690721648,
-            "tpr_ci_low": 0.4583333333333333,
-            "tpr_ci_high": 0.8573051948051946,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "gender",
-            "group": "__GAP__",
-            "dataset": "test",
-            "stage": "baseline",
-            "n_total": NaN,
-            "n_pos": NaN,
-            "n_neg": NaN,
-            "tp": NaN,
-            "fp": NaN,
-            "fn": NaN,
-            "tn": NaN,
-            "pred_pos": NaN,
-            "pred_neg": NaN,
-            "selection_rate": NaN,
-            "TPR": NaN,
-            "FPR": NaN,
-            "PPV": NaN,
-            "tpr_ci_low": NaN,
-            "tpr_ci_high": NaN,
-            "tpr_gap": 0.16091954022988508,
-            "tpr_gap_ci_low": 0.009047038980509675,
-            "tpr_gap_ci_high": 0.4259920634920634
-          }
-        ]
-      },
-      "history": [
-        {
-          "constraint": "true_positive_rate_parity",
-          "status": "skipped_due_to_data",
-          "reason": "gap_below_threshold"
-        }
-      ]
-    },
-    {
-      "attribute": "smoking_status",
-      "support": {
-        "validation": {
-          "min_pos": 7,
-          "min_neg": 112
-        },
-        "test": {
-          "min_pos": 8,
-          "min_neg": 155
-        }
-      },
-      "baseline": {
-        "validation": {
-          "tpr_gap": 0.06666666666666665,
-          "tpr_gap_ci": [
-            0.04761904761904767,
-            0.562723214285714
           ],
+          "TPR_gap": 0.032163742690058506,
+          "FPR_gap": 0.01239543261891679,
+          "TPR_gap_ci": {
+            "gap_mean": 0.1286272831626912,
+            "gap_ci_lower": 0.009278074866310155,
+            "gap_ci_upper": 0.3222875816993463
+          }
+        },
+        "smoking_status": {
+          "support_info": {
+            "never smoked": {
+              "n_pos": 15,
+              "n_neg": 265,
+              "n_total": 280
+            },
+            "formerly smoked": {
+              "n_pos": 15,
+              "n_neg": 353,
+              "n_total": 368
+            },
+            "smokes": {
+              "n_pos": 7,
+              "n_neg": 112,
+              "n_total": 119
+            }
+          },
           "metrics": [
             {
-              "attribute": "smoking_status",
               "group": "formerly smoked",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": 368.0,
-              "n_pos": 15.0,
-              "n_neg": 353.0,
-              "tp": 11.0,
-              "fp": 75.0,
-              "fn": 4.0,
-              "tn": 278.0,
-              "pred_pos": 86.0,
-              "pred_neg": 282.0,
-              "selection_rate": 0.23369565217391305,
-              "TPR": 0.7333333333333333,
-              "FPR": 0.21246458923512748,
-              "PPV": 0.12790697674418605,
-              "tpr_ci_low": 0.5,
-              "tpr_ci_high": 0.9375,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "smoking_status",
-              "group": "never smoked",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": 280.0,
-              "n_pos": 15.0,
-              "n_neg": 265.0,
-              "tp": 10.0,
-              "fp": 57.0,
-              "fn": 5.0,
-              "tn": 208.0,
-              "pred_pos": 67.0,
-              "pred_neg": 213.0,
-              "selection_rate": 0.2392857142857143,
               "TPR": 0.6666666666666666,
-              "FPR": 0.21509433962264152,
-              "PPV": 0.14925373134328357,
-              "tpr_ci_low": 0.42857142857142855,
-              "tpr_ci_high": 0.9,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "smoking_status",
-              "group": "smokes",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": 119.0,
-              "n_pos": 7.0,
-              "n_neg": 112.0,
-              "tp": 5.0,
-              "fp": 14.0,
-              "fn": 2.0,
-              "tn": 98.0,
-              "pred_pos": 19.0,
-              "pred_neg": 100.0,
-              "selection_rate": 0.15966386554621848,
-              "TPR": 0.7142857142857143,
-              "FPR": 0.125,
-              "PPV": 0.2631578947368421,
-              "tpr_ci_low": 0.3333333333333333,
-              "tpr_ci_high": 1.0,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "smoking_status",
-              "group": "__GAP__",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": NaN,
-              "n_pos": NaN,
-              "n_neg": NaN,
-              "tp": NaN,
-              "fp": NaN,
-              "fn": NaN,
-              "tn": NaN,
-              "pred_pos": NaN,
-              "pred_neg": NaN,
-              "selection_rate": NaN,
-              "TPR": NaN,
-              "FPR": NaN,
-              "PPV": NaN,
-              "tpr_ci_low": NaN,
-              "tpr_ci_high": NaN,
-              "tpr_gap": 0.06666666666666665,
-              "tpr_gap_ci_low": 0.04761904761904767,
-              "tpr_gap_ci_high": 0.562723214285714
-            }
-          ]
-        },
-        "test": {
-          "tpr_gap": 0.2425629290617849,
-          "tpr_gap_ci": [
-            0.08291298073906767,
-            0.5564896331738436
-          ],
-          "metrics": [
-            {
-              "attribute": "smoking_status",
-              "group": "formerly smoked",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": 468.0,
-              "n_pos": 23.0,
-              "n_neg": 445.0,
-              "tp": 15.0,
-              "fp": 78.0,
-              "fn": 8.0,
-              "tn": 367.0,
-              "pred_pos": 93.0,
-              "pred_neg": 375.0,
-              "selection_rate": 0.1987179487179487,
-              "TPR": 0.6521739130434783,
-              "FPR": 0.1752808988764045,
-              "PPV": 0.16129032258064516,
-              "tpr_ci_low": 0.45454545454545453,
-              "tpr_ci_high": 0.8400526315789473,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "smoking_status",
-              "group": "never smoked",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": 391.0,
-              "n_pos": 19.0,
-              "n_neg": 372.0,
-              "tp": 17.0,
-              "fp": 75.0,
-              "fn": 2.0,
-              "tn": 297.0,
-              "pred_pos": 92.0,
-              "pred_neg": 299.0,
-              "selection_rate": 0.23529411764705882,
-              "TPR": 0.8947368421052632,
-              "FPR": 0.20161290322580644,
-              "PPV": 0.18478260869565216,
-              "tpr_ci_low": 0.7368421052631579,
-              "tpr_ci_high": 1.0,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "smoking_status",
-              "group": "smokes",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": 163.0,
-              "n_pos": 8.0,
-              "n_neg": 155.0,
-              "tp": 6.0,
-              "fp": 31.0,
-              "fn": 2.0,
-              "tn": 124.0,
-              "pred_pos": 37.0,
-              "pred_neg": 126.0,
-              "selection_rate": 0.22699386503067484,
-              "TPR": 0.75,
-              "FPR": 0.2,
-              "PPV": 0.16216216216216217,
-              "tpr_ci_low": 0.39937500000000004,
-              "tpr_ci_high": 1.0,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "smoking_status",
-              "group": "__GAP__",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": NaN,
-              "n_pos": NaN,
-              "n_neg": NaN,
-              "tp": NaN,
-              "fp": NaN,
-              "fn": NaN,
-              "tn": NaN,
-              "pred_pos": NaN,
-              "pred_neg": NaN,
-              "selection_rate": NaN,
-              "TPR": NaN,
-              "FPR": NaN,
-              "PPV": NaN,
-              "tpr_ci_low": NaN,
-              "tpr_ci_high": NaN,
-              "tpr_gap": 0.2425629290617849,
-              "tpr_gap_ci_low": 0.08291298073906767,
-              "tpr_gap_ci_high": 0.5564896331738436
-            }
-          ]
-        }
-      },
-      "final_stage": {
-        "stage": "baseline",
-        "validation_tpr_gap": 0.06666666666666665,
-        "validation_tpr_gap_ci": [
-          0.04761904761904767,
-          0.562723214285714
-        ],
-        "test_tpr_gap": 0.2425629290617849,
-        "test_tpr_gap_ci": [
-          0.08291298073906767,
-          0.5564896331738436
-        ],
-        "metrics_validation": [
-          {
-            "attribute": "smoking_status",
-            "group": "formerly smoked",
-            "dataset": "validation",
-            "stage": "baseline",
-            "n_total": 368.0,
-            "n_pos": 15.0,
-            "n_neg": 353.0,
-            "tp": 11.0,
-            "fp": 75.0,
-            "fn": 4.0,
-            "tn": 278.0,
-            "pred_pos": 86.0,
-            "pred_neg": 282.0,
-            "selection_rate": 0.23369565217391305,
-            "TPR": 0.7333333333333333,
-            "FPR": 0.21246458923512748,
-            "PPV": 0.12790697674418605,
-            "tpr_ci_low": 0.5,
-            "tpr_ci_high": 0.9375,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "smoking_status",
-            "group": "never smoked",
-            "dataset": "validation",
-            "stage": "baseline",
-            "n_total": 280.0,
-            "n_pos": 15.0,
-            "n_neg": 265.0,
-            "tp": 10.0,
-            "fp": 57.0,
-            "fn": 5.0,
-            "tn": 208.0,
-            "pred_pos": 67.0,
-            "pred_neg": 213.0,
-            "selection_rate": 0.2392857142857143,
-            "TPR": 0.6666666666666666,
-            "FPR": 0.21509433962264152,
-            "PPV": 0.14925373134328357,
-            "tpr_ci_low": 0.42857142857142855,
-            "tpr_ci_high": 0.9,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "smoking_status",
-            "group": "smokes",
-            "dataset": "validation",
-            "stage": "baseline",
-            "n_total": 119.0,
-            "n_pos": 7.0,
-            "n_neg": 112.0,
-            "tp": 5.0,
-            "fp": 14.0,
-            "fn": 2.0,
-            "tn": 98.0,
-            "pred_pos": 19.0,
-            "pred_neg": 100.0,
-            "selection_rate": 0.15966386554621848,
-            "TPR": 0.7142857142857143,
-            "FPR": 0.125,
-            "PPV": 0.2631578947368421,
-            "tpr_ci_low": 0.3333333333333333,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "smoking_status",
-            "group": "__GAP__",
-            "dataset": "validation",
-            "stage": "baseline",
-            "n_total": NaN,
-            "n_pos": NaN,
-            "n_neg": NaN,
-            "tp": NaN,
-            "fp": NaN,
-            "fn": NaN,
-            "tn": NaN,
-            "pred_pos": NaN,
-            "pred_neg": NaN,
-            "selection_rate": NaN,
-            "TPR": NaN,
-            "FPR": NaN,
-            "PPV": NaN,
-            "tpr_ci_low": NaN,
-            "tpr_ci_high": NaN,
-            "tpr_gap": 0.06666666666666665,
-            "tpr_gap_ci_low": 0.04761904761904767,
-            "tpr_gap_ci_high": 0.562723214285714
-          }
-        ],
-        "metrics_test": [
-          {
-            "attribute": "smoking_status",
-            "group": "formerly smoked",
-            "dataset": "test",
-            "stage": "baseline",
-            "n_total": 468.0,
-            "n_pos": 23.0,
-            "n_neg": 445.0,
-            "tp": 15.0,
-            "fp": 78.0,
-            "fn": 8.0,
-            "tn": 367.0,
-            "pred_pos": 93.0,
-            "pred_neg": 375.0,
-            "selection_rate": 0.1987179487179487,
-            "TPR": 0.6521739130434783,
-            "FPR": 0.1752808988764045,
-            "PPV": 0.16129032258064516,
-            "tpr_ci_low": 0.45454545454545453,
-            "tpr_ci_high": 0.8400526315789473,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "smoking_status",
-            "group": "never smoked",
-            "dataset": "test",
-            "stage": "baseline",
-            "n_total": 391.0,
-            "n_pos": 19.0,
-            "n_neg": 372.0,
-            "tp": 17.0,
-            "fp": 75.0,
-            "fn": 2.0,
-            "tn": 297.0,
-            "pred_pos": 92.0,
-            "pred_neg": 299.0,
-            "selection_rate": 0.23529411764705882,
-            "TPR": 0.8947368421052632,
-            "FPR": 0.20161290322580644,
-            "PPV": 0.18478260869565216,
-            "tpr_ci_low": 0.7368421052631579,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "smoking_status",
-            "group": "smokes",
-            "dataset": "test",
-            "stage": "baseline",
-            "n_total": 163.0,
-            "n_pos": 8.0,
-            "n_neg": 155.0,
-            "tp": 6.0,
-            "fp": 31.0,
-            "fn": 2.0,
-            "tn": 124.0,
-            "pred_pos": 37.0,
-            "pred_neg": 126.0,
-            "selection_rate": 0.22699386503067484,
-            "TPR": 0.75,
-            "FPR": 0.2,
-            "PPV": 0.16216216216216217,
-            "tpr_ci_low": 0.39937500000000004,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "smoking_status",
-            "group": "__GAP__",
-            "dataset": "test",
-            "stage": "baseline",
-            "n_total": NaN,
-            "n_pos": NaN,
-            "n_neg": NaN,
-            "tp": NaN,
-            "fp": NaN,
-            "fn": NaN,
-            "tn": NaN,
-            "pred_pos": NaN,
-            "pred_neg": NaN,
-            "selection_rate": NaN,
-            "TPR": NaN,
-            "FPR": NaN,
-            "PPV": NaN,
-            "tpr_ci_low": NaN,
-            "tpr_ci_high": NaN,
-            "tpr_gap": 0.2425629290617849,
-            "tpr_gap_ci_low": 0.08291298073906767,
-            "tpr_gap_ci_high": 0.5564896331738436
-          }
-        ]
-      },
-      "history": [
-        {
-          "constraint": "true_positive_rate_parity",
-          "status": "skipped_due_to_data",
-          "reason": "gap_below_threshold"
-        }
-      ]
-    },
-    {
-      "attribute": "work_type",
-      "support": {
-        "validation": {
-          "min_pos": 5,
-          "min_neg": 193
-        },
-        "test": {
-          "min_pos": 6,
-          "min_neg": 271
-        }
-      },
-      "baseline": {
-        "validation": {
-          "tpr_gap": 0.11875000000000002,
-          "tpr_gap_ci": [
-            0.0,
-            0.7143973214285714
-          ],
-          "metrics": [
-            {
-              "attribute": "work_type",
-              "group": "Govt_job",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": 198.0,
-              "n_pos": 5.0,
-              "n_neg": 193.0,
-              "tp": 3.0,
-              "fp": 18.0,
-              "fn": 2.0,
-              "tn": 175.0,
-              "pred_pos": 21.0,
-              "pred_neg": 177.0,
-              "selection_rate": 0.10606060606060606,
-              "TPR": 0.6,
-              "FPR": 0.09326424870466321,
-              "PPV": 0.14285714285714285,
-              "tpr_ci_low": 0.0,
-              "tpr_ci_high": 1.0,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "work_type",
-              "group": "Private",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": 569.0,
-              "n_pos": 32.0,
-              "n_neg": 537.0,
-              "tp": 23.0,
-              "fp": 128.0,
-              "fn": 9.0,
-              "tn": 409.0,
-              "pred_pos": 151.0,
-              "pred_neg": 418.0,
-              "selection_rate": 0.26537785588752194,
-              "TPR": 0.71875,
-              "FPR": 0.2383612662942272,
-              "PPV": 0.152317880794702,
-              "tpr_ci_low": 0.5623263888888889,
-              "tpr_ci_high": 0.8710685483870967,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "work_type",
-              "group": "__GAP__",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": NaN,
-              "n_pos": NaN,
-              "n_neg": NaN,
-              "tp": NaN,
-              "fp": NaN,
-              "fn": NaN,
-              "tn": NaN,
-              "pred_pos": NaN,
-              "pred_neg": NaN,
-              "selection_rate": NaN,
-              "TPR": NaN,
-              "FPR": NaN,
-              "PPV": NaN,
-              "tpr_ci_low": NaN,
-              "tpr_ci_high": NaN,
-              "tpr_gap": 0.11875000000000002,
-              "tpr_gap_ci_low": 0.0,
-              "tpr_gap_ci_high": 0.7143973214285714
-            }
-          ]
-        },
-        "test": {
-          "tpr_gap": 0.10606060606060608,
-          "tpr_gap_ci": [
-            0.005948920265780711,
-            0.5838625015223481
-          ],
-          "metrics": [
-            {
-              "attribute": "work_type",
-              "group": "Govt_job",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": 277.0,
-              "n_pos": 6.0,
-              "n_neg": 271.0,
-              "tp": 4.0,
-              "fp": 24.0,
-              "fn": 2.0,
-              "tn": 247.0,
-              "pred_pos": 28.0,
-              "pred_neg": 249.0,
-              "selection_rate": 0.10108303249097472,
-              "TPR": 0.6666666666666666,
-              "FPR": 0.08856088560885608,
-              "PPV": 0.14285714285714285,
-              "tpr_ci_low": 0.2450000000000001,
-              "tpr_ci_high": 1.0,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "work_type",
-              "group": "Private",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": 745.0,
-              "n_pos": 44.0,
-              "n_neg": 701.0,
-              "tp": 34.0,
-              "fp": 160.0,
-              "fn": 10.0,
-              "tn": 541.0,
-              "pred_pos": 194.0,
-              "pred_neg": 551.0,
-              "selection_rate": 0.26040268456375837,
-              "TPR": 0.7727272727272727,
-              "FPR": 0.2282453637660485,
-              "PPV": 0.17525773195876287,
-              "tpr_ci_low": 0.6428234501347709,
-              "tpr_ci_high": 0.8958733974358974,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "work_type",
-              "group": "__GAP__",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": NaN,
-              "n_pos": NaN,
-              "n_neg": NaN,
-              "tp": NaN,
-              "fp": NaN,
-              "fn": NaN,
-              "tn": NaN,
-              "pred_pos": NaN,
-              "pred_neg": NaN,
-              "selection_rate": NaN,
-              "TPR": NaN,
-              "FPR": NaN,
-              "PPV": NaN,
-              "tpr_ci_low": NaN,
-              "tpr_ci_high": NaN,
-              "tpr_gap": 0.10606060606060608,
-              "tpr_gap_ci_low": 0.005948920265780711,
-              "tpr_gap_ci_high": 0.5838625015223481
-            }
-          ]
-        }
-      },
-      "final_stage": {
-        "stage": "post_equal_opportunity",
-        "validation_tpr_gap": 0.0625,
-        "validation_tpr_gap_ci": [
-          0.0,
-          0.15000000000000002
-        ],
-        "test_tpr_gap": 0.007575757575757569,
-        "test_tpr_gap_ci": [
-          0.005552536231884039,
-          0.4184081632653061
-        ],
-        "metrics_validation": [
-          {
-            "attribute": "work_type",
-            "group": "Govt_job",
-            "dataset": "validation",
-            "stage": "post_equal_opportunity",
-            "n_total": 198.0,
-            "n_pos": 5.0,
-            "n_neg": 193.0,
-            "tp": 5.0,
-            "fp": 54.0,
-            "fn": 0.0,
-            "tn": 139.0,
-            "pred_pos": 59.0,
-            "pred_neg": 139.0,
-            "selection_rate": 0.29797979797979796,
-            "TPR": 1.0,
-            "FPR": 0.27979274611398963,
-            "PPV": 0.0847457627118644,
-            "tpr_ci_low": 1.0,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "work_type",
-            "group": "Private",
-            "dataset": "validation",
-            "stage": "post_equal_opportunity",
-            "n_total": 569.0,
-            "n_pos": 32.0,
-            "n_neg": 537.0,
-            "tp": 30.0,
-            "fp": 201.0,
-            "fn": 2.0,
-            "tn": 336.0,
-            "pred_pos": 231.0,
-            "pred_neg": 338.0,
-            "selection_rate": 0.40597539543058,
-            "TPR": 0.9375,
-            "FPR": 0.3743016759776536,
-            "PPV": 0.12987012987012986,
-            "tpr_ci_low": 0.85,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "work_type",
-            "group": "__GAP__",
-            "dataset": "validation",
-            "stage": "post_equal_opportunity",
-            "n_total": NaN,
-            "n_pos": NaN,
-            "n_neg": NaN,
-            "tp": NaN,
-            "fp": NaN,
-            "fn": NaN,
-            "tn": NaN,
-            "pred_pos": NaN,
-            "pred_neg": NaN,
-            "selection_rate": NaN,
-            "TPR": NaN,
-            "FPR": NaN,
-            "PPV": NaN,
-            "tpr_ci_low": NaN,
-            "tpr_ci_high": NaN,
-            "tpr_gap": 0.0625,
-            "tpr_gap_ci_low": 0.0,
-            "tpr_gap_ci_high": 0.15000000000000002
-          }
-        ],
-        "metrics_test": [
-          {
-            "attribute": "work_type",
-            "group": "Govt_job",
-            "dataset": "test",
-            "stage": "post_equal_opportunity",
-            "n_total": 277.0,
-            "n_pos": 6.0,
-            "n_neg": 271.0,
-            "tp": 5.0,
-            "fp": 69.0,
-            "fn": 1.0,
-            "tn": 202.0,
-            "pred_pos": 74.0,
-            "pred_neg": 203.0,
-            "selection_rate": 0.26714801444043323,
-            "TPR": 0.8333333333333334,
-            "FPR": 0.25461254612546125,
-            "PPV": 0.06756756756756757,
-            "tpr_ci_low": 0.42857142857142855,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "work_type",
-            "group": "Private",
-            "dataset": "test",
-            "stage": "post_equal_opportunity",
-            "n_total": 745.0,
-            "n_pos": 44.0,
-            "n_neg": 701.0,
-            "tp": 37.0,
-            "fp": 259.0,
-            "fn": 7.0,
-            "tn": 442.0,
-            "pred_pos": 296.0,
-            "pred_neg": 449.0,
-            "selection_rate": 0.39731543624161075,
-            "TPR": 0.8409090909090909,
-            "FPR": 0.369472182596291,
-            "PPV": 0.125,
-            "tpr_ci_low": 0.7233424047501238,
-            "tpr_ci_high": 0.948780487804878,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "work_type",
-            "group": "__GAP__",
-            "dataset": "test",
-            "stage": "post_equal_opportunity",
-            "n_total": NaN,
-            "n_pos": NaN,
-            "n_neg": NaN,
-            "tp": NaN,
-            "fp": NaN,
-            "fn": NaN,
-            "tn": NaN,
-            "pred_pos": NaN,
-            "pred_neg": NaN,
-            "selection_rate": NaN,
-            "TPR": NaN,
-            "FPR": NaN,
-            "PPV": NaN,
-            "tpr_ci_low": NaN,
-            "tpr_ci_high": NaN,
-            "tpr_gap": 0.007575757575757569,
-            "tpr_gap_ci_low": 0.005552536231884039,
-            "tpr_gap_ci_high": 0.4184081632653061
-          }
-        ]
-      },
-      "history": [
-        {
-          "constraint": "true_positive_rate_parity",
-          "status": "applied",
-          "validation_tpr_gap": 0.0625,
-          "validation_tpr_gap_ci": [
-            0.0,
-            0.15000000000000002
-          ],
-          "test_tpr_gap": 0.007575757575757569,
-          "test_tpr_gap_ci": [
-            0.005552536231884039,
-            0.4184081632653061
-          ]
-        },
-        {
-          "constraint": "equalized_odds",
-          "status": "skipped_due_to_data",
-          "reason": "insufficient_support"
-        }
-      ]
-    },
-    {
-      "attribute": "is_elderly",
-      "support": {
-        "validation": {
-          "min_pos": 13,
-          "min_neg": 131
-        },
-        "test": {
-          "min_pos": 15,
-          "min_neg": 165
-        }
-      },
-      "baseline": {
-        "validation": {
-          "tpr_gap": 0.49038461538461536,
-          "tpr_gap_ci": [
-            0.1568542199488491,
-            0.7951357466063347
-          ],
-          "metrics": [
-            {
-              "attribute": "is_elderly",
-              "group": "0",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": 612.0,
-              "n_pos": 13.0,
-              "n_neg": 599.0,
-              "tp": 5.0,
-              "fp": 29.0,
-              "fn": 8.0,
-              "tn": 570.0,
-              "pred_pos": 34.0,
-              "pred_neg": 578.0,
-              "selection_rate": 0.05555555555555555,
-              "TPR": 0.38461538461538464,
-              "FPR": 0.048414023372287146,
+              "FPR": 0.1643059490084986,
               "PPV": 0.14705882352941177,
-              "tpr_ci_low": 0.12481617647058825,
-              "tpr_ci_high": 0.6666666666666666,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
+              "selection_rate": 0.18478260869565216,
+              "attribute": "smoking_status",
+              "dataset": "validation"
             },
             {
-              "attribute": "is_elderly",
-              "group": "1",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": 155.0,
-              "n_pos": 24.0,
-              "n_neg": 131.0,
-              "tp": 21.0,
-              "fp": 117.0,
-              "fn": 3.0,
-              "tn": 14.0,
-              "pred_pos": 138.0,
-              "pred_neg": 17.0,
-              "selection_rate": 0.8903225806451613,
-              "TPR": 0.875,
-              "FPR": 0.8931297709923665,
-              "PPV": 0.15217391304347827,
-              "tpr_ci_low": 0.7222222222222222,
-              "tpr_ci_high": 1.0,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
+              "group": "never smoked",
+              "TPR": 0.6,
+              "FPR": 0.16981132075471697,
+              "PPV": 0.16666666666666666,
+              "selection_rate": 0.19285714285714287,
+              "attribute": "smoking_status",
+              "dataset": "validation"
             },
             {
-              "attribute": "is_elderly",
-              "group": "__GAP__",
-              "dataset": "validation",
-              "stage": "baseline",
-              "n_total": NaN,
-              "n_pos": NaN,
-              "n_neg": NaN,
-              "tp": NaN,
-              "fp": NaN,
-              "fn": NaN,
-              "tn": NaN,
-              "pred_pos": NaN,
-              "pred_neg": NaN,
-              "selection_rate": NaN,
-              "TPR": NaN,
-              "FPR": NaN,
-              "PPV": NaN,
-              "tpr_ci_low": NaN,
-              "tpr_ci_high": NaN,
-              "tpr_gap": 0.49038461538461536,
-              "tpr_gap_ci_low": 0.1568542199488491,
-              "tpr_gap_ci_high": 0.7951357466063347
+              "group": "smokes",
+              "TPR": 0.42857142857142855,
+              "FPR": 0.08928571428571429,
+              "PPV": 0.23076923076923078,
+              "selection_rate": 0.1092436974789916,
+              "attribute": "smoking_status",
+              "dataset": "validation"
             }
-          ]
-        },
-        "test": {
-          "tpr_gap": 0.8,
-          "tpr_gap_ci": [
-            0.5832236842105263,
-            1.0
           ],
+          "confidence_intervals": [
+            {
+              "group": "never smoked",
+              "TPR_mean": 0.5958535419025269,
+              "TPR_ci_lower": 0.3888888888888889,
+              "TPR_ci_upper": 0.8
+            },
+            {
+              "group": "formerly smoked",
+              "TPR_mean": 0.6705013596427727,
+              "TPR_ci_lower": 0.46153846153846156,
+              "TPR_ci_upper": 0.8571428571428571
+            },
+            {
+              "group": "smokes",
+              "TPR_mean": 0.43844847603377013,
+              "TPR_ci_lower": 0.1111111111111111,
+              "TPR_ci_upper": 0.75
+            }
+          ],
+          "TPR_gap": 0.23809523809523808,
+          "FPR_gap": 0.08052560646900268,
+          "TPR_gap_ci": {
+            "gap_mean": 0.3268945861937328,
+            "gap_ci_lower": 0.09509157509157509,
+            "gap_ci_upper": 0.6461990950226243
+          }
+        },
+        "work_type": {
+          "support_info": {
+            "Govt_job": {
+              "n_pos": 5,
+              "n_neg": 193,
+              "n_total": 198
+            },
+            "Private": {
+              "n_pos": 32,
+              "n_neg": 537,
+              "n_total": 569
+            }
+          },
           "metrics": [
             {
-              "attribute": "is_elderly",
-              "group": "0",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": 822.0,
-              "n_pos": 15.0,
-              "n_neg": 807.0,
-              "tp": 3.0,
-              "fp": 38.0,
-              "fn": 12.0,
-              "tn": 769.0,
-              "pred_pos": 41.0,
-              "pred_neg": 781.0,
-              "selection_rate": 0.049878345498783457,
-              "TPR": 0.2,
-              "FPR": 0.04708798017348203,
-              "PPV": 0.07317073170731707,
-              "tpr_ci_low": 0.0,
-              "tpr_ci_high": 0.4167763157894736,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
+              "group": "Govt_job",
+              "TPR": 0.6,
+              "FPR": 0.05699481865284974,
+              "PPV": 0.21428571428571427,
+              "selection_rate": 0.0707070707070707,
+              "attribute": "work_type",
+              "dataset": "validation"
             },
             {
-              "attribute": "is_elderly",
-              "group": "1",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": 200.0,
-              "n_pos": 35.0,
-              "n_neg": 165.0,
-              "tp": 35.0,
-              "fp": 146.0,
-              "fn": 0.0,
-              "tn": 19.0,
-              "pred_pos": 181.0,
-              "pred_neg": 19.0,
-              "selection_rate": 0.905,
-              "TPR": 1.0,
-              "FPR": 0.8848484848484849,
-              "PPV": 0.19337016574585636,
-              "tpr_ci_low": 1.0,
-              "tpr_ci_high": 1.0,
-              "tpr_gap": NaN,
-              "tpr_gap_ci_low": NaN,
-              "tpr_gap_ci_high": NaN
-            },
-            {
-              "attribute": "is_elderly",
-              "group": "__GAP__",
-              "dataset": "test",
-              "stage": "baseline",
-              "n_total": NaN,
-              "n_pos": NaN,
-              "n_neg": NaN,
-              "tp": NaN,
-              "fp": NaN,
-              "fn": NaN,
-              "tn": NaN,
-              "pred_pos": NaN,
-              "pred_neg": NaN,
-              "selection_rate": NaN,
-              "TPR": NaN,
-              "FPR": NaN,
-              "PPV": NaN,
-              "tpr_ci_low": NaN,
-              "tpr_ci_high": NaN,
-              "tpr_gap": 0.8,
-              "tpr_gap_ci_low": 0.5832236842105263,
-              "tpr_gap_ci_high": 1.0
+              "group": "Private",
+              "TPR": 0.59375,
+              "FPR": 0.18994413407821228,
+              "PPV": 0.15702479338842976,
+              "selection_rate": 0.2126537785588752,
+              "attribute": "work_type",
+              "dataset": "validation"
             }
-          ]
+          ],
+          "confidence_intervals": [
+            {
+              "group": "Govt_job",
+              "TPR_mean": 0.5897240981240982,
+              "TPR_ci_lower": 0.16666666666666666,
+              "TPR_ci_upper": 1.0
+            },
+            {
+              "group": "Private",
+              "TPR_mean": 0.5963325465416444,
+              "TPR_ci_lower": 0.4582738095238095,
+              "TPR_ci_upper": 0.7352941176470589
+            }
+          ],
+          "TPR_gap": 0.006249999999999978,
+          "FPR_gap": 0.13294931542536254,
+          "TPR_gap_ci": {
+            "gap_mean": 0.2142087933214724,
+            "gap_ci_lower": 0.015372960372960426,
+            "gap_ci_upper": 0.5212622549019604
+          }
+        },
+        "is_elderly": {
+          "support_info": {
+            "0": {
+              "n_pos": 13,
+              "n_neg": 599,
+              "n_total": 612
+            },
+            "1": {
+              "n_pos": 24,
+              "n_neg": 131,
+              "n_total": 155
+            }
+          },
+          "metrics": [
+            {
+              "group": "0",
+              "TPR": 0.23076923076923078,
+              "FPR": 0.015025041736227046,
+              "PPV": 0.25,
+              "selection_rate": 0.0196078431372549,
+              "attribute": "is_elderly",
+              "dataset": "validation"
+            },
+            {
+              "group": "1",
+              "TPR": 0.7916666666666666,
+              "FPR": 0.7938931297709924,
+              "PPV": 0.15447154471544716,
+              "selection_rate": 0.7935483870967742,
+              "attribute": "is_elderly",
+              "dataset": "validation"
+            }
+          ],
+          "confidence_intervals": [
+            {
+              "group": "0",
+              "TPR_mean": 0.22764578769221389,
+              "TPR_ci_lower": 0.0,
+              "TPR_ci_upper": 0.4375
+            },
+            {
+              "group": "1",
+              "TPR_mean": 0.7941172012649188,
+              "TPR_ci_lower": 0.6551061007957559,
+              "TPR_ci_upper": 0.9259259259259259
+            }
+          ],
+          "TPR_gap": 0.5608974358974359,
+          "FPR_gap": 0.7788680880347653,
+          "TPR_gap_ci": {
+            "gap_mean": 0.5664714135727047,
+            "gap_ci_lower": 0.32381628787878786,
+            "gap_ci_upper": 0.8013153513153513
+          }
+        }
+      }
+    },
+    "test": {
+      "attributes": {
+        "Residence_type": {
+          "support_info": {
+            "Rural": {
+              "n_pos": 23,
+              "n_neg": 472,
+              "n_total": 495
+            },
+            "Urban": {
+              "n_pos": 27,
+              "n_neg": 500,
+              "n_total": 527
+            }
+          },
+          "metrics": [
+            {
+              "group": "Rural",
+              "TPR": 0.6956521739130435,
+              "FPR": 0.15254237288135594,
+              "PPV": 0.18181818181818182,
+              "selection_rate": 0.17777777777777778,
+              "attribute": "Residence_type",
+              "dataset": "test"
+            },
+            {
+              "group": "Urban",
+              "TPR": 0.7777777777777778,
+              "FPR": 0.146,
+              "PPV": 0.22340425531914893,
+              "selection_rate": 0.17836812144212524,
+              "attribute": "Residence_type",
+              "dataset": "test"
+            }
+          ],
+          "confidence_intervals": [
+            {
+              "group": "Rural",
+              "TPR_mean": 0.6963467472238092,
+              "TPR_ci_lower": 0.5384615384615384,
+              "TPR_ci_upper": 0.85
+            },
+            {
+              "group": "Urban",
+              "TPR_mean": 0.7761057596349924,
+              "TPR_ci_lower": 0.64,
+              "TPR_ci_upper": 0.9032258064516129
+            }
+          ],
+          "TPR_gap": 0.08212560386473433,
+          "FPR_gap": 0.006542372881355951,
+          "TPR_gap_ci": {
+            "gap_mean": 0.11841212074374217,
+            "gap_ci_lower": 0.008615791536050122,
+            "gap_ci_upper": 0.28375178770061965
+          }
+        },
+        "gender": {
+          "support_info": {
+            "Male": {
+              "n_pos": 21,
+              "n_neg": 402,
+              "n_total": 423
+            },
+            "Female": {
+              "n_pos": 29,
+              "n_neg": 570,
+              "n_total": 599
+            }
+          },
+          "metrics": [
+            {
+              "group": "Female",
+              "TPR": 0.8275862068965517,
+              "FPR": 0.14210526315789473,
+              "PPV": 0.22857142857142856,
+              "selection_rate": 0.17529215358931552,
+              "attribute": "gender",
+              "dataset": "test"
+            },
+            {
+              "group": "Male",
+              "TPR": 0.6190476190476191,
+              "FPR": 0.15920398009950248,
+              "PPV": 0.16883116883116883,
+              "selection_rate": 0.18203309692671396,
+              "attribute": "gender",
+              "dataset": "test"
+            }
+          ],
+          "confidence_intervals": [
+            {
+              "group": "Male",
+              "TPR_mean": 0.6155162912240559,
+              "TPR_ci_lower": 0.4442222222222222,
+              "TPR_ci_upper": 0.7858225108225108
+            },
+            {
+              "group": "Female",
+              "TPR_mean": 0.8291931575897973,
+              "TPR_ci_lower": 0.7,
+              "TPR_ci_upper": 0.9375
+            }
+          ],
+          "TPR_gap": 0.20853858784893264,
+          "FPR_gap": 0.01709871694160775,
+          "TPR_gap_ci": {
+            "gap_mean": 0.21828126393675812,
+            "gap_ci_lower": 0.02995895408938897,
+            "gap_ci_upper": 0.4368834470127572
+          }
+        },
+        "smoking_status": {
+          "support_info": {
+            "never smoked": {
+              "n_pos": 19,
+              "n_neg": 372,
+              "n_total": 391
+            },
+            "smokes": {
+              "n_pos": 8,
+              "n_neg": 155,
+              "n_total": 163
+            },
+            "formerly smoked": {
+              "n_pos": 23,
+              "n_neg": 445,
+              "n_total": 468
+            }
+          },
+          "metrics": [
+            {
+              "group": "formerly smoked",
+              "TPR": 0.6086956521739131,
+              "FPR": 0.14157303370786517,
+              "PPV": 0.18181818181818182,
+              "selection_rate": 0.16452991452991453,
+              "attribute": "smoking_status",
+              "dataset": "test"
+            },
+            {
+              "group": "never smoked",
+              "TPR": 0.8947368421052632,
+              "FPR": 0.17473118279569894,
+              "PPV": 0.2073170731707317,
+              "selection_rate": 0.20971867007672634,
+              "attribute": "smoking_status",
+              "dataset": "test"
+            },
+            {
+              "group": "smokes",
+              "TPR": 0.75,
+              "FPR": 0.10967741935483871,
+              "PPV": 0.2608695652173913,
+              "selection_rate": 0.1411042944785276,
+              "attribute": "smoking_status",
+              "dataset": "test"
+            }
+          ],
+          "confidence_intervals": [
+            {
+              "group": "never smoked",
+              "TPR_mean": 0.891397651884504,
+              "TPR_ci_lower": 0.7619047619047619,
+              "TPR_ci_upper": 1.0
+            },
+            {
+              "group": "smokes",
+              "TPR_mean": 0.7580079232085425,
+              "TPR_ci_lower": 0.5,
+              "TPR_ci_upper": 1.0
+            },
+            {
+              "group": "formerly smoked",
+              "TPR_mean": 0.6082116505684333,
+              "TPR_ci_lower": 0.4444444444444444,
+              "TPR_ci_upper": 0.7777777777777778
+            }
+          ],
+          "TPR_gap": 0.2860411899313501,
+          "FPR_gap": 0.06505376344086022,
+          "TPR_gap_ci": {
+            "gap_mean": 0.3315797865691803,
+            "gap_ci_lower": 0.13671600050276517,
+            "gap_ci_upper": 0.5314597069597069
+          }
+        },
+        "work_type": {
+          "support_info": {
+            "Private": {
+              "n_pos": 44,
+              "n_neg": 701,
+              "n_total": 745
+            },
+            "Govt_job": {
+              "n_pos": 6,
+              "n_neg": 271,
+              "n_total": 277
+            }
+          },
+          "metrics": [
+            {
+              "group": "Govt_job",
+              "TPR": 0.6666666666666666,
+              "FPR": 0.07011070110701106,
+              "PPV": 0.17391304347826086,
+              "selection_rate": 0.08303249097472924,
+              "attribute": "work_type",
+              "dataset": "test"
+            },
+            {
+              "group": "Private",
+              "TPR": 0.75,
+              "FPR": 0.1797432239657632,
+              "PPV": 0.20754716981132076,
+              "selection_rate": 0.2134228187919463,
+              "attribute": "work_type",
+              "dataset": "test"
+            }
+          ],
+          "confidence_intervals": [
+            {
+              "group": "Private",
+              "TPR_mean": 0.7493367009060371,
+              "TPR_ci_lower": 0.6363636363636364,
+              "TPR_ci_upper": 0.8572857142857141
+            },
+            {
+              "group": "Govt_job",
+              "TPR_mean": 0.6634862914862916,
+              "TPR_ci_lower": 0.2857142857142857,
+              "TPR_ci_upper": 1.0
+            }
+          ],
+          "TPR_gap": 0.08333333333333337,
+          "FPR_gap": 0.10963252285875213,
+          "TPR_gap_ci": {
+            "gap_mean": 0.19129815493777869,
+            "gap_ci_lower": 0.014285714285714346,
+            "gap_ci_upper": 0.4860664076951533
+          }
+        },
+        "is_elderly": {
+          "support_info": {
+            "0": {
+              "n_pos": 15,
+              "n_neg": 807,
+              "n_total": 822
+            },
+            "1": {
+              "n_pos": 35,
+              "n_neg": 165,
+              "n_total": 200
+            }
+          },
+          "metrics": [
+            {
+              "group": "0",
+              "TPR": 0.13333333333333333,
+              "FPR": 0.023543990086741014,
+              "PPV": 0.09523809523809523,
+              "selection_rate": 0.025547445255474453,
+              "attribute": "is_elderly",
+              "dataset": "test"
+            },
+            {
+              "group": "1",
+              "TPR": 1.0,
+              "FPR": 0.7636363636363637,
+              "PPV": 0.21739130434782608,
+              "selection_rate": 0.805,
+              "attribute": "is_elderly",
+              "dataset": "test"
+            }
+          ],
+          "confidence_intervals": [
+            {
+              "group": "0",
+              "TPR_mean": 0.13313666413664457,
+              "TPR_ci_lower": 0.0,
+              "TPR_ci_upper": 0.2917892156862744
+            },
+            {
+              "group": "1",
+              "TPR_mean": 1.0,
+              "TPR_ci_lower": 1.0,
+              "TPR_ci_upper": 1.0
+            }
+          ],
+          "TPR_gap": 0.8666666666666667,
+          "FPR_gap": 0.7400923735496227,
+          "TPR_gap_ci": {
+            "gap_mean": 0.8668633358633554,
+            "gap_ci_lower": 0.7082107843137254,
+            "gap_ci_upper": 1.0
+          }
+        }
+      }
+    }
+  },
+  "mitigation": {
+    "stages_applied": [
+      {
+        "attribute": "Residence_type",
+        "stage": "equal_opportunity",
+        "tpr_gap_val_post": 0.024242424242424288,
+        "tpr_gap_test_post": 0.1497584541062802,
+        "tpr_gap_test_ci": {
+          "gap_mean": 0.15838812070633038,
+          "gap_ci_lower": 0.016020114942528786,
+          "gap_ci_upper": 0.33333333333333326
         }
       },
-      "final_stage": {
-        "stage": "post_equal_opportunity",
-        "validation_tpr_gap": 0.0,
-        "validation_tpr_gap_ci": [
-          0.0,
-          0.0
-        ],
-        "test_tpr_gap": 0.4666666666666667,
-        "test_tpr_gap_ci": [
-          0.2141917293233083,
-          0.7144841269841268
-        ],
-        "metrics_validation": [
-          {
-            "attribute": "is_elderly",
-            "group": "0",
-            "dataset": "validation",
-            "stage": "post_equal_opportunity",
-            "n_total": 612.0,
-            "n_pos": 13.0,
-            "n_neg": 599.0,
-            "tp": 13.0,
-            "fp": 228.0,
-            "fn": 0.0,
-            "tn": 371.0,
-            "pred_pos": 241.0,
-            "pred_neg": 371.0,
-            "selection_rate": 0.3937908496732026,
-            "TPR": 1.0,
-            "FPR": 0.3806343906510851,
-            "PPV": 0.05394190871369295,
-            "tpr_ci_low": 1.0,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
+      {
+        "attribute": "Residence_type",
+        "stage": "equalized_odds",
+        "tpr_gap_test_post": 0.19323671497584538,
+        "fpr_gap_test_post": 0.09120338983050849,
+        "tpr_gap_test_ci": {
+          "gap_mean": 0.19822050636855743,
+          "gap_ci_lower": 0.029710591133004928,
+          "gap_ci_upper": 0.37058823529411766
+        },
+        "note": "Equalized odds may conflict with calibration; prioritize Equal Opportunity"
+      },
+      {
+        "attribute": "gender",
+        "stage": "equal_opportunity",
+        "tpr_gap_val_post": 0.0029239766081871066,
+        "tpr_gap_test_post": 0.01806239737274218,
+        "tpr_gap_test_ci": {
+          "gap_mean": 0.09107364454012266,
+          "gap_ci_lower": 0.007347612958226746,
+          "gap_ci_upper": 0.2232440191387559
+        }
+      },
+      {
+        "attribute": "gender",
+        "stage": "equalized_odds",
+        "tpr_gap_test_post": 0.01806239737274218,
+        "fpr_gap_test_post": 0.08496988740507988,
+        "tpr_gap_test_ci": {
+          "gap_mean": 0.09107364454012266,
+          "gap_ci_lower": 0.007347612958226746,
+          "gap_ci_upper": 0.2232440191387559
+        },
+        "note": "Equalized odds may conflict with calibration; prioritize Equal Opportunity"
+      },
+      {
+        "attribute": "smoking_status",
+        "stage": "equal_opportunity",
+        "tpr_gap_val_post": 0.0,
+        "tpr_gap_test_post": 0.14473684210526316,
+        "tpr_gap_test_ci": {
+          "gap_mean": 0.21676551260042748,
+          "gap_ci_lower": 0.05555555555555558,
+          "gap_ci_upper": 0.4565217391304348
+        }
+      },
+      {
+        "attribute": "work_type",
+        "stage": "equal_opportunity",
+        "tpr_gap_val_post": 0.13749999999999996,
+        "tpr_gap_test_post": 0.015151515151515138,
+        "tpr_gap_test_ci": {
+          "gap_mean": 0.15175773829132902,
+          "gap_ci_lower": 0.012814407814407769,
+          "gap_ci_upper": 0.34050951847704364
+        }
+      },
+      {
+        "attribute": "is_elderly",
+        "stage": "equal_opportunity",
+        "tpr_gap_val_post": 0.0064102564102564985,
+        "tpr_gap_test_post": 0.4476190476190476,
+        "tpr_gap_test_ci": {
+          "gap_mean": 0.4426552160824999,
+          "gap_ci_lower": 0.2239448915965785,
+          "gap_ci_upper": 0.6667204301075269
+        }
+      },
+      {
+        "attribute": "is_elderly",
+        "stage": "equalized_odds",
+        "tpr_gap_test_post": 0.08571428571428569,
+        "fpr_gap_test_post": 0.06216063985580712,
+        "tpr_gap_test_ci": {
+          "gap_mean": 0.1283345194923736,
+          "gap_ci_lower": 0.010867212497647273,
+          "gap_ci_upper": 0.31381773399014773
+        },
+        "note": "Equalized odds may conflict with calibration; prioritize Equal Opportunity"
+      }
+    ],
+    "stages_skipped": [
+      {
+        "attribute": "smoking_status",
+        "stage": "equalized_odds",
+        "reason": "insufficient_data",
+        "support_info": {
+          "never smoked": {
+            "n_pos": 15,
+            "n_neg": 265,
+            "n_total": 280
           },
-          {
-            "attribute": "is_elderly",
-            "group": "1",
-            "dataset": "validation",
-            "stage": "post_equal_opportunity",
-            "n_total": 155.0,
-            "n_pos": 24.0,
-            "n_neg": 131.0,
-            "tp": 24.0,
-            "fp": 130.0,
-            "fn": 0.0,
-            "tn": 1.0,
-            "pred_pos": 154.0,
-            "pred_neg": 1.0,
-            "selection_rate": 0.9935483870967742,
-            "TPR": 1.0,
-            "FPR": 0.9923664122137404,
-            "PPV": 0.15584415584415584,
-            "tpr_ci_low": 1.0,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
+          "formerly smoked": {
+            "n_pos": 15,
+            "n_neg": 353,
+            "n_total": 368
           },
-          {
-            "attribute": "is_elderly",
-            "group": "__GAP__",
-            "dataset": "validation",
-            "stage": "post_equal_opportunity",
-            "n_total": NaN,
-            "n_pos": NaN,
-            "n_neg": NaN,
-            "tp": NaN,
-            "fp": NaN,
-            "fn": NaN,
-            "tn": NaN,
-            "pred_pos": NaN,
-            "pred_neg": NaN,
-            "selection_rate": NaN,
-            "TPR": NaN,
-            "FPR": NaN,
-            "PPV": NaN,
-            "tpr_ci_low": NaN,
-            "tpr_ci_high": NaN,
-            "tpr_gap": 0.0,
-            "tpr_gap_ci_low": 0.0,
-            "tpr_gap_ci_high": 0.0
+          "smokes": {
+            "n_pos": 7,
+            "n_neg": 112,
+            "n_total": 119
           }
-        ],
-        "metrics_test": [
+        }
+      },
+      {
+        "attribute": "work_type",
+        "stage": "equalized_odds",
+        "reason": "insufficient_data",
+        "support_info": {
+          "Govt_job": {
+            "n_pos": 5,
+            "n_neg": 193,
+            "n_total": 198
+          },
+          "Private": {
+            "n_pos": 32,
+            "n_neg": 537,
+            "n_total": 569
+          }
+        }
+      }
+    ],
+    "post_mitigation_val": {
+      "Residence_type": {
+        "stage": "equalized_odds",
+        "tpr_gap": 0.0636363636363636,
+        "fpr_gap": 0.020729435798834323,
+        "metrics": [
           {
-            "attribute": "is_elderly",
-            "group": "0",
-            "dataset": "test",
-            "stage": "post_equal_opportunity",
-            "n_total": 822.0,
-            "n_pos": 15.0,
-            "n_neg": 807.0,
-            "tp": 8.0,
-            "fp": 285.0,
-            "fn": 7.0,
-            "tn": 522.0,
-            "pred_pos": 293.0,
-            "pred_neg": 529.0,
-            "selection_rate": 0.3564476885644769,
-            "TPR": 0.5333333333333333,
-            "FPR": 0.35315985130111527,
-            "PPV": 0.027303754266211604,
-            "tpr_ci_low": 0.285515873015873,
-            "tpr_ci_high": 0.7858082706766917,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
+            "group": "Rural",
+            "TPR": 0.8,
+            "FPR": 0.24331550802139038,
+            "PPV": 0.11650485436893204,
+            "selection_rate": 0.2647814910025707,
+            "attribute": "Residence_type",
+            "dataset": "validation",
+            "stage": "post_equalized_odds"
           },
           {
-            "attribute": "is_elderly",
-            "group": "1",
-            "dataset": "test",
-            "stage": "post_equal_opportunity",
-            "n_total": 200.0,
-            "n_pos": 35.0,
-            "n_neg": 165.0,
-            "tp": 35.0,
-            "fp": 165.0,
-            "fn": 0.0,
-            "tn": 0.0,
-            "pred_pos": 200.0,
-            "pred_neg": 0.0,
-            "selection_rate": 1.0,
-            "TPR": 1.0,
-            "FPR": 1.0,
-            "PPV": 0.175,
-            "tpr_ci_low": 1.0,
-            "tpr_ci_high": 1.0,
-            "tpr_gap": NaN,
-            "tpr_gap_ci_low": NaN,
-            "tpr_gap_ci_high": NaN
-          },
-          {
-            "attribute": "is_elderly",
-            "group": "__GAP__",
-            "dataset": "test",
-            "stage": "post_equal_opportunity",
-            "n_total": NaN,
-            "n_pos": NaN,
-            "n_neg": NaN,
-            "tp": NaN,
-            "fp": NaN,
-            "fn": NaN,
-            "tn": NaN,
-            "pred_pos": NaN,
-            "pred_neg": NaN,
-            "selection_rate": NaN,
-            "TPR": NaN,
-            "FPR": NaN,
-            "PPV": NaN,
-            "tpr_ci_low": NaN,
-            "tpr_ci_high": NaN,
-            "tpr_gap": 0.4666666666666667,
-            "tpr_gap_ci_low": 0.2141917293233083,
-            "tpr_gap_ci_high": 0.7144841269841268
+            "group": "Urban",
+            "TPR": 0.8636363636363636,
+            "FPR": 0.2640449438202247,
+            "PPV": 0.168141592920354,
+            "selection_rate": 0.29894179894179895,
+            "attribute": "Residence_type",
+            "dataset": "validation",
+            "stage": "post_equalized_odds"
           }
         ]
       },
-      "history": [
-        {
-          "constraint": "true_positive_rate_parity",
-          "status": "applied",
-          "validation_tpr_gap": 0.0,
-          "validation_tpr_gap_ci": [
-            0.0,
-            0.0
-          ],
-          "test_tpr_gap": 0.4666666666666667,
-          "test_tpr_gap_ci": [
-            0.2141917293233083,
-            0.7144841269841268
-          ]
+      "gender": {
+        "stage": "equalized_odds",
+        "tpr_gap": 0.049707602339181256,
+        "fpr_gap": 0.02094400683885933,
+        "metrics": [
+          {
+            "group": "Female",
+            "TPR": 0.8947368421052632,
+            "FPR": 0.3155339805825243,
+            "PPV": 0.11564625850340136,
+            "selection_rate": 0.34106728538283065,
+            "attribute": "gender",
+            "dataset": "validation",
+            "stage": "post_equalized_odds"
+          },
+          {
+            "group": "Male",
+            "TPR": 0.9444444444444444,
+            "FPR": 0.33647798742138363,
+            "PPV": 0.13709677419354838,
+            "selection_rate": 0.36904761904761907,
+            "attribute": "gender",
+            "dataset": "validation",
+            "stage": "post_equalized_odds"
+          }
+        ]
+      },
+      "smoking_status": {
+        "stage": "equal_opportunity",
+        "tpr_gap": 0.0,
+        "fpr_gap": 0.24056603773584906,
+        "metrics": [
+          {
+            "group": "formerly smoked",
+            "TPR": 1.0,
+            "FPR": 0.34844192634560905,
+            "PPV": 0.10869565217391304,
+            "selection_rate": 0.375,
+            "attribute": "smoking_status",
+            "dataset": "validation",
+            "stage": "post_equal_opportunity"
+          },
+          {
+            "group": "never smoked",
+            "TPR": 1.0,
+            "FPR": 0.49056603773584906,
+            "PPV": 0.10344827586206896,
+            "selection_rate": 0.5178571428571429,
+            "attribute": "smoking_status",
+            "dataset": "validation",
+            "stage": "post_equal_opportunity"
+          },
+          {
+            "group": "smokes",
+            "TPR": 1.0,
+            "FPR": 0.25,
+            "PPV": 0.2,
+            "selection_rate": 0.29411764705882354,
+            "attribute": "smoking_status",
+            "dataset": "validation",
+            "stage": "post_equal_opportunity"
+          }
+        ]
+      },
+      "work_type": {
+        "stage": "equal_opportunity",
+        "tpr_gap": 0.13749999999999996,
+        "fpr_gap": 0.09620709950695189,
+        "metrics": [
+          {
+            "group": "Govt_job",
+            "TPR": 0.8,
+            "FPR": 0.2538860103626943,
+            "PPV": 0.07547169811320754,
+            "selection_rate": 0.2676767676767677,
+            "attribute": "work_type",
+            "dataset": "validation",
+            "stage": "post_equal_opportunity"
+          },
+          {
+            "group": "Private",
+            "TPR": 0.9375,
+            "FPR": 0.3500931098696462,
+            "PPV": 0.13761467889908258,
+            "selection_rate": 0.38312829525483305,
+            "attribute": "work_type",
+            "dataset": "validation",
+            "stage": "post_equal_opportunity"
+          }
+        ]
+      },
+      "is_elderly": {
+        "stage": "equalized_odds",
+        "tpr_gap": 0.09615384615384615,
+        "fpr_gap": 0.007608100014018279,
+        "metrics": [
+          {
+            "group": "0",
+            "TPR": 0.15384615384615385,
+            "FPR": 0.10684474123539232,
+            "PPV": 0.030303030303030304,
+            "selection_rate": 0.10784313725490197,
+            "attribute": "is_elderly",
+            "dataset": "validation",
+            "stage": "post_equalized_odds"
+          },
+          {
+            "group": "1",
+            "TPR": 0.25,
+            "FPR": 0.09923664122137404,
+            "PPV": 0.3157894736842105,
+            "selection_rate": 0.12258064516129032,
+            "attribute": "is_elderly",
+            "dataset": "validation",
+            "stage": "post_equalized_odds"
+          }
+        ]
+      }
+    },
+    "post_mitigation_test": {
+      "Residence_type": {
+        "stage": "equalized_odds",
+        "tpr_gap": 0.19323671497584538,
+        "fpr_gap": 0.09120338983050849,
+        "tpr_gap_ci": {
+          "gap_mean": 0.19822050636855743,
+          "gap_ci_lower": 0.029710591133004928,
+          "gap_ci_upper": 0.37058823529411766
         },
-        {
-          "constraint": "equalized_odds",
-          "status": "skipped_due_to_data",
-          "reason": "insufficient_support"
-        }
-      ]
-    }
-  ],
-  "alerts": [
-    "Residence_type: post-stage post_equal_opportunity test TPR-gap=0.150 [0.008, 0.357]",
-    "gender: post-stage baseline test TPR-gap=0.161 [0.009, 0.426]",
-    "smoking_status: post-stage baseline test TPR-gap=0.243 [0.083, 0.556]",
-    "is_elderly: post-stage post_equal_opportunity test TPR-gap=0.467 [0.214, 0.714]"
-  ]
+        "metrics": [
+          {
+            "group": "Rural",
+            "TPR": 0.6956521739130435,
+            "FPR": 0.3072033898305085,
+            "PPV": 0.09937888198757763,
+            "selection_rate": 0.32525252525252524,
+            "TPR_mean": 0.695329855486642,
+            "TPR_ci_lower": 0.5416666666666666,
+            "TPR_ci_upper": 0.8571428571428571,
+            "attribute": "Residence_type",
+            "dataset": "test",
+            "stage": "post_equalized_odds"
+          },
+          {
+            "group": "Urban",
+            "TPR": 0.8888888888888888,
+            "FPR": 0.216,
+            "PPV": 0.18181818181818182,
+            "selection_rate": 0.2504743833017078,
+            "TPR_mean": 0.8892902232338817,
+            "TPR_ci_lower": 0.7775985663082438,
+            "TPR_ci_upper": 1.0,
+            "attribute": "Residence_type",
+            "dataset": "test",
+            "stage": "post_equalized_odds"
+          }
+        ]
+      },
+      "gender": {
+        "stage": "equalized_odds",
+        "tpr_gap": 0.01806239737274218,
+        "fpr_gap": 0.08496988740507988,
+        "tpr_gap_ci": {
+          "gap_mean": 0.09107364454012266,
+          "gap_ci_lower": 0.007347612958226746,
+          "gap_ci_upper": 0.2232440191387559
+        },
+        "metrics": [
+          {
+            "group": "Female",
+            "TPR": 0.8275862068965517,
+            "FPR": 0.2807017543859649,
+            "PPV": 0.13043478260869565,
+            "selection_rate": 0.3071786310517529,
+            "TPR_mean": 0.8291931575897973,
+            "TPR_ci_lower": 0.7,
+            "TPR_ci_upper": 0.9375,
+            "attribute": "gender",
+            "dataset": "test",
+            "stage": "post_equalized_odds"
+          },
+          {
+            "group": "Male",
+            "TPR": 0.8095238095238095,
+            "FPR": 0.3656716417910448,
+            "PPV": 0.10365853658536585,
+            "selection_rate": 0.3877068557919622,
+            "TPR_mean": 0.8075336791618372,
+            "TPR_ci_lower": 0.6666666666666666,
+            "TPR_ci_upper": 0.9473684210526315,
+            "attribute": "gender",
+            "dataset": "test",
+            "stage": "post_equalized_odds"
+          }
+        ]
+      },
+      "smoking_status": {
+        "stage": "equal_opportunity",
+        "tpr_gap": 0.14473684210526316,
+        "fpr_gap": 0.14731182795698927,
+        "tpr_gap_ci": {
+          "gap_mean": 0.21676551260042748,
+          "gap_ci_lower": 0.05555555555555558,
+          "gap_ci_upper": 0.4565217391304348
+        },
+        "metrics": [
+          {
+            "group": "formerly smoked",
+            "TPR": 0.8260869565217391,
+            "FPR": 0.34831460674157305,
+            "PPV": 0.10919540229885058,
+            "selection_rate": 0.3717948717948718,
+            "TPR_mean": 0.8276173890937555,
+            "TPR_ci_lower": 0.6818181818181818,
+            "TPR_ci_upper": 0.9545454545454546,
+            "attribute": "smoking_status",
+            "dataset": "test",
+            "stage": "post_equal_opportunity"
+          },
+          {
+            "group": "never smoked",
+            "TPR": 0.8947368421052632,
+            "FPR": 0.42473118279569894,
+            "PPV": 0.09714285714285714,
+            "selection_rate": 0.4475703324808184,
+            "TPR_mean": 0.891397651884504,
+            "TPR_ci_lower": 0.7619047619047619,
+            "TPR_ci_upper": 1.0,
+            "attribute": "smoking_status",
+            "dataset": "test",
+            "stage": "post_equal_opportunity"
+          },
+          {
+            "group": "smokes",
+            "TPR": 0.75,
+            "FPR": 0.27741935483870966,
+            "PPV": 0.12244897959183673,
+            "selection_rate": 0.3006134969325153,
+            "TPR_mean": 0.7580079232085425,
+            "TPR_ci_lower": 0.5,
+            "TPR_ci_upper": 1.0,
+            "attribute": "smoking_status",
+            "dataset": "test",
+            "stage": "post_equal_opportunity"
+          }
+        ]
+      },
+      "work_type": {
+        "stage": "equal_opportunity",
+        "tpr_gap": 0.015151515151515138,
+        "fpr_gap": 0.10738481136594533,
+        "tpr_gap_ci": {
+          "gap_mean": 0.15175773829132902,
+          "gap_ci_lower": 0.012814407814407769,
+          "gap_ci_upper": 0.34050951847704364
+        },
+        "metrics": [
+          {
+            "group": "Govt_job",
+            "TPR": 0.8333333333333334,
+            "FPR": 0.24354243542435425,
+            "PPV": 0.07042253521126761,
+            "selection_rate": 0.2563176895306859,
+            "TPR_mean": 0.8314333805083804,
+            "TPR_ci_lower": 0.5,
+            "TPR_ci_upper": 1.0,
+            "attribute": "work_type",
+            "dataset": "test",
+            "stage": "post_equal_opportunity"
+          },
+          {
+            "group": "Private",
+            "TPR": 0.8181818181818182,
+            "FPR": 0.3509272467902996,
+            "PPV": 0.1276595744680851,
+            "selection_rate": 0.3785234899328859,
+            "TPR_mean": 0.8185679299183664,
+            "TPR_ci_lower": 0.717391304347826,
+            "TPR_ci_upper": 0.9111111111111111,
+            "attribute": "work_type",
+            "dataset": "test",
+            "stage": "post_equal_opportunity"
+          }
+        ]
+      },
+      "is_elderly": {
+        "stage": "equalized_odds",
+        "tpr_gap": 0.08571428571428569,
+        "fpr_gap": 0.06216063985580712,
+        "tpr_gap_ci": {
+          "gap_mean": 0.1283345194923736,
+          "gap_ci_lower": 0.010867212497647273,
+          "gap_ci_upper": 0.31381773399014773
+        },
+        "metrics": [
+          {
+            "group": "0",
+            "TPR": 0.2,
+            "FPR": 0.09541511771995044,
+            "PPV": 0.0375,
+            "selection_rate": 0.09732360097323602,
+            "TPR_mean": 0.19967703794166047,
+            "TPR_ci_lower": 0.0,
+            "TPR_ci_upper": 0.3888888888888889,
+            "attribute": "is_elderly",
+            "dataset": "test",
+            "stage": "post_equalized_odds"
+          },
+          {
+            "group": "1",
+            "TPR": 0.2857142857142857,
+            "FPR": 0.15757575757575756,
+            "PPV": 0.2777777777777778,
+            "selection_rate": 0.18,
+            "TPR_mean": 0.28536537941958423,
+            "TPR_ci_lower": 0.16216216216216217,
+            "TPR_ci_upper": 0.41473577235772346,
+            "attribute": "is_elderly",
+            "dataset": "test",
+            "stage": "post_equalized_odds"
+          }
+        ]
+      }
+    },
+    "alerts": [
+      {
+        "attribute": "Residence_type",
+        "stage": "post_equal_opportunity",
+        "message": "ALERT: Residence_type retains TPR disparity after Equal Opportunity (gap=0.1498, CI lower=0.0160)",
+        "tpr_gap": 0.1497584541062802,
+        "ci_lower": 0.016020114942528786
+      },
+      {
+        "attribute": "Residence_type",
+        "stage": "post_equalized_odds",
+        "message": "ALERT: Residence_type retains TPR disparity after Equalized Odds (gap=0.1932, CI lower=0.0297)",
+        "tpr_gap": 0.19323671497584538,
+        "ci_lower": 0.029710591133004928
+      },
+      {
+        "attribute": "smoking_status",
+        "stage": "post_equal_opportunity",
+        "message": "ALERT: smoking_status retains TPR disparity after Equal Opportunity (gap=0.1447, CI lower=0.0556)",
+        "tpr_gap": 0.14473684210526316,
+        "ci_lower": 0.05555555555555558
+      },
+      {
+        "attribute": "is_elderly",
+        "stage": "post_equal_opportunity",
+        "message": "ALERT: is_elderly retains TPR disparity after Equal Opportunity (gap=0.4476, CI lower=0.2239)",
+        "tpr_gap": 0.4476190476190476,
+        "ci_lower": 0.2239448915965785
+      }
+    ]
+  },
+  "summary": {
+    "total_alerts": 4,
+    "stages_applied": 8,
+    "stages_skipped": 2
+  }
 }
