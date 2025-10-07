@@ -13,19 +13,22 @@ Features:
 from fastapi import FastAPI, HTTPException, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, validator
-from typing import Optional, Dict, List, TYPE_CHECKING
+from typing import Optional, Dict, List, TYPE_CHECKING, Any, Callable, TypeVar, cast
 import joblib
 import pandas as pd
 import numpy as np
 from pathlib import Path
 import json
 import logging
+import time
 from datetime import datetime, UTC
 import hashlib
 import asyncio
 from contextlib import asynccontextmanager
 import sys
 import os
+from prometheus_client import Counter, Gauge, Histogram, REGISTRY, make_asgi_app
+from src.feature_engineering import engineer_medical_features
 
 # Advanced imports (optional)
 try:
@@ -49,8 +52,11 @@ for directory in [LOGS_DIR, DATA_DIR]:
 
 # Model path
 MODEL_PATH = MODELS_DIR / "stroke_model_v2_production.joblib"
+CALIBRATOR_PATH = MODELS_DIR / "calibrator.joblib"
+CALIBRATION_META_PATH = MODELS_DIR / "calibration_meta.json"
 METADATA_PATH = MODELS_DIR / "model_metadata_production.json"
 MODEL_CANDIDATES = [
+    CALIBRATOR_PATH,
     MODEL_PATH,
     MODELS_DIR / "logistic_l2_calibrated_v4_v3.0.0.joblib",
     MODELS_DIR / "logistic_l2_calibrated_v3_1_v3.0.0.joblib",
@@ -96,8 +102,125 @@ def load_threshold() -> float:
         return DEFAULT_THRESHOLD
 
 OP_THRESHOLD = load_threshold()
+PROBABILITY_BUCKETS = tuple(np.linspace(0.0, 1.0, 21))
+
+CollectorType = TypeVar("CollectorType", Counter, Gauge, Histogram)
+
+
+def _collector(metric_name: str, factory: Callable[[], CollectorType]) -> CollectorType:
+    existing = REGISTRY._names_to_collectors.get(metric_name)
+    if existing:
+        return cast(CollectorType, existing)
+    collector = factory()
+    return collector
+
+
+REQUEST_COUNTER = _collector(
+    "stroke_api_requests_total",
+    lambda: Counter(
+        "stroke_api_requests_total",
+        "Contagem de requisições HTTP por endpoint",
+        ["endpoint", "method", "status"],
+    ),
+)
+REQUEST_LATENCY = _collector(
+    "stroke_api_request_latency_seconds",
+    lambda: Histogram(
+        "stroke_api_request_latency_seconds",
+        "Latência das requisições HTTP",
+        ["endpoint"],
+    ),
+)
+PREDICTION_PROBABILITY = _collector(
+    "stroke_prediction_probability",
+    lambda: Histogram(
+        "stroke_prediction_probability",
+        "Distribution of predicted probabilities",
+        buckets=PROBABILITY_BUCKETS,
+    ),
+)
+PREDICTION_ALERT_COUNTER = _collector(
+    "stroke_prediction_alerts_total",
+    lambda: Counter(
+        "stroke_prediction_alerts_total",
+        "Contagem de alertas gerados",
+        ["alert"],
+    ),
+)
+ALERT_RATE_GAUGE = _collector(
+    "stroke_prediction_alert_rate",
+    lambda: Gauge(
+        "stroke_prediction_alert_rate",
+        "Alert rate (alerts/predictions)",
+    ),
+)
+THRESHOLD_GAUGE = _collector(
+    "stroke_operational_threshold",
+    lambda: Gauge(
+        "stroke_operational_threshold",
+        "Operational threshold applied after calibration",
+    ),
+)
+THRESHOLD_GAUGE.set(OP_THRESHOLD)
+logger.info(f"Threshold operacional carregado: {OP_THRESHOLD:.3f}")
 
 # ========== UTILITIES ==========
+
+WORK_TYPE_NORMALIZATION = {
+    "private": "Private",
+    "self-employed": "Self-employed",
+    "self employed": "Self-employed",
+    "selfemployed": "Self-employed",
+    "govt_job": "Govt_job",
+    "govt job": "Govt_job",
+    "government": "Govt_job",
+    "children": "children",
+    "child": "children",
+    "never_worked": "Never_worked",
+    "never worked": "Never_worked",
+}
+SMOKING_STATUS_NORMALIZATION = {
+    "never smoked": "never smoked",
+    "never_smoked": "never smoked",
+    "never-smoked": "never smoked",
+    "formerly smoked": "formerly smoked",
+    "former smoker": "formerly smoked",
+    "former_smoker": "formerly smoked",
+    "smokes": "smokes",
+    "smoker": "smokes",
+    "current": "smokes",
+    "unknown": "Unknown",
+}
+RESIDENCE_NORMALIZATION = {
+    "urban": "Urban",
+    "rural": "Rural",
+}
+MARRIED_NORMALIZATION = {
+    "yes": "Yes",
+    "y": "Yes",
+    "no": "No",
+    "n": "No",
+}
+GENDER_NORMALIZATION = {
+    "male": "Male",
+    "m": "Male",
+    "female": "Female",
+    "f": "Female",
+    "other": "Other",
+}
+
+
+def normalize_choice(value: str, mapping: Dict[str, str], allowed: List[str], field: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError(f"{field} must be a string")
+    key = value.strip().lower()
+    if key in mapping:
+        return mapping[key]
+    candidate = value.strip()
+    if candidate in allowed:
+        return candidate
+    raise ValueError(f"{field} must be one of {allowed}")
+
 
 def _guess_metadata_path(model_file: Path) -> Optional[Path]:
     """Attempt to infer a metadata file that corresponds to a given model artifact."""
@@ -120,11 +243,14 @@ class AppState:
     """Global application state"""
     model = None
     metadata = None
+    calibration_metadata = None
     feature_names = None
     explainer = None  # SHAP explainer
     request_count = 0
     error_count = 0
     total_latency_ms = 0.0
+    prediction_total = 0
+    prediction_alerts = 0
 
     def __init__(self):
         if SHAP_AVAILABLE:
@@ -168,6 +294,17 @@ async def lifespan(app: FastAPI):
         else:
             logger.warning(f"Model metadata not found for {model_file.name}")
         
+        if CALIBRATION_META_PATH.exists():
+            try:
+                with CALIBRATION_META_PATH.open("r", encoding="utf-8") as f:
+                    state.calibration_metadata = json.load(f)
+                logger.info(
+                    "Calibration metadata loaded: %s",
+                    state.calibration_metadata.get("calibration_version", "unknown"),
+                )
+            except Exception as e:
+                logger.warning(f"Failed to load calibration metadata: {e}")
+        
         # Initialize SHAP explainer (optional - can be slow)
         if SHAP_AVAILABLE:
             try:
@@ -180,9 +317,9 @@ async def lifespan(app: FastAPI):
                     logger.info("SHAP explainer initialized successfully")
             except Exception as e:
                 logger.warning(f"SHAP initialization failed: {e}")
-        
+
         logger.info("API ready for requests")
-        
+
     except Exception as e:
         logger.error(f"Failed to load model: {e}")
         raise
@@ -206,6 +343,31 @@ app = FastAPI(
     version="2.0.0",
     lifespan=lifespan
 )
+app.mount("/metrics", make_asgi_app())
+
+
+@app.middleware("http")
+async def prometheus_middleware(request, call_next):
+    start = time.perf_counter()
+    try:
+        response = await call_next(request)
+    except Exception:
+        duration = time.perf_counter() - start
+        REQUEST_COUNTER.labels(
+            endpoint=request.url.path,
+            method=request.method,
+            status="500",
+        ).inc()
+        REQUEST_LATENCY.labels(endpoint=request.url.path).observe(duration)
+        raise
+    duration = time.perf_counter() - start
+    REQUEST_COUNTER.labels(
+        endpoint=request.url.path,
+        method=request.method,
+        status=str(response.status_code),
+    ).inc()
+    REQUEST_LATENCY.labels(endpoint=request.url.path).observe(duration)
+    return response
 
 
 # ========== REQUEST/RESPONSE MODELS ==========
@@ -226,38 +388,28 @@ class PatientData(BaseModel):
     
     @validator('gender')
     def validate_gender(cls, v):
-        allowed = ['Male', 'Female', 'Other', 'male', 'female', 'other']
-        if v not in allowed:
-            raise ValueError(f"gender must be one of {allowed}")
-        return v.capitalize()
-    
+        allowed = ['Male', 'Female', 'Other']
+        return normalize_choice(v, GENDER_NORMALIZATION, allowed, "gender")
+
     @validator('ever_married')
     def validate_married(cls, v):
-        allowed = ['Yes', 'No', 'yes', 'no']
-        if v not in allowed:
-            raise ValueError(f"ever_married must be Yes or No")
-        return v.capitalize()
-    
+        allowed = ['Yes', 'No']
+        return normalize_choice(v, MARRIED_NORMALIZATION, allowed, "ever_married")
+
     @validator('work_type')
     def validate_work(cls, v):
         allowed = ['Private', 'Self-employed', 'Govt_job', 'children', 'Never_worked']
-        if v not in allowed:
-            raise ValueError(f"work_type must be one of {allowed}")
-        return v
-    
+        return normalize_choice(v, WORK_TYPE_NORMALIZATION, allowed, "work_type")
+
     @validator('Residence_type')
     def validate_residence(cls, v):
-        allowed = ['Urban', 'Rural', 'urban', 'rural']
-        if v not in allowed:
-            raise ValueError(f"Residence_type must be Urban or Rural")
-        return v.capitalize()
-    
+        allowed = ['Urban', 'Rural']
+        return normalize_choice(v, RESIDENCE_NORMALIZATION, allowed, "Residence_type")
+
     @validator('smoking_status')
     def validate_smoking(cls, v):
         allowed = ['never smoked', 'formerly smoked', 'smokes', 'Unknown']
-        if v not in allowed:
-            raise ValueError(f"smoking_status must be one of {allowed}")
-        return v
+        return normalize_choice(v, SMOKING_STATUS_NORMALIZATION, allowed, "smoking_status")
 
 
 class PredictionRequest(BaseModel):
@@ -275,6 +427,15 @@ class RiskTier(BaseModel):
     description: str
     recommended_action: str
 
+    def asdict(self) -> Dict[str, Any]:
+        return {
+            "tier": self.tier,
+            "threshold_min": self.threshold_min,
+            "threshold_max": self.threshold_max,
+            "description": self.description,
+            "recommended_action": self.recommended_action,
+        }
+
 
 class PredictionResponse(BaseModel):
     """Prediction API response"""
@@ -288,9 +449,46 @@ class PredictionResponse(BaseModel):
     latency_ms: float
     alert_flag: bool
     threshold_used: float
+    calibration_version: Optional[str] = None
+
+    def dict(self, *args, **kwargs):
+        return {
+            "prediction_id": self.prediction_id,
+            "timestamp": self.timestamp,
+            "probability_stroke": self.probability_stroke,
+            "risk_tier": self.risk_tier.dict(),
+            "confidence_interval_95": self.confidence_interval_95,
+            "explanation": self.explanation,
+            "model_version": self.model_version,
+            "latency_ms": self.latency_ms,
+            "alert_flag": self.alert_flag,
+            "threshold_used": self.threshold_used,
+            "calibration_version": self.calibration_version,
+        }
 
 
 # ========== HELPER FUNCTIONS ==========
+
+
+def _prepare_features(raw_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Apply production feature engineering and align columns with the trained model.
+    """
+    if state.model is None:
+        raise RuntimeError("Model not loaded")
+
+    engineered_df = engineer_medical_features(raw_df)
+
+    expected_columns = getattr(state.model, "feature_names_in_", None)
+    if expected_columns is not None:
+        expected_columns = list(expected_columns)
+        missing = [col for col in expected_columns if col not in engineered_df.columns]
+        if missing:
+            raise ValueError(f"Required features missing after engineering: {missing}")
+        engineered_df = engineered_df.loc[:, expected_columns]
+
+    return engineered_df
+
 
 def classify_risk_tier(probability: float) -> RiskTier:
     """Classify risk into tiers based on probability"""
@@ -399,6 +597,12 @@ async def root():
     }
 
 
+@app.get("/ping")
+async def ping():
+    """Lightweight ping endpoint for connection testing"""
+    return {"status": "ok", "timestamp": datetime.now(UTC).isoformat()}
+
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
@@ -451,13 +655,14 @@ async def predict_stroke_risk(
         # Increment request counter
         state.request_count += 1
         
-        # Convert to DataFrame
+        # Convert to DataFrame and engineer production features
         patient_dict = request.patient_data.dict()
         patient_df = pd.DataFrame([patient_dict])
-        
+        patient_df = _prepare_features(patient_df)
+
         # Make prediction
         probability = float(state.model.predict_proba(patient_df)[0, 1])
-        
+
         # Classify risk tier
         risk_tier = classify_risk_tier(probability)
         
@@ -476,6 +681,19 @@ async def predict_stroke_risk(
         ).hexdigest()[:16]
         
         alert_flag = probability >= OP_THRESHOLD
+        PREDICTION_PROBABILITY.observe(probability)
+        PREDICTION_ALERT_COUNTER.labels(alert="true" if alert_flag else "false").inc()
+        state.prediction_total += 1
+        if alert_flag:
+            state.prediction_alerts += 1
+        if state.prediction_total > 0:
+            ALERT_RATE_GAUGE.set(state.prediction_alerts / state.prediction_total)
+
+        calibration_version = (
+            state.calibration_metadata.get("calibration_version", "unknown")
+            if state.calibration_metadata
+            else "unknown"
+        )
 
         # Build response
         response = PredictionResponse(
@@ -489,6 +707,7 @@ async def predict_stroke_risk(
             latency_ms=round(latency_ms, 2),
             alert_flag=alert_flag,
             threshold_used=OP_THRESHOLD,
+            calibration_version=calibration_version,
         )
         
         # Log prediction asynchronously
@@ -501,10 +720,18 @@ async def predict_stroke_risk(
         logger.info(f"Prediction {prediction_id}: prob={probability:.4f}, tier={risk_tier.tier}, latency={latency_ms:.2f}ms")
         
         return response
-    
+      
+    except ValueError as e:
+        state.error_count += 1
+        logger.error(f"Prediction error: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=f"Prediction failed: {e}") from e
+    except HTTPException:
+        state.error_count += 1
+        raise
     except Exception as e:
         state.error_count += 1
         logger.error(f"Prediction error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Prediction failed due to an internal error") from e
 @app.post("/batch_predict")
 async def batch_predict(
     patients: List[PatientData],
@@ -525,15 +752,15 @@ async def batch_predict(
     start_time = datetime.now(UTC)
     
     try:
-        # Convert to DataFrame
+        # Convert to DataFrame and engineer production features
         patients_df = pd.DataFrame([p.dict() for p in patients])
+        patients_df = _prepare_features(patients_df)
         
         # Batch prediction
         probabilities = state.model.predict_proba(patients_df)[:, 1]
         
-        # Batch prediction
-        probabilities = state.model.predict_proba(patients_df)[:, 1]
-        
+        alerts_in_batch = 0
+
         # Build responses
         responses = []
         for i, prob in enumerate(probabilities):
@@ -544,22 +771,47 @@ async def batch_predict(
                 'probability_stroke': round(float(prob), 4),
                 'risk_tier': risk_tier.dict()
             })
+            PREDICTION_PROBABILITY.observe(float(prob))
+            if float(prob) >= OP_THRESHOLD:
+                alerts_in_batch += 1
+                PREDICTION_ALERT_COUNTER.labels(alert="true").inc()
+            else:
+                PREDICTION_ALERT_COUNTER.labels(alert="false").inc()
+
+        state.prediction_total += len(probabilities)
+        state.prediction_alerts += alerts_in_batch
+        if state.prediction_total > 0:
+            ALERT_RATE_GAUGE.set(state.prediction_alerts / state.prediction_total)
         
         latency_ms = (datetime.now(UTC) - start_time).total_seconds() * 1000
         
         logger.info(f"Batch prediction: {len(patients)} patients, latency={latency_ms:.2f}ms")
-        
+        calibration_version = (
+            state.calibration_metadata.get("calibration_version", "unknown")
+            if state.calibration_metadata
+            else "unknown"
+        )
+
         return {
             'predictions': responses,
             'batch_size': len(patients),
             'model_version': state.metadata['model_info']['version'] if state.metadata else "unknown",
+            'calibration_version': calibration_version,
             'total_latency_ms': round(latency_ms, 2),
             'avg_latency_per_patient_ms': round(latency_ms / len(patients), 2)
         }
     
-    except Exception as e:
+    except ValueError as e:
+        state.error_count += 1
         logger.error(f"Batch prediction error: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Batch prediction failed: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Batch prediction failed: {e}") from e
+    except HTTPException:
+        state.error_count += 1
+        raise
+    except Exception as e:
+        state.error_count += 1
+        logger.error(f"Batch prediction error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Batch prediction failed due to an internal error") from e
 
 
 @app.exception_handler(Exception)
@@ -583,11 +835,14 @@ if __name__ == "__main__":
     print("Starting Stroke Prediction API (Development Mode)...")
     print(f"API Docs: http://localhost:8000/docs")
     print(f"Health Check: http://localhost:8000/health")
+    print(f"Ping: http://localhost:8000/ping")
+    print("\nPress Ctrl+C to stop the server")
     
     uvicorn.run(
         "fastapi_app:app",
-        host="0.0.0.0",
+        host="127.0.0.1",  # Changed from 0.0.0.0 for better Windows compatibility
         port=8000,
         reload=True,
-        log_level="info"
+        log_level="info",
+        access_log=True
     )

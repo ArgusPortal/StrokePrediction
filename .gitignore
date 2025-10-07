@@ -1,22 +1,43 @@
-.venv/
-*.csv
-*.pkl
-*.h5
-models/
+# Python
 __pycache__/
-.ipynb_checkpoints
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
 
-PROJECT_NARRATIVE.md
-README_DASHBOARD.md
-tmp_cell4.py
-tmp_debug.py
-tmp_inspect.py
-tmp_v2_cell4.py
-temp_analysis.py
-build_analysis.py
-tmp_replace.py
-nb2_cells.txt
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Logs
+logs/
+*.log
+
+# Dados sensíveis
+data/production/
+*.csv
+!data/raw/healthcare-dataset-stroke-data.csv
+
+# Outputs
+outputs/
 *.png
-display_results.py
-*.joblib
-*.json
+*.pdf
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+
+# Documentação interna (não versionada)
+project_narrative.md
+PROJECT_NARRATIVE.md

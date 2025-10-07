@@ -1,0 +1,21 @@
+{
+  "model_info": {
+    "name": "logistic_l2",
+    "version": "3.0.0",
+    "filename": "logistic_l2_v3.0.0.joblib",
+    "file_size_mb": 0.08,
+    "creation_date": "2025-10-06T15:53:25.501297+00:00"
+  },
+  "performance": {
+    "roc_auc": 0.8285449833395039,
+    "pr_auc": 0.16345743608661834,
+    "balanced_acc": 0.7144719687092569
+  },
+  "training": {
+    "train_size": 3321,
+    "val_size": 767,
+    "test_size": 1022,
+    "prevalence_train": 0.04878048780487805,
+    "prevalence_test": 0.04892367906066536
+  }
+}
