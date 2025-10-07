@@ -1,0 +1,17 @@
+{
+  "builds": [
+    {
+      "src": "fastapi_app.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "fastapi_app.py"
+    }
+  ],
+  "env": {
+    "STROKE_MODEL_PATH": "./models/stroke_model_v2_production.joblib"
+  }
+}
