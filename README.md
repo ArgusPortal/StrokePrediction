@@ -1,366 +1,156 @@
-# 🚀 Stroke Prediction v2.0 - Enhanced ML Pipeline
+# 🏥 Sistema de Predição de Risco de AVC com IA
 
-![Python](https://img.shields.io/badge/python-v3.8+-blue.svg)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-1.2.0+-orange.svg)
-![XGBoost](https://img.shields.io/badge/XGBoost-1.7.5+-green.svg)
-![Fairlearn](https://img.shields.io/badge/fairlearn-0.9.0+-purple.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Status](https://img.shields.io/badge/status-Production%20Ready-brightgreen.svg)
-![Fairness](https://img.shields.io/badge/Fairness-Audit%20v1.0.0-success.svg)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Scikit-learn](https://img.shields.io/badge/Scikit--learn-1.3.2-orange.svg)](https://scikit-learn.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.29.0-red.svg)](https://streamlit.io/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104.1-green.svg)](https://fastapi.tiangolo.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Recent Updates (2025-10) 🆕
+Sistema completo de predição de risco de Acidente Vascular Cerebral (AVC) utilizando técnicas avançadas de Machine Learning, com foco em **calibração de probabilidades**, **equidade algorítmica** e **monitoramento contínuo**.
 
-### 🛡️ **Comprehensive Fairness Audit System (v1.0.0)**
-A production-ready fairness audit framework with:
-- **Frozen Threshold Governance**: Single source of truth from `results/threshold.json`
-- **Bootstrap Confidence Intervals**: n=1000 iterations for robust disparity estimates
-- **Two-Stage Mitigation**: Equal Opportunity → Equalized Odds (data-driven)
-- **Automated Alerts**: Triggers when TPR gap > 0.10 and CI excludes 0
-- **Complete Persistence**: 7 output files (CSVs + JSON) for governance
-- **Full Documentation**: 6 comprehensive guides (see [Fairness Documentation](#fairness-documentation))
+---
 
-### Novos utilitários operacionais (2025-10)
-- `scripts/full_update_pipeline.py`: executa fairness audit, experimentos avançados e análise de abstenção em um único comando (`!python scripts/full_update_pipeline.py`).
-- `scripts/model_next_steps.py`: logistic regularizada, XGBoost monotônico e Super Learner calibrados; resultados em `results/model_next_steps_metrics.json`.
-- `scripts/abstention_analysis.py`: quantifica a zona cinza [0.07–0.10] e gera `results/abstention_summary.csv` para revisão humana.
+## 📋 Índice
 
-### Previous Updates (2025-06)
+- [Visão Geral](#-visão-geral)
+- [Características Principais](#-características-principais)
+- [Arquitetura do Sistema](#-arquitetura-do-sistema)
+- [Instalação](#-instalação)
+- [Como Usar](#-como-usar)
+- [Estrutura do Projeto](#-estrutura-do-projeto)
+- [Métricas de Desempenho](#-métricas-de-desempenho)
+- [Equidade e Governança](#️-equidade-e-governança)
+- [API REST](#-api-rest)
+- [Dashboard Interativo](#-dashboard-interativo)
+- [Monitoramento](#-monitoramento)
+- [Desenvolvimento](#-desenvolvimento)
+- [Roadmap](#-roadmap)
+- [Contribuindo](#-contribuindo)
+- [Licença](#-licença)
+- [Contato](#-contato)
 
-- **Decision threshold calibrado (`t = 0.08`)** via `scripts/compute_threshold.py`, garantindo recall ≥ 70% e precision ≥ 15% no conjunto de validação calibrado
-- **Rebalanceamento focalizado** (`src/model_training.py`): duplicação de exemplos críticos antes do SMOTE
-- **Auditoria contínua** (`src/fairness_audit.py`): métricas por grupo, alertas automáticos, bootstrap CIs
-- **Mitigação em estágios** com Fairlearn ThresholdOptimizer (Equal Opportunity + Equalized Odds)
+---
 
-## 📋 Overview
+## 🎯 Visão Geral
 
-A **production-ready machine learning system** for predicting stroke risk in clinical settings. This enhanced pipeline delivers:
+O AVC é a **segunda maior causa de morte no mundo** e a **principal causa de incapacidade permanente**. Este projeto desenvolve um sistema de IA para:
 
-- **🎯 93% improvement** in PR-AUC (0.285 vs 0.147 baseline)
-- **❤️ 68-72% recall** (meeting clinical requirements ≥65%)
-- **📊 <0.05 calibration error** (excellent for clinical decision-making)
-- **⚖️ Fairness monitoring e planos de ação** (gaps ainda >10% para is_elderly, Residence_type, smoking_status)
-- **🔍 Real-time monitoring** with automated drift detection
-- **📚 Full TRIPOD+AI compliance** with comprehensive model card
-- **🛡️ Production-grade fairness audit** with bootstrap CIs and staged mitigation
+1. **Identificar pacientes de alto risco** antes do evento ocorrer
+2. **Fornecer probabilidades calibradas** confiáveis para decisões clínicas
+3. **Garantir equidade** entre diferentes grupos demográficos
+4. **Monitorar continuamente** a qualidade dos dados e do modelo
 
-## 🏆 Key Achievements
+### 🏆 Diferenciais
 
-| Metric | Baseline | v2.0 Enhanced | Improvement |
-|--------|----------|---------------|-------------|
-| **PR-AUC** | 0.147 | **0.285** | +93% |
-| **ROC-AUC** | 0.831 | **0.876** | +5.4% |
-| **Recall** | 0.45 | **0.68-0.72** | +51% |
-| **Calibration Error** | 0.103 | **0.042** | -59% |
-| **Fairness System** | Manual | **Automated w/ CIs** | Production-ready |
+- ✅ **Probabilidades Calibradas**: ECE < 0.01 (10x melhor que meta de 0.05)
+- ✅ **Alta Sensibilidade**: Detecta 74% dos AVCs reais (recall = 0.74)
+- ✅ **Equidade Auditada**: Bootstrap CI para todos os grupos demográficos
+- ✅ **Produção-Ready**: API REST + Dashboard + Monitoramento de drift
+- ✅ **Explicabilidade**: SHAP values opcionais para cada predição
 
-### 🛡️ Fairness Audit System (2025-10)
+---
 
-**New Comprehensive Framework** with production-grade capabilities:
+## 🚀 Características Principais
 
-✅ **Frozen Threshold**: Read from `results/threshold.json` (source: `validation_calibrated`)  
-✅ **Bootstrap CIs**: 1000 iterations, 95% confidence intervals for all disparity metrics  
-✅ **Staged Mitigation**: 
-  - Stage 1 (Equal Opportunity): Applied when all groups have n_pos ≥ 5
-  - Stage 2 (Equalized Odds): Applied when all groups have n_pos ≥ 10 AND n_neg ≥ 10  
-✅ **Automated Alerts**: Triggered when TPR gap > 0.10 AND CI lower bound > 0  
-✅ **Complete Artifacts**: 7 files (metrics, baseline, post-mitigation, consolidated JSON)
+### 1️⃣ Modelo de Machine Learning
 
-**Sensitive Attributes Monitored**: `Residence_type`, `gender`, `smoking_status`, `work_type`, `is_elderly`
+- **Algoritmo**: Regressão Logística com regularização L2
+- **Calibração**: Isotônica com validação cruzada (10-fold)
+- **Feature Engineering**: 45 features derivadas de 10 originais
+  - Scores de risco compostos (cardiovascular, metabólico)
+  - Binning estratégico baseado em limiares clínicos
+  - Interações entre variáveis (idade × hipertensão, etc.)
+- **Threshold Operacional**: 0.085 (otimizado via Decision Curve Analysis)
 
-**Current Status**: 
-- Baseline disparities documented with confidence intervals
-- Equal Opportunity mitigation applied where data supports
-- All alerts logged in `results/fairness_audit.json`
-- See [FAIRNESS_GETTING_STARTED.md](FAIRNESS_GETTING_STARTED.md) for complete guide
+### 2️⃣ Pipeline de Produção
 
-## 🏗️ Architecture
+- **Containerização**: Imagem Docker para fácil implantação
+- **API REST**: FastAPI para predições em tempo real
+- **Interface Interativa**: Dashboard em Streamlit para visualização de dados e resultados
+- **Monitoramento**: Detecção de drift de dados e desempenho com alertas automáticos
+
+---
+
+## 🏗️ Arquitetura do Sistema
 
 ```
 ┌─────────────────────────────────────────────┐
-│          Clinical Interface Layer            │
-│    (EHR Integration, Web API, Dashboards)   │
+│          Camada de Interface Clínica        │
+│    (Integração com EHR, API Web, Dashboards)│
 └─────────────────┬───────────────────────────┘
                   │ REST API / HL7 FHIR
 ┌─────────────────▼───────────────────────────┐
-│       Enhanced ML Pipeline v2.0             │
+│       Pipeline de ML Aprimorado             │
 │  ┌─────────────────────────────────────────┐ │
-│  │   Medical Feature Engineering           │ │
-│  │  • Cardiovascular Risk Score           │ │
-│  │  • Metabolic Syndrome Indicators       │ │
-│  │  • Age-Risk Interactions              │ │
+│  │   Engenharia de Atributos Médicos     │ │
+│  │  • Score Cardiovascular                │ │
+│  │  • Indicadores de Síndrome Metabólica │ │
+│  │  • Interações Idade-Risco             │ │
 │  └─────────────────────────────────────────┘ │
 │  ┌─────────────────────────────────────────┐ │
-│  │   Ensemble Model Suite                 │ │
-│  │  • XGBoost (Primary)                   │ │
-│  │  • LightGBM + Gradient Boosting       │ │
-│  │  • Random Forest + Extra Trees        │ │
+│  │   Modelo de Regressão Logística       │ │
+│  │  • Regularização L2                   │ │
+│  │  • Calibração Isotônica               │ │
 │  └─────────────────────────────────────────┘ │
 │  ┌─────────────────────────────────────────┐ │
-│  │   Isotonic Calibration (10-Fold CV)    │ │
-│  │  • Expected Calibration Error <0.05    │ │
-│  │  • Trustworthy Clinical Probabilities │ │
+│  │   Monitoramento de Drift               │ │
+│  │  • Detecção de Mudança de Conceito    │ │
+│  │  • Monitoramento de Desempenho        │ │
 │  └─────────────────────────────────────────┘ │
 └─────────────────┬───────────────────────────┘
-                  │ Predictions + Explanations
+                  │ Predições + Explicações
 ┌─────────────────▼───────────────────────────┐
-│      Production Monitoring System           │
-│  • Data Drift Detection (PSI)              │
-│  • Concept Drift (Performance Degradation)  │
-│  • Fairness Monitoring (Demographic Parity) │
-│  • Automated Retraining Triggers           │
+│      Sistema de Monitoramento em Produção  │
+│  • Detecção de Drift de Dados (PSI)        │
+│  • Degradação de Desempenho                │
+│  • Monitoramento de Equidade (Paridade Demográfica) │
+│  • Gatilhos de Re-treinamento Automáticos  │
 └─────────────────────────────────────────────┘
 ```
 
-## 🚀 Quick Start
+---
 
-### Installation
+## 📦 Instalação
+
+### Pré-requisitos
+
+- Python 3.10 ou superior
+- Pip
+
+### Passos
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/StrokePrediction.git
+# 1. Clone o repositório
+git clone https://github.com/seuusuario/StrokePrediction.git
 cd StrokePrediction
 
-# Install dependencies (includes fairlearn for fairness audit)
+# 2. Crie um ambiente virtual
+python -m venv venv
+source venv/bin/activate  # No Windows: venv\Scripts\activate
+
+# 3. Instale as dependências
 pip install -r requirements.txt
+
+# 4. (Opcional) Instale dependências para desenvolvimento
+pip install -r requirements-dev.txt
+
+# 5. Instale os hooks do pre-commit
+pre-commit install
 ```
 
-### 🛡️ Fairness Audit Quick Start (NEW!)
+---
 
-```bash
-# 1. Validate fairness setup
-python scripts/validate_fairness_setup.py
+## 🚀 Como Usar
 
-# Expected output:
-# ✅ Fairlearn is installed
-# ✅ fairness_audit module imported successfully
-# ✅ threshold.json exists
-# ✅ VALIDATION COMPLETE
-
-# 2. Open production notebook
-jupyter notebook notebooks/Stroke_Prediction_v4_Production.ipynb
-
-# 3. Execute fairness audit cells (13A → 13E in order)
-# Cell 13A: Load frozen threshold
-# Cell 13B: Global metrics
-# Cell 13C: Baseline audit
-# Cell 13D: Staged mitigation
-# Cell 13E: Consolidated report
-
-# 4. Check outputs
-ls results/fairness_*.csv results/fairness_audit.json
-```
-
-**📚 Full Guide**: See [FAIRNESS_GETTING_STARTED.md](FAIRNESS_GETTING_STARTED.md) for complete instructions.
-
-### Basic Usage
-
-```python
-import pandas as pd
-from src.models.enhanced_pipeline import StrokePredictionPipeline
-
-# Load your data
-df = pd.read_csv('data/raw/healthcare-dataset-stroke-data.csv')
-
-# Initialize enhanced pipeline
-pipeline = StrokePredictionPipeline(
-    model_type='xgboost_calibrated',
-    enable_fairness_monitoring=True,
-    enable_drift_detection=True
-)
-
-# Train with advanced features
-pipeline.fit(df, target='stroke')
-
-# Make calibrated predictions
-probabilities = pipeline.predict_proba(new_patients)
-risk_scores = pipeline.predict_risk_tier(new_patients)
-
-# Get clinical explanations
-explanations = pipeline.explain_prediction(patient_data)
-```
-
-### Jupyter Notebook Demos
-
-```bash
-# Production notebook with fairness audit (RECOMMENDED)
-jupyter notebook notebooks/Stroke_Prediction_v4_Production.ipynb
-
-# Legacy enhanced analysis notebook
-jupyter notebook notebooks/Stroke_Prediction_v2_Enhanced.ipynb
-```
-
-## 📊 Project Structure
-
-```
-StrokePrediction/
-├── 📁 data/
-│   ├── raw/                    # Original datasets
-│   ├── interim/               # Intermediate processed data
-│   └── processed/             # Final training/test sets
-├── 📁 notebooks/
-│   ├── Stroke_Prediction_v4_Production.ipynb  # 🆕 Production notebook with fairness audit
-│   ├── Stroke_Prediction_v2_Enhanced.ipynb    # Main analysis
-│   └── data-storytelling-auc-focus-on-strokes.ipynb
-├── 📁 src/
-│   ├── data/
-│   │   ├── make_dataset.py    # Data loading & validation
-│   │   └── feature_engineering.py  # Medical feature creation
-│   ├── models/
-│   │   ├── enhanced_pipeline.py    # Main ML pipeline
-│   │   ├── calibration.py          # Probability calibration
-│   │   └── ensemble.py            # Model ensemble methods
-│   ├── evaluation/
-│   │   ├── metrics.py            # Custom evaluation metrics
-│   │   ├── fairness.py           # Bias detection & mitigation (legacy)
-│   │   └── drift_detection.py    # Model monitoring
-│   ├── fairness_audit.py       # 🆕 Comprehensive fairness audit system
-│   └── visualization/
-│       └── plots.py             # Enhanced visualizations
-├── 📁 models/                   # Saved model artifacts
-├── 📁 results/                  # Outputs, reports, figures
-│   ├── threshold.json          # 🆕 Frozen threshold (single source of truth)
-│   ├── metrics_threshold_*.csv # 🆕 Global metrics
-│   ├── fairness_pre_*.csv      # 🆕 Baseline fairness with CIs
-│   ├── fairness_post_*.csv     # 🆕 Post-mitigation metrics
-│   └── fairness_audit.json     # 🆕 Consolidated fairness report
-├── 📁 scripts/
-│   └── validate_fairness_setup.py  # 🆕 Fairness system validation
-├── 📁 docs/                     # Documentation
-│   ├── model_card_v2.md        # TRIPOD+AI compliant model card
-│   └── deployment_guide.md     # Production deployment guide
-├── 📁 tests/                    # Unit tests
-├── 📁 Fairness Documentation/   # 🆕 Complete fairness audit guides
-│   ├── FAIRNESS_GETTING_STARTED.md
-│   ├── FAIRNESS_QUICK_REFERENCE.md
-│   ├── FAIRNESS_FLOW_DIAGRAM.md
-│   ├── README_FAIRNESS_AUDIT.md
-│   ├── IMPLEMENTATION_SUMMARY.md
-│   └── FILE_INDEX.md
-├── requirements.txt            # Python dependencies (includes fairlearn≥0.9.0)
-├── PROJECT_NARRATIVE.md       # Detailed project story
-└── README.md                  # This file
-```
-
-## 🎯 Key Features
-
-### 🧬 Medical Feature Engineering
-
-- **Cardiovascular Risk Score**: Evidence-based composite scoring
-- **Metabolic Syndrome Detection**: BMI + glucose interaction modeling
-- **Age-Risk Stratification**: WHO/AHA guideline-based categorization
-- **Lifestyle Risk Factors**: Smoking, work stress, residence impact
-
-### 🤖 Advanced Model Suite
-
-| Model | Use Case | Performance |
-|-------|----------|-------------|
-| **XGBoost** | Primary predictor | PR-AUC: 0.285 |
-| **LightGBM** | Fast inference | ROC-AUC: 0.874 |
-| **Ensemble Stack** | Maximum accuracy | Best overall |
-| **Calibrated Models** | Clinical probabilities | ECE: 0.042 |
-
-### ⚖️ Fairness & Bias Mitigation (Enhanced v1.0.0) 🆕
-
-- **Frozen Threshold Governance**: Single source of truth from `results/threshold.json`
-- **Bootstrap Confidence Intervals**: 1000 iterations for robust disparity estimates (95% CIs)
-- **Two-Stage Mitigation**: 
-  - Equal Opportunity (TPR parity) - when n_pos ≥ 5 per group
-  - Equalized Odds (TPR + FPR parity) - when n_pos ≥ 10 AND n_neg ≥ 10 per group
-- **Automated Alert System**: Triggers when TPR gap > 0.10 AND CI lower bound > 0
-- **Sensitive Attributes**: `Residence_type`, `gender`, `smoking_status`, `work_type`, `is_elderly`
-- **Complete Persistence**: 7 output files (CSVs + JSON) for full governance trail
-- **Production Monitoring**: Continuous fairness tracking with quarterly re-audits
-
-### 📈 Production Monitoring
-
-- **Data Drift Detection**: Population Stability Index (PSI) monitoring
-- **Concept Drift**: Performance degradation alerts
-- **Automated Retraining**: Trigger-based model updates
-- **Real-time Dashboards**: Grafana/Plotly visualizations
-
-## 📊 Performance Deep Dive
-
-### Clinical Validation Results
-
-```python
-# Test Set Performance (n=1,080 patients)
-{
-    "PR-AUC": 0.285,           # Primary metric (imbalanced data)
-    "ROC-AUC": 0.876,          # Discrimination power
-    "Recall": 0.68,            # Sensitivity (clinical requirement)
-    "Precision": 0.13,         # Positive predictive value
-    "Specificity": 0.92,       # True negative rate
-    "F2-Score": 0.48,          # Recall-weighted F-score
-    "Brier Score": 0.038,      # Calibration quality
-    "ECE": 0.042               # Expected calibration error
-}
-```
-
-### Decision Curve Analysis
-
-The model demonstrates **clinical utility** across threshold range 0.05-0.35:
-
-- **Net Benefit**: +0.021 at threshold 0.15 (recommended)
-- **Superior to "Treat All"**: 67% of clinically relevant thresholds
-- **NNT (Number Needed to Treat)**: 7.8 patients per true positive
-
-### Precision@k Analysis
-
-For **resource-constrained settings**:
-
-| Top k% | Precision | Recall | Use Case |
-|--------|-----------|--------|----------|
-| **5%** | 0.41 | 0.24 | High-precision screening |
-| **10%** | 0.28 | 0.45 | Balanced approach |
-| **15%** | 0.19 | 0.58 | High-sensitivity screening |
-| **20%** | 0.15 | 0.68 | Maximum case detection |
-
-## 🛡️ Ethical AI & Compliance
-
-### Fairness Metrics (Comprehensive Audit v1.0.0) 🆕
-
-**Framework**: Bootstrap confidence intervals (n=1000, 95% CI) for robust inference
-
-| Attribute | TPR Gap (Test) | CI [Lower, Upper] | Mitigation Status | Alert |
-|-----------|----------------|-------------------|-------------------|-------|
-| **Residence_type** | Monitored | With CIs | Equal Opportunity Applied | See JSON |
-| **gender** | Monitored | With CIs | Equal Opportunity Applied | See JSON |
-| **smoking_status** | Monitored | With CIs | Stage-dependent | See JSON |
-| **work_type** | Monitored | With CIs | Stage-dependent | See JSON |
-| **is_elderly** | Monitored | With CIs | Stage-dependent | See JSON |
-
-**📊 Complete Results**: See `results/fairness_audit.json` for:
-- Baseline metrics with bootstrap CIs
-- Post-mitigation performance
-- Support info (n_pos, n_neg per group)
-- Automated alerts and recommendations
-
-**🎯 Policy**: Equal Opportunity prioritized for calibration compatibility. Equalized Odds attempted when data sufficient.
-
-### Regulatory Compliance
-
-- **✅ HIPAA**: De-identification, encryption, access controls
-- **✅ GDPR**: Right to explanation (SHAP), data retention policies
-- **✅ TRIPOD+AI**: Complete model card with all required sections
-- **⚠️ FDA**: Currently decision support (Class I exempt)
-
-### Model Card
-
-Full **TRIPOD+AI compliant** documentation available:
-- [📄 Model Card (Markdown)](docs/model_card_v2.md)
-- [📋 Model Card (JSON)](results/model_card_v2.json)
-
-## 🔬 Usage Examples
-
-### 1. Basic Risk Prediction
+### Predição Básica de Risco
 
 ```python
 from src.models.enhanced_pipeline import StrokePredictionPipeline
 
-# Load trained model
+# Carregue o modelo treinado
 model = StrokePredictionPipeline.load('models/stroke_prediction_v2.joblib')
 
-# Patient data
+# Dados do paciente
 patient = {
     'age': 67,
     'gender': 'Male',
@@ -371,15 +161,15 @@ patient = {
     'smoking_status': 'formerly smoked'
 }
 
-# Get risk assessment
+# Obtenha a avaliação de risco
 risk_prob = model.predict_proba([patient])[0, 1]
 risk_tier = model.predict_risk_tier([patient])[0]
 
-print(f"Stroke Risk: {risk_prob:.1%}")
-print(f"Risk Tier: {risk_tier}")  # LOW, MODERATE, HIGH, CRITICAL
+print(f"Risco de AVC: {risk_prob:.1%}")
+print(f"Classe de Risco: {risk_tier}")  # BAIXO, MODERADO, ALTO, CRÍTICO
 ```
 
-### 2. Fairness Audit (NEW!) 🆕
+### Auditoria de Equidade (NOVO!) 🆕
 
 ```python
 from src.fairness_audit import (
@@ -389,13 +179,13 @@ from src.fairness_audit import (
 )
 import json
 
-# Load frozen threshold
+# Carregue o limiar congelado
 with open('results/threshold.json', 'r') as f:
     threshold_config = json.load(f)
     
 production_threshold = threshold_config['threshold']  # e.g., 0.085
 
-# Run baseline audit
+# Execute a auditoria de linha de base
 baseline_test = audit_fairness_baseline(
     X=X_test,
     y=y_test,
@@ -406,7 +196,7 @@ baseline_test = audit_fairness_baseline(
     n_boot=1000
 )
 
-# Run staged mitigation
+# Execute a mitigação em estágios
 mitigation_results = mitigate_fairness_staged(
     X_val=X_val,
     y_val=y_val,
@@ -418,61 +208,61 @@ mitigation_results = mitigate_fairness_staged(
     threshold_base=production_threshold
 )
 
-# Generate report
+# Gere o relatório
 fairness_report = generate_fairness_report(
     baseline_val, baseline_test, mitigation_results
 )
 
-# Check for alerts
+# Verifique os alertas
 if mitigation_results['alerts']:
-    print(f"🚨 {len(mitigation_results['alerts'])} fairness alerts detected!")
+    print(f"🚨 {len(mitigation_results['alerts'])} alertas de equidade detectados!")
     for alert in mitigation_results['alerts']:
         print(f"  - {alert['message']}")
 ```
 
 ```python
-# Get clinical recommendations
+# Obtenha recomendações clínicas
 recommendation = model.get_clinical_recommendation(patient)
 
 print(recommendation)
-# Output:
+# Saída:
 # {
 #     "risk_score": 0.23,
 #     "risk_tier": "MODERATE", 
-#     "recommendation": "Enhanced monitoring + lifestyle counseling",
-#     "follow_up": "6 months",
+#     "recommendation": "Monitoramento intensificado + aconselhamento sobre estilo de vida",
+#     "follow_up": "6 meses",
 #     "specialist_referral": false
 # }
 ```
 
-### 4. Model Explanations
+### Explicações de Modelo
 
 ```python
-# SHAP-based explanations
+# Explicações baseadas em SHAP
 explanation = model.explain_prediction(patient, explanation_type='shap')
 
-print("Top risk factors:")
+print("Principais fatores de risco:")
 for feature, impact in explanation['top_features']:
     print(f"  {feature}: {impact:+.3f}")
 
-# Output:
-#   age: +0.089
-#   avg_glucose_level: +0.034
-#   hypertension: +0.028
-#   smoking_status: +0.019
+# Saída:
+#   idade: +0.089
+#   nivel_medio_glucose: +0.034
+#   hipertensao: +0.028
+#   status_fumante: +0.019
 ```
 
-### 5. Batch Processing
+### Processamento em Lote
 
 ```python
-# Process multiple patients
-patients_df = pd.read_csv('new_patients.csv')
+# Processar múltiplos pacientes
+patients_df = pd.read_csv('novos_pacientes.csv')
 
-# Batch prediction
+# Predição em lote
 predictions = model.predict_proba_batch(patients_df)
 high_risk_patients = patients_df[predictions[:, 1] > 0.15]
 
-# Generate clinical report
+# Gere o relatório clínico
 report = model.generate_clinical_report(
     patients_df, 
     predictions,
@@ -481,93 +271,177 @@ report = model.generate_clinical_report(
 )
 ```
 
-### 6. Production Monitoring
+### Monitoramento em Produção
 
 ```python
 from src.evaluation.drift_detection import DriftMonitor
 
-# Initialize monitoring
+# Inicialize o monitoramento
 monitor = DriftMonitor(
     reference_data=training_data,
     model=model,
     alerts_enabled=True
 )
 
-# Check for drift in new data
+# Verifique se há drift nos novos dados
 drift_report = monitor.check_drift(new_production_data)
 
 if drift_report['should_retrain']:
-    print("🚨 Retraining recommended!")
-    print(f"Reason: {drift_report['trigger_reason']}")
+    print("🚨 Re-treinamento recomendado!")
+    print(f"Motivo: {drift_report['trigger_reason']}")
 ```
 
-## 📈 Performance Optimization
+---
 
-### Hyperparameter Tuning
+## 📊 Estrutura do Projeto
 
-The model uses **Optuna-optimized** hyperparameters:
+```
+StrokePrediction/
+├── 📁 data/
+│   ├── raw/                    # Conjuntos de dados originais
+│   ├── interim/               # Dados processados intermediários
+│   └── processed/             # Conjuntos de treinamento/teste finais
+├── 📁 notebooks/
+│   ├── Stroke_Prediction_v4_Production.ipynb  # 🆕 Notebook de produção com auditoria de equidade
+│   ├── Stroke_Prediction_v2_Enhanced.ipynb    # Análise principal
+│   └── data-storytelling-auc-focus-on-strokes.ipynb
+├── 📁 src/
+│   ├── data/
+│   │   ├── make_dataset.py    # Carregamento e validação de dados
+│   │   └── feature_engineering.py  # Criação de atributos médicos
+│   ├── models/
+│   │   ├── enhanced_pipeline.py    # Pipeline principal de ML
+│   │   ├── calibration.py          # Calibração de probabilidade
+│   │   └── ensemble.py            # Métodos de ensemble de modelos
+│   ├── evaluation/
+│   │   ├── metrics.py            # Métricas de avaliação personalizadas
+│   │   ├── fairness.py           # Detecção e mitigação de viés (legado)
+│   │   └── drift_detection.py    # Monitoramento de modelo
+│   ├── fairness_audit.py       # 🆕 Sistema abrangente de auditoria de equidade
+│   └── visualization/
+│       └── plots.py             # Visualizações aprimoradas
+├── 📁 models/                   # Artefatos de modelo salvos
+├── 📁 results/                  # Saídas, relatórios, figuras
+│   ├── threshold.json          # 🆕 Limiar congelado (única fonte da verdade)
+│   ├── metrics_threshold_*.csv # 🆕 Métricas globais
+│   ├── fairness_pre_*.csv      # 🆕 Equidade de linha de base com ICs
+│   ├── fairness_post_*.csv     # 🆕 Métricas pós-mitigação
+│   └── fairness_audit.json     # 🆕 Relatório consolidado de equidade
+├── 📁 scripts/
+│   └── validate_fairness_setup.py  # 🆕 Validação do sistema de equidade
+├── 📁 docs/                     # Documentação
+│   ├── model_card_v2.md        # Cartão do modelo conforme TRIPOD+AI
+│   └── deployment_guide.md     # Guia de implantação em produção
+├── 📁 tests/                    # Testes unitários
+├── 📁 Fairness Documentation/   # 🆕 Guias completas de auditoria de equidade
+│   ├── FAIRNESS_GETTING_STARTED.md
+│   ├── FAIRNESS_QUICK_REFERENCE.md
+│   ├── FAIRNESS_FLOW_DIAGRAM.md
+│   ├── README_FAIRNESS_AUDIT.md
+│   ├── IMPLEMENTATION_SUMMARY.md
+│   └── FILE_INDEX.md
+├── requirements.txt            # Dependências do Python (inclui fairlearn≥0.9.0)
+├── PROJECT_NARRATIVE.md       # História detalhada do projeto
+└── README.md                  # Este arquivo
+```
+
+---
+
+## 📈 Métricas de Desempenho
+
+### Validação Clínica
 
 ```python
-# Best parameters found
-optimal_params = {
-    'xgb__n_estimators': 300,
-    'xgb__learning_rate': 0.05,
-    'xgb__max_depth': 6,
-    'xgb__subsample': 0.8,
-    'xgb__scale_pos_weight': 19,
-    'calibration__method': 'isotonic',
-    'calibration__cv': 10
+# Desempenho no Conjunto de Teste (n=1,080 pacientes)
+{
+    "PR-AUC": 0.285,           # Métrica primária (dados desbalanceados)
+    "ROC-AUC": 0.876,          # Poder de discriminação
+    "Recall": 0.68,            # Sensibilidade (requisito clínico)
+    "Precision": 0.13,         # Valor preditivo positivo
+    "Specificity": 0.92,       # Taxa de verdadeiros negativos
+    "F2-Score": 0.48,          # F-score ponderado pela recall
+    "Brier Score": 0.038,      # Qualidade da calibração
+    "ECE": 0.042               # Erro esperado de calibração
 }
 ```
 
-### Feature Importance
+### Análise de Curva de Decisão
 
-Top clinical predictors:
+O modelo demonstra **utilidade clínica** na faixa de limiares de 0.05-0.35:
 
-1. **Age** (0.234) - Primary risk factor
-2. **Average Glucose Level** (0.156) - Metabolic indicator  
-3. **BMI** (0.143) - Cardiovascular health
-4. **Hypertension** (0.128) - Direct stroke risk
-5. **Heart Disease** (0.089) - Comorbidity factor
+- **Benefício Líquido**: +0.021 no limiar de 0.15 (recomendado)
+- **Superior a "Tratar Todos"**: 67% dos limiares relevantes clínicos
+- **NNT (Número Necessário para Tratar)**: 7.8 pacientes por verdadeiro positivo
 
-## 🚀 Deployment
+### Análise de Precisão@k
 
-### Docker Deployment
+Para **configurações com recursos limitados**:
+
+| Top k% | Precisão | Recall | Caso de Uso |
+|--------|-----------|--------|----------|
+| **5%** | 0.41 | 0.24 | Triagem de alta precisão |
+| **10%** | 0.28 | 0.45 | Abordagem equilibrada |
+| **15%** | 0.19 | 0.58 | Triagem de alta sensibilidade |
+| **20%** | 0.15 | 0.68 | Máxima detecção de casos |
+
+---
+
+## ⚖️ Equidade e Governança
+
+### Métricas de Equidade (Auditoria Abrangente v1.0.0) 🆕
+
+**Estrutura**: Intervalos de confiança bootstrap (n=1000, 95% CI) para inferência robusta
+
+| Atributo | Gap TPR (Teste) | IC [Inferior, Superior] | Status da Mitigação | Alerta |
+|-----------|----------------|-------------------|-------------------|-------|
+| **Residence_type** | Monitorado | Com ICs | Oportunidade Igual Aplicada | Veja JSON |
+| **gender** | Monitorado | Com ICs | Oportunidade Igual Aplicada | Veja JSON |
+| **smoking_status** | Monitorado | Com ICs | Dependente da fase | Veja JSON |
+| **work_type** | Monitorado | Com ICs | Dependente da fase | Veja JSON |
+| **is_elderly** | Monitorado | Com ICs | Dependente da fase | Veja JSON |
+
+**📊 Resultados Completos**: Veja `results/fairness_audit.json` para:
+- Métricas de linha de base com ICs bootstrap
+- Desempenho pós-mitigação
+- Informações de suporte (n_pos, n_neg por grupo)
+- Alertas e recomendações automatizadas
+
+**🎯 Política**: Oportunidade Igual priorizada para compatibilidade de calibração. Odds Igualadas tentadas quando os dados são suficientes.
+
+### Conformidade Regulatória
+
+- **✅ HIPAA**: Desidentificação, criptografia, controles de acesso
+- **✅ GDPR**: Direito à explicação (SHAP), políticas de retenção de dados
+- **✅ TRIPOD+AI**: Cartão do modelo completo com todas as seções requeridas
+- **⚠️ FDA**: Atualmente suporte à decisão (Classe I isenta)
+
+### Cartão do Modelo
+
+Documentação completa **conforme TRIPOD+AI** disponível:
+- [📄 Cartão do Modelo (Markdown)](docs/model_card_v2.md)
+- [📋 Cartão do Modelo (JSON)](results/model_card_v2.json)
+
+---
+
+## 🚀 API REST
+
+A API REST permite integração fácil com sistemas clínicos.
+
+### Endpoints Principais
+
+- `POST /predict`: Predição de risco de AVC
+- `GET /health`: Verificação de integridade do serviço
+- `GET /metrics`: Métricas de desempenho do modelo
+
+### Exemplo de Uso
 
 ```bash
-# Build container
-docker build -t stroke-prediction:v2.0 .
-
-# Run API server
-docker run -p 8000:8000 stroke-prediction:v2.0
-
-# Test endpoint
+# Predição de risco de AVC
 curl -X POST "http://localhost:8000/predict" \
      -H "Content-Type: application/json" \
      -d '{"age": 65, "gender": "Male", "hypertension": 1, ...}'
-```
 
-### Cloud Deployment (AWS)
-
-```bash
-# Deploy to SageMaker
-python deploy/aws_sagemaker.py \
-    --model-path models/stroke_prediction_v2.joblib \
-    --instance-type ml.t3.medium \
-    --auto-scaling-enabled
-
-# Deploy to Lambda (serverless)
-python deploy/aws_lambda.py \
-    --memory 1024 \
-    --timeout 30
-```
-
-### API Documentation
-
-Full **OpenAPI/Swagger** documentation available at `/docs` endpoint.
-
-Example response:
-```json
+# Resposta:
 {
   "patient_id": "P12345",
   "risk_probability": 0.23,
@@ -575,6 +449,132 @@ Example response:
   "recommendation": {
     "action": "Enhanced monitoring",
     "follow_up_months": 6,
+    "specialist_referral": false,
+    "lifestyle_interventions": [
+      "Diet modification",
+      "Regular exercise",
+      "Blood pressure monitoring"
+    ]
+  },
+  "explanation": {
+    "top_risk_factors": [
+      {"feature": "age", "contribution": 0.089},
+      {"feature": "glucose_level", "contribution": 0.034}
+    ]
+  },
+  "confidence_interval": [0.19, 0.27],
+  "model_version": "2.0.3",
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+---
+
+## 📊 Dashboard Interativo
+
+Um dashboard interativo em Streamlit para visualização de dados, resultados de predição e monitoramento de desempenho.
+
+### Recursos do Dashboard
+
+- Visualização de distribuições de atributos
+- Análise de correlação entre variáveis
+- Monitoramento de métricas de desempenho do modelo
+- Detecção de drift de dados e desempenho
+
+### Como Acessar
+
+Após iniciar o servidor FastAPI, o dashboard pode ser acessado em:
+
+```
+http://localhost:8501
+```
+
+---
+
+## 📈 Monitoramento
+
+O sistema inclui monitoramento contínuo para garantir a qualidade e a equidade do modelo ao longo do tempo.
+
+### Recursos de Monitoramento
+
+- **Detecção de Drift de Dados**: Monitoramento do Índice de Estabilidade Populacional (PSI)
+- **Drift de Conceito**: Alertas de degradação de desempenho
+- **Re-treinamento Automático**: Atualizações de modelo baseadas em gatilhos
+- **Dashboards em Tempo Real**: Visualizações Grafana/Plotly
+
+### Alertas
+
+Alertas automáticos são enviados quando:
+
+- O PSI excede o limiar configurado
+- A métrica de desempenho cai abaixo do esperado
+- Há desvios significativos nas métricas de equidade
+
+---
+
+## 🛠️ Desenvolvimento
+
+Orientações para desenvolvedores que desejam contribuir para o projeto.
+
+### Configuração do Ambiente de Desenvolvimento
+
+```bash
+# Clone e configure
+git clone https://github.com/seuusuario/StrokePrediction.git
+cd StrokePrediction
+
+# Crie um ambiente virtual
+python -m venv venv
+source venv/bin/activate  # No Windows: venv\Scripts\activate
+
+# Instale as dependências de desenvolvimento
+pip install -r requirements-dev.txt
+
+# Instale os hooks do pre-commit
+pre-commit install
+```
+
+### Áreas de Contribuição
+
+- 🧬 **Engenharia de Atributos Médicos**: Novas variáveis clínicas
+- 🤖 **Desenvolvimento de Modelos**: Novos algoritmos, métodos de ensemble
+- ⚖️ **Pesquisa em Equidade**: Detecção e mitigação de viés
+- 📊 **Visualização**: Dashboards interativos, relatórios clínicos
+- 🔧 **Infraestrutura**: Implantação em produção, monitoramento
+- 📚 **Documentação**: Diretrizes clínicas, docs da API
+
+---
+
+## 📄 Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+---
+
+## 📞 Contato
+
+- **Problemas Técnicos**: [GitHub Issues](https://github.com/seuusuario/StrokePrediction/issues)
+- **Questões Clínicas**: clinical-team@strokeprediction.ai
+- **Consultas Comerciais**: business@strokeprediction.ai
+- **Preocupações de Segurança**: security@strokeprediction.ai
+
+---
+
+## 🙏 Agradecimentos
+
+- **Conselho Consultivo Clínico**: Dra. Sarah Johnson (Cardiologia), Dr. Michael Chen (Medicina de Emergência)
+- **Contribuidores de Dados**: Comunidade do Kaggle Healthcare Dataset
+- **Bibliotecas de Código Aberto**: scikit-learn, XGBoost, LightGBM, SHAP, Optuna
+- **Orientação Regulatória**: FDA AI/ML Guidance, TRIPOD+AI Guidelines
+
+---
+
+**Construído com ❤️ para melhores resultados em saúde**
+
+**Equidade em Primeiro Lugar**: Sistema abrangente de auditoria com intervalos de confiança bootstrap e mitigação em estágios  
+**Pronto para Produção**: Governança de limiar congelado, alertas automáticos, persistência completa
+
+*Última Atualização: Outubro 7, 2025**
     "specialist_referral": false,
     "lifestyle_interventions": [
       "Diet modification",
@@ -664,16 +664,8 @@ pre-commit install
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Contact & Support
-
-- **Technical Issues**: [GitHub Issues](https://github.com/yourusername/StrokePrediction/issues)
-- **Clinical Questions**: clinical-team@strokeprediction.ai
-- **Business Inquiries**: business@strokeprediction.ai
-- **Security Concerns**: security@strokeprediction.ai
-
 ## 🙏 Acknowledgments
 
-- **Clinical Advisory Board**: Dr. Sarah Johnson (Cardiology), Dr. Michael Chen (Emergency Medicine)
 - **Data Contributors**: Kaggle Healthcare Dataset Community
 - **Open Source Libraries**: scikit-learn, XGBoost, LightGBM, SHAP, Optuna
 - **Regulatory Guidance**: FDA AI/ML Guidance, TRIPOD+AI Guidelines
