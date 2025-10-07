@@ -71,7 +71,44 @@ def train_model_suite(
     
     results = {}
     cv = RepeatedStratifiedKFold(n_splits=cv_folds, n_repeats=cv_repeats, random_state=SEED)
-    y_train_array = np.asarray(y_train)
+
+    if isinstance(X_train, pd.DataFrame):
+        X_train_df = X_train.reset_index(drop=True)
+    else:
+        X_train_df = pd.DataFrame(X_train)
+
+    if isinstance(y_train, pd.Series):
+        y_train_series = y_train.reset_index(drop=True)
+    else:
+        y_train_series = pd.Series(y_train).reset_index(drop=True)
+
+    def _augment_training_groups(X: pd.DataFrame, y: pd.Series) -> tuple[pd.DataFrame, pd.Series, bool]:
+        conditions = []
+        if "is_elderly" in X.columns:
+            conditions.append(X["is_elderly"] == 0)
+        if "Residence_type" in X.columns:
+            conditions.append(X["Residence_type"] == "Rural")
+        if "work_type" in X.columns:
+            conditions.append(X["work_type"] == "Govt_job")
+        if not conditions:
+            return X, y, False
+        combined = conditions[0]
+        for cond in conditions[1:]:
+            combined = combined | cond
+        critical_mask = (y == 1) & combined
+        if critical_mask.sum() == 0:
+            return X, y, False
+        X_aug = pd.concat([X, X.loc[critical_mask]], axis=0).reset_index(drop=True)
+        y_aug = pd.concat([y, y.loc[critical_mask]], axis=0).reset_index(drop=True)
+        return X_aug, y_aug, True
+
+    X_train_df, y_train_series, augmented = _augment_training_groups(X_train_df, y_train_series)
+    if augmented:
+        print(f"Augmented critical groups -> total train samples {len(y_train_series)}")
+
+    X_train = X_train_df
+    y_train = y_train_series
+    y_train_array = y_train_series.to_numpy()
 
     def _slice(data, indices):
         if hasattr(data, "iloc"):
@@ -336,8 +373,8 @@ def train_model_suite(
                 y_val,
                 y_proba_val,
                 betas=(1.0, 2.0),
-                min_precision=0.12,
-                min_recall=0.40,
+                min_precision=0.15,
+                min_recall=0.70,
                 max_threshold=0.30
             )
             
@@ -388,8 +425,8 @@ def train_model_suite(
                     y_train,
                     oof_proba,
                     betas=(1.0, 2.0),
-                    min_precision=0.12,
-                    min_recall=0.40,
+                    min_precision=0.15,
+                    min_recall=0.70,
                     max_threshold=0.30
                 )
                 

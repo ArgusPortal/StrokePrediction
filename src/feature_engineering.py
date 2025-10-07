@@ -15,9 +15,9 @@ def engineer_medical_features(df):
     Creates medically-informed features with deterministic binning
     
     CHANGES FROM V2:
-    - Reduced age groups: 5 → 3 (fairness improvement)
-    - Fixed bin edges (reproducibility)
-    - Categorical encoding standardized
+    - Reduz faixas etárias categóricas (usa apenas is_elderly)
+    - Padroniza categorias com merges orientados a fairness
+    - Mantém bin edges fixos para reprodutibilidade
     
     Args:
         df: Input dataframe
@@ -39,6 +39,11 @@ def engineer_medical_features(df):
     # Fix known data quality issues
     if 'work_type' in df.columns:
         df['work_type'] = df['work_type'].replace({'Govt_jov': 'Govt_job'})
+        df['work_type'] = df['work_type'].replace({
+            'children': 'Govt_job',
+            'Never_worked': 'Govt_job',
+            'Self-employed': 'Private'
+        })
     
     # === 1. HANDLE MISSING VALUES ===
     
@@ -58,20 +63,12 @@ def engineer_medical_features(df):
         (df.get('avg_glucose_level', 0) > 140).astype(int)
     )
     
-    # === 3. AGE FEATURES (REDUCED GROUPS FOR FAIRNESS) ===
+    # === 3. AGE FEATURES (USING INDICATORS INSTEAD OF BINS) ===
     
     if 'age' in df.columns:
-        df['age_group'] = pd.cut(
-            df['age'], 
-            bins=FEATURE_CONFIG['age_bins'],
-            labels=FEATURE_CONFIG['age_labels'],
-            include_lowest=True
-        )
-        
-        df['is_elderly'] = (df['age'] > 65).astype(int)
+        df['is_elderly'] = (df['age'] >= 65).astype(int)
         df['age_squared'] = df['age'] ** 2
-        
-        logger.info(f"  Created age groups: {FEATURE_CONFIG['age_labels']}")
+        logger.info("  Created age indicators: is_elderly + age_squared")
     
     # === 4. BMI FEATURES ===
     
@@ -115,6 +112,7 @@ def engineer_medical_features(df):
         df['smoking_status_clean'] = df['smoking_status'].replace({
             'Unknown': 'formerly smoked'
         })
+        df['smoking_status'] = df['smoking_status_clean']
         
         smoking_map = {
             'never smoked': 0, 
@@ -160,7 +158,7 @@ def engineer_medical_features(df):
         kw in c for kw in ['risk', 'score', 'interaction', 'syndrome', 'category', 'group']
     )])
     
-    logger.info(f"  ✓ Created {new_features} new features")
-    logger.info(f"  ✓ Final shape: {df.shape}")
+    logger.info(f"  Created {new_features} new features")
+    logger.info(f"  Final shape: {df.shape}")
     
     return df

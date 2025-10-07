@@ -657,7 +657,7 @@ elif page == "⚖️ Monitoramento de Fairness":
                 'fpr_gap': 0.06,
                 'compliant': True
             },
-            'age_group': {
+            'is_elderly': {
                 'tpr_gap': 0.12,
                 'fnr_gap': 0.11,
                 'fpr_gap': 0.15,

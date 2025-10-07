@@ -66,8 +66,9 @@ MODEL_REGISTRY = {
 BMI_BINS = [0, 18.5, 25, 30, 35, 100]
 BMI_LABELS = ['underweight', 'normal', 'overweight', 'obese1', 'obese2']
 
-AGE_BINS = [0, 30, 45, 60, 75, 100]
-AGE_LABELS = ['young', 'adult', 'middle', 'senior', 'elderly']
+# Consolidated to reduce sparse groups and improve fairness stability
+AGE_BINS = [0, 65, 120]
+AGE_LABELS = ['under_65', '65_plus']
 
 GLUCOSE_BINS = [0, 100, 126, 200, 500]
 GLUCOSE_LABELS = ['normal', 'prediabetic', 'diabetic', 'severe']

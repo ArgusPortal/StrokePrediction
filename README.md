@@ -6,6 +6,13 @@
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Status](https://img.shields.io/badge/status-Production%20Ready-brightgreen.svg)
 
+## Recent Updates (2025-06)
+
+- **Decision threshold calibrado (`t = 0.08`)** via `scripts/compute_threshold.py`, garantindo recall ≥ 70% e precision ≥ 15% no conjunto de validação calibrado e reutilizado nos relatórios de QA.
+- **Rebalanceamento focalizado** (`src/model_training.py`): duplicação de exemplos críticos (`is_elderly=0`, `Residence_type=Rural`, `work_type=Govt_job`) antes do SMOTE para reduzir disparidades de recall.
+- **Auditoria e alertas contínuos** (`scripts/fairness_report.py`, `scripts/fairness_audit.py`): métricas por grupo incluem `n_pos`, alertas automáticos para `TPR_gap > 0.10` ou baixa cobertura, e planos consolidados em `results/fairness_audit.json`.
+- **Mitigação iterativa** (`scripts/fairness_group_thresholds.py`): o limiar calibrado é respeitado; ajustes grupo-a-grupo só são aplicados se não violarem precision/recall e, caso contrário, apenas os alertas são registrados.
+
 ## 📋 Overview
 
 A **production-ready machine learning system** for predicting stroke risk in clinical settings. This enhanced pipeline delivers:
@@ -13,7 +20,7 @@ A **production-ready machine learning system** for predicting stroke risk in cli
 - **🎯 93% improvement** in PR-AUC (0.285 vs 0.147 baseline)
 - **❤️ 68-72% recall** (meeting clinical requirements ≥65%)
 - **📊 <0.05 calibration error** (excellent for clinical decision-making)
-- **⚖️ <10% fairness gaps** across all demographic groups
+- **⚖️ Fairness monitoring e planos de ação** (gaps ainda >10% para is_elderly, Residence_type, smoking_status)
 - **🔍 Real-time monitoring** with automated drift detection
 - **📚 Full TRIPOD+AI compliance** with comprehensive model card
 
@@ -25,7 +32,14 @@ A **production-ready machine learning system** for predicting stroke risk in cli
 | **ROC-AUC** | 0.831 | **0.876** | +5.4% |
 | **Recall** | 0.45 | **0.68-0.72** | +51% |
 | **Calibration Error** | 0.103 | **0.042** | -59% |
-| **Fairness Gaps** | >15% | **<10%** | Compliant |
+| **Fairness Gaps** | >15% | **Monitoramento em andamento** | Alerts logged |
+
+
+### Fairness Monitoring Status (2025-06)
+
+- TPR-gap atual (teste) acima de 0.10 para `is_elderly`, `Residence_type`, `smoking_status`, `work_type` e `ever_married`, conforme `results/fairness_audit.json`.
+- Limiar calibrado (`t=0.08`) mantido em produção; scripts de auditoria (`scripts/fairness_report.py`, `scripts/fairness_audit.py`) geram alertas automáticos quando `n_pos < 5` ou `TPR_gap > 0.10`.
+- Próximas ações: coletar exemplos adicionais dos grupos críticos, ajustar pesos de treinamento e reaplicar `ThresholdOptimizer` quando houver diversidade suficiente.
 
 ## 🏗️ Architecture
 

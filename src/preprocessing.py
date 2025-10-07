@@ -4,7 +4,6 @@ Creates reusable sklearn pipelines for data transformation
 """
 
 import logging
-import numpy as np
 import pandas as pd
 from typing import Union, Any
 from sklearn.compose import ColumnTransformer
@@ -14,6 +13,8 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from imblearn.pipeline import Pipeline as ImbPipeline
 
 logger = logging.getLogger(__name__)
+
+RARE_LEVEL_THRESHOLD = 50
 
 class DataFrameColumnTransformer(BaseEstimator, TransformerMixin):
     """
@@ -143,9 +144,10 @@ def create_preprocessing_pipeline(X):
     categorical_transformer = ImbPipeline([
         ('imputer', SimpleImputer(strategy='most_frequent')),
         ('onehot', OneHotEncoder(
-            handle_unknown='ignore',
+            handle_unknown='infrequent_if_exist',
             sparse_output=False,
-            max_categories=10
+            min_frequency=RARE_LEVEL_THRESHOLD,
+            max_categories=None
         ))
     ])
     
@@ -207,7 +209,12 @@ def create_preprocessing_pipeline_enhanced(X, target='stroke'):
     
     categorical_transformer = ImbPipeline([
         ('imputer', SimpleImputer(strategy='most_frequent')),
-        ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
+        ('onehot', OneHotEncoder(
+            handle_unknown='infrequent_if_exist',
+            sparse_output=False,
+            min_frequency=RARE_LEVEL_THRESHOLD,
+            max_categories=None
+        ))
     ])
     
     binary_transformer = SimpleImputer(strategy='most_frequent')

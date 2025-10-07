@@ -5,6 +5,15 @@
 models/
 __pycache__/
 .ipynb_checkpoints
-data/
 PROJECT_NARRATIVE.md
 README_DASHBOARD.md
+tmp_cell4.py
+tmp_debug.py
+tmp_inspect.py
+tmp_v2_cell4.py
+temp_analysis.py
+build_analysis.py
+tmp_replace.py
+nb2_cells.txt
+*.png
+display_results.py
