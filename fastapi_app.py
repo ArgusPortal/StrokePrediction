@@ -21,7 +21,7 @@ from pathlib import Path
 import json
 import logging
 import time
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 import hashlib
 import asyncio
 from contextlib import asynccontextmanager
@@ -563,10 +563,10 @@ async def log_prediction(request_data: Dict, response_data: Dict, background_tas
     """Log prediction to file (async)"""
     
     def _write_log():
-        log_file = DATA_DIR / f"predictions_{datetime.now(UTC).strftime('%Y-%m-%d')}.jsonl"
+        log_file = DATA_DIR / f"predictions_{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.jsonl"
         
         log_entry = {
-            'timestamp': datetime.now(UTC).isoformat(),
+            'timestamp': datetime.now(timezone.utc).isoformat(),
             'prediction_id': response_data['prediction_id'],
             'patient_id': request_data.get('patient_id'),
             'input': request_data['patient_data'],
@@ -600,7 +600,7 @@ async def root():
 @app.get("/ping")
 async def ping():
     """Lightweight ping endpoint for connection testing"""
-    return {"status": "ok", "timestamp": datetime.now(UTC).isoformat()}
+    return {"status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
 
 
 @app.get("/health")
@@ -614,7 +614,7 @@ async def health_check():
         "model_loaded": model_loaded,
         "model_version": state.metadata['model_info']['version'] if state.metadata else "unknown",
         "shap_available": SHAP_AVAILABLE and state.explainer is not None,
-        "timestamp": datetime.now(UTC).isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "uptime_requests": state.request_count
     }
 
@@ -649,7 +649,7 @@ async def predict_stroke_risk(
     if state.model is None:
         raise HTTPException(status_code=503, detail="Model not loaded. Service unavailable")
     
-    start_time = datetime.now(UTC)
+    start_time = datetime.now(timezone.utc)
     
     try:
         # Increment request counter
@@ -672,7 +672,7 @@ async def predict_stroke_risk(
             explanation = calculate_shap_explanation(state.model, patient_df)
         
         # Calculate latency
-        latency_ms = (datetime.now(UTC) - start_time).total_seconds() * 1000
+        latency_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
         state.total_latency_ms += latency_ms
         
         # Generate prediction ID
@@ -749,7 +749,7 @@ async def batch_predict(
     if state.model is None:
         raise HTTPException(status_code=503, detail="Model not loaded. Service unavailable")
     
-    start_time = datetime.now(UTC)
+    start_time = datetime.now(timezone.utc)
     
     try:
         # Convert to DataFrame and engineer production features
@@ -783,7 +783,7 @@ async def batch_predict(
         if state.prediction_total > 0:
             ALERT_RATE_GAUGE.set(state.prediction_alerts / state.prediction_total)
         
-        latency_ms = (datetime.now(UTC) - start_time).total_seconds() * 1000
+        latency_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
         
         logger.info(f"Batch prediction: {len(patients)} patients, latency={latency_ms:.2f}ms")
         calibration_version = (
