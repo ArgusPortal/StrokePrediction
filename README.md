@@ -437,7 +437,7 @@ A API REST permite integração fácil com sistemas clínicos.
 
 ```bash
 # Predição de risco de AVC
-curl -X POST "http://localhost:8000/predict" \
+curl -X POST "https://strokepredictapi.onrender.com/predict" \
      -H "Content-Type: application/json" \
      -d '{"age": 65, "gender": "Male", "hypertension": 1, ...}'
 
@@ -486,7 +486,7 @@ Um dashboard interativo em Streamlit para visualização de dados, resultados de
 Após iniciar o servidor FastAPI, o dashboard pode ser acessado em:
 
 ```
-http://localhost:8501
+https://strokeprediction-mlet.streamlit.app/
 ```
 
 ---
@@ -549,20 +549,11 @@ pre-commit install
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
----
-
-## 📞 Contato
-
-- **Problemas Técnicos**: [GitHub Issues](https://github.com/seuusuario/StrokePrediction/issues)
-- **Questões Clínicas**: clinical-team@strokeprediction.ai
-- **Consultas Comerciais**: business@strokeprediction.ai
-- **Preocupações de Segurança**: security@strokeprediction.ai
 
 ---
 
 ## 🙏 Agradecimentos
 
-- **Conselho Consultivo Clínico**: Dra. Sarah Johnson (Cardiologia), Dr. Michael Chen (Medicina de Emergência)
 - **Contribuidores de Dados**: Comunidade do Kaggle Healthcare Dataset
 - **Bibliotecas de Código Aberto**: scikit-learn, XGBoost, LightGBM, SHAP, Optuna
 - **Orientação Regulatória**: FDA AI/ML Guidance, TRIPOD+AI Guidelines
@@ -574,122 +565,4 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 **Equidade em Primeiro Lugar**: Sistema abrangente de auditoria com intervalos de confiança bootstrap e mitigação em estágios  
 **Pronto para Produção**: Governança de limiar congelado, alertas automáticos, persistência completa
 
-*Última Atualização: Outubro 7, 2025**
-    "specialist_referral": false,
-    "lifestyle_interventions": [
-      "Diet modification",
-      "Regular exercise",
-      "Blood pressure monitoring"
-    ]
-  },
-  "explanation": {
-    "top_risk_factors": [
-      {"feature": "age", "contribution": 0.089},
-      {"feature": "glucose_level", "contribution": 0.034}
-    ]
-  },
-  "confidence_interval": [0.19, 0.27],
-  "model_version": "2.0.3",
-  "timestamp": "2024-01-15T10:30:00Z"
-}
-```
-
-## 📚 Documentation
-
-### Core Documentation
-- **📖 [Complete Project Narrative](PROJECT_NARRATIVE.md)** - Detailed project story
-- **🏥 [Clinical Integration Guide](docs/clinical_integration.md)** - EHR implementation
-- **🚀 [Deployment Guide](docs/deployment_guide.md)** - Production setup
-- **📊 [Model Performance Report](results/model_performance_report.pdf)** - Technical validation
-- **🔬 [API Documentation](docs/api_documentation.md)** - REST API reference
-
-### Fairness Documentation 🆕
-- **🚀 [Fairness Getting Started](FAIRNESS_GETTING_STARTED.md)** - Quick start (5 min)
-- **📋 [Fairness Quick Reference](FAIRNESS_QUICK_REFERENCE.md)** - Cell-by-cell guide
-- **🔄 [Fairness Flow Diagram](FAIRNESS_FLOW_DIAGRAM.md)** - Visual pipeline
-- **📚 [Fairness Audit Guide](README_FAIRNESS_AUDIT.md)** - Comprehensive technical docs
-- **📊 [Implementation Summary](IMPLEMENTATION_SUMMARY.md)** - Acceptance criteria mapping
-- **📁 [File Index](FILE_INDEX.md)** - Complete file inventory
-
-**Recommended Reading**: Start with `FAIRNESS_GETTING_STARTED.md` (5 min) → `FAIRNESS_QUICK_REFERENCE.md` → Deep dive in `README_FAIRNESS_AUDIT.md` as needed.
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-pytest tests/ -v
-
-# Run specific test suites
-pytest tests/test_models.py -v          # Model functionality
-pytest tests/test_fairness.py -v       # Bias detection
-pytest tests/test_calibration.py -v    # Probability calibration
-pytest tests/test_drift.py -v          # Drift detection
-
-# Generate coverage report
-pytest tests/ --cov=src --cov-report=html
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md).
-
-### Development Setup
-
-```bash
-# Clone and setup
-git clone https://github.com/yourusername/StrokePrediction.git
-cd StrokePrediction
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install development dependencies
-pip install -r requirements-dev.txt
-
-# Install pre-commit hooks
-pre-commit install
-```
-
-### Contribution Areas
-
-- 🧬 **Medical Feature Engineering**: New clinical variables
-- 🤖 **Model Development**: Novel algorithms, ensemble methods
-- ⚖️ **Fairness Research**: Bias detection and mitigation
-- 📊 **Visualization**: Interactive dashboards, clinical reports
-- 🔧 **Infrastructure**: Production deployment, monitoring
-- 📚 **Documentation**: Clinical guidelines, API docs
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Data Contributors**: Kaggle Healthcare Dataset Community
-- **Open Source Libraries**: scikit-learn, XGBoost, LightGBM, SHAP, Optuna
-- **Regulatory Guidance**: FDA AI/ML Guidance, TRIPOD+AI Guidelines
-
-## 📊 Metrics Dashboard
-
-![GitHub Stars](https://img.shields.io/github/stars/yourusername/StrokePrediction?style=social)
-![GitHub Forks](https://img.shields.io/github/forks/yourusername/StrokePrediction?style=social)
-![GitHub Issues](https://img.shields.io/github/issues/yourusername/StrokePrediction)
-![GitHub Pull Requests](https://img.shields.io/github/issues-pr/yourusername/StrokePrediction)
-
-### Model Performance Badges
-
-![PR-AUC](https://img.shields.io/badge/PR--AUC-0.285-brightgreen.svg)
-![ROC-AUC](https://img.shields.io/badge/ROC--AUC-0.876-green.svg)
-![Recall](https://img.shields.io/badge/Recall-0.68--0.72-blue.svg)
-![Calibration](https://img.shields.io/badge/Calibration%20Error-0.042-brightgreen.svg)
-![Fairness Audit](https://img.shields.io/badge/Fairness%20Audit-v1.0.0%20(Bootstrap%20CIs)-success.svg)
-
----
-
-**Built with ❤️ for better healthcare outcomes**
-
-**Fairness First**: Comprehensive audit system with bootstrap confidence intervals and staged mitigation  
-**Production Ready**: Frozen threshold governance, automated alerts, complete persistence
-
-*Last Updated: October 7, 2025*
+*Última Atualização: Outubro 7, 2025*

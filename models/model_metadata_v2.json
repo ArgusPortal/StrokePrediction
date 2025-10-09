@@ -1,0 +1,113 @@
+{
+  "model_info": {
+    "version": "v2_enhanced",
+    "algorithm": "CalibratedClassifierCV",
+    "calibration_method": "sigmoid",
+    "created_at_utc": "2025-10-05T18:12:02.103760+00:00",
+    "training_samples": 3321,
+    "validation_samples": 767,
+    "test_samples": 1022
+  },
+  "hyperparameters": {
+    "optimal_threshold": 0.03805879608417104,
+    "threshold_method": "Recall\u22650.7",
+    "cv_folds": 5,
+    "random_state": 42
+  },
+  "performance_metrics": {
+    "test_set": {
+      "roc_auc": 0.8158847736625515,
+      "pr_auc": 0.19784004502455238,
+      "balanced_accuracy": 0.7247736625514404,
+      "recall": 0.68,
+      "precision": 0.13178294573643412,
+      "specificity": 0.7695473251028807,
+      "f1_score": 0.22077922077922082,
+      "calibration_error": 0.1027902431526992,
+      "brier_score": 0.043654161935671974
+    },
+    "confusion_matrix": {
+      "true_negatives": 748,
+      "false_positives": 224,
+      "false_negatives": 16,
+      "true_positives": 34
+    }
+  },
+  "features": {
+    "input_features": [
+      "gender",
+      "age",
+      "hypertension",
+      "heart_disease",
+      "ever_married",
+      "work_type",
+      "Residence_type",
+      "avg_glucose_level",
+      "bmi",
+      "smoking_status",
+      "cardio_risk_score",
+      "age_squared",
+      "age_group",
+      "is_elderly",
+      "is_very_old",
+      "bmi_category",
+      "bmi_risk",
+      "bmi_extreme",
+      "bmi_age_interaction",
+      "glucose_category",
+      "is_diabetic",
+      "is_prediabetic",
+      "glucose_age_risk",
+      "smoking_risk",
+      "is_smoker",
+      "gender_risk",
+      "high_stress_job",
+      "total_risk_score",
+      "age_hypertension_int",
+      "metabolic_syndrome"
+    ],
+    "n_features": 30,
+    "categorical_features": [
+      "gender",
+      "ever_married",
+      "work_type",
+      "Residence_type",
+      "smoking_status",
+      "age_group",
+      "bmi_category",
+      "glucose_category"
+    ],
+    "numerical_features": [
+      "age",
+      "avg_glucose_level",
+      "bmi",
+      "cardio_risk_score",
+      "age_squared",
+      "bmi_age_interaction",
+      "glucose_age_risk",
+      "smoking_risk",
+      "total_risk_score",
+      "age_hypertension_int"
+    ],
+    "binary_features": [
+      "hypertension",
+      "heart_disease",
+      "is_elderly",
+      "is_very_old",
+      "bmi_risk",
+      "bmi_extreme",
+      "is_diabetic",
+      "is_prediabetic",
+      "is_smoker",
+      "gender_risk",
+      "high_stress_job",
+      "metabolic_syndrome"
+    ]
+  },
+  "deployment": {
+    "model_path": "C:\\Users\\argus\\workspace\\StrokePrediction\\models\\stroke_model_v2_calibrated.joblib",
+    "metadata_path": "C:\\Users\\argus\\workspace\\StrokePrediction\\models\\model_metadata_v2.json",
+    "inference_function": "predict_stroke_v2",
+    "api_version": "v2.0"
+  }
+}
