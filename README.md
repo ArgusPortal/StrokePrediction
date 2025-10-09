@@ -562,7 +562,4 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 **Construído com ❤️ para melhores resultados em saúde**
 
-**Equidade em Primeiro Lugar**: Sistema abrangente de auditoria com intervalos de confiança bootstrap e mitigação em estágios  
-**Pronto para Produção**: Governança de limiar congelado, alertas automáticos, persistência completa
-
 *Última Atualização: Outubro 7, 2025*
